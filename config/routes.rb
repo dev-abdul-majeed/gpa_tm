@@ -14,11 +14,8 @@ Rails.application.routes.draw do
   # root "posts#index"
   
   root to: "home#index"
-  get '/teachers/home' => 'teachers/home', as: :teacher_home
 
-  devise_for :users, skip: [:registrations], controllers: {
-    sessions: 'users/sessions'
-  }
+  devise_for :users, skip: [:registrations]
 
   # Allow registrations only for teachers and students
   devise_scope :user do
@@ -28,6 +25,22 @@ Rails.application.routes.draw do
     get    'students/sign_up', to: 'users/registrations#new_student', as: :new_student_registration
     post   'students',         to: 'users/registrations#create_student', as: :student_registration
 
+
+    get 'teachers/sign_in', to: 'users/sessions#new_teacher', as: :new_teacher_session
+    post 'teachers/sign_in', to: 'users/sessions#create_teacher'
+
+    get 'students/sign_in', to: 'users/sessions#new_student', as: :new_student_session
+    post 'students/sign_in', to: 'users/sessions#create_student'
+
+    get 'admins/sign_in', to: 'users/sessions#new_admin', as: :new_admin_session
+    post 'admins/sign_in', to: 'users/sessions#create_admin'
+
+    # delete 'logout', to: 'users/sessions#destroy', as: :destroy_user_session
   end
+
+  # Dashboards (next step)
+  get 'teacher/home', to: 'teachers#home', as: :teacher_home
+  get 'student/home', to: 'students#home', as: :student_home
+  get 'admin/home', to: 'admins#home', as: :admin_home
 
 end

@@ -5,5 +5,5 @@ class School < ApplicationRecord
 
   validates :name, presence: true, uniqueness: true, length: { maximum: 100 }
   validates :location, presence: true, length: { maximum: 150 }
-  validates :domain, presence: true, , length: { maximum: 100 }
+  validates :domain, presence: true, length: { maximum: 100 }
 end

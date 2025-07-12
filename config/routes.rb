@@ -45,4 +45,6 @@ Rails.application.routes.draw do
   get 'admin/home', to: 'admins#home', as: :admin_home
   get 'super_admin/home', to: 'super_admins#home', as: :super_admin_home
 
+  resources :schools
+ 
 end

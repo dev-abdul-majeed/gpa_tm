@@ -1,7 +1,6 @@
-class TeachersController < ApplicationController
+class SuperAdminsController < ApplicationController
     before_action :authenticate_user!
 
     def home
-
     end
 end

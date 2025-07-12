@@ -1,10 +1,10 @@
 
 SuperAdmin.create!(
-  email: 'superadmin@gpatm.com',
-  password: 'password123',
-  password_confirmation: 'password123',
+  email: 'sa@gmail.com',
+  password: '123456',
+  password_confirmation: '123456',
   first_name: 'Super',
   last_name: 'Admin',
-  gender: 'Other',
+  gender: 'Male',
   date_of_birth: '2000-01-01'
 )

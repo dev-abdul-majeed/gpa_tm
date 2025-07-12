@@ -35,12 +35,14 @@ Rails.application.routes.draw do
     get 'admins/sign_in', to: 'users/sessions#new_admin', as: :new_admin_session
     post 'admins/sign_in', to: 'users/sessions#create_admin'
 
-    # delete 'logout', to: 'users/sessions#destroy', as: :destroy_user_session
+    get  'super_admins/sign_in',  to: 'users/sessions#new_super_admin',  as: :new_super_admin_session
+    post 'super_admins/sign_in',  to: 'users/sessions#create_super_admin'
   end
 
   # Dashboards (next step)
   get 'teacher/home', to: 'teachers#home', as: :teacher_home
   get 'student/home', to: 'students#home', as: :student_home
   get 'admin/home', to: 'admins#home', as: :admin_home
+  get 'super_admin/home', to: 'super_admins#home', as: :super_admin_home
 
 end

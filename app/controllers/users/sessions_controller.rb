@@ -50,4 +50,21 @@ class Users::SessionsController < Devise::RegistrationsController
         end
     end
 
+    def new_super_admin
+      build_resource({})
+      respond_with resource, location: after_sign_in_path_for(resource)
+    end
+    
+    def create_super_admin
+      user = User.find_by(email: params[:user][:email])
+    
+      if user&.valid_password?(params[:user][:password]) && user.is_a?(SuperAdmin)
+        sign_in(:user, user)
+        redirect_to super_admin_home_path
+      else
+        flash.now[:alert] = "Invalid super admin credentials"
+        render :new_super_admin, status: :unprocessable_entity
+      end
+    end
+
 end

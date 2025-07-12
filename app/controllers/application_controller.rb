@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     case resource
     when SuperAdmin
-      superadmin_home_path
+      super_admin_home_path
     when Admin
       admin_home_path
     when Teacher
@@ -19,6 +19,12 @@ class ApplicationController < ActionController::Base
 
   def after_sign_out_path_for(_resource_or_scope)
     root_path
+  end
+
+  def authenticate_user!
+    unless user_signed_in?
+      redirect_to root_path, alert: "You need to sign in first."
+    end
   end
   
 end

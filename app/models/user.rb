@@ -11,4 +11,8 @@ class User < ApplicationRecord
   validates :email, presence: true, length: { maximum: 150 }
   validates :date_of_birth, presence: true
   validates :type, presence: true
+
+  def full_name
+    "#{first_name} #{last_name}"
+  end
 end

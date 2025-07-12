@@ -1,0 +1,31 @@
+<%= form_with(model: school, local: true) do |f| %>
+  <% if school.errors.any? %>
+    <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded">
+      <h2 class="font-bold">Please fix the following errors:</h2>
+      <ul class="list-disc pl-5">
+        <% school.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-4">
+    <%= f.label :name, class: "block text-sm font-medium text-gray-700" %>
+    <%= f.text_field :name, class: "mt-1 block w-full border border-gray-300 rounded-md p-2", required: true %>
+  </div>
+
+  <div class="mb-4">
+    <%= f.label :location, class: "block text-sm font-medium text-gray-700" %>
+    <%= f.text_field :location, class: "mt-1 block w-full border border-gray-300 rounded-md p-2", required: true %>
+  </div>
+
+  <div class="mb-4">
+    <%= f.label :domain, class: "block text-sm font-medium text-gray-700" %>
+    <%= f.text_field :domain, class: "mt-1 block w-full border border-gray-300 rounded-md p-2", required: true %>
+  </div>
+
+  <div class="mt-6">
+    <%= f.submit school.new_record? ? "Create School" : "Update School", class: "bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700" %>
+  </div>
+<% end %>

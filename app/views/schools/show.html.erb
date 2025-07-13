@@ -2,5 +2,53 @@
   <h1> Show School </h1>
   <%= render 'form', school: @school %>
 
-  <h3> List of schools here </h3>
+  <h3> School's Admin </h3>
+  <h2 class="text-xl font-bold mt-6 mb-4">Admin for <%= @school.name %></h2>
+
+  
+    <h3 class="text-lg font-semibold mt-6 mb-2">Create an Admin for this School</h3>
+
+    <%= form_for(@admin , url: admin_registration_path, html: { method: :post }) do |f| %>
+      <%= f.hidden_field :type, value: "Admin" %>
+      <%= f.hidden_field :school_id, value: @school.id %>
+
+      <div class="mb-4">
+        <%= f.label :first_name %>
+        <%= f.text_field :first_name, class: "border p-2 w-full", required: true %>
+      </div>
+
+      <div class="mb-4">
+        <%= f.label :last_name %>
+        <%= f.text_field :last_name, class: "border p-2 w-full", required: true %>
+      </div>
+
+      <div class="mb-4">
+        <%= f.label :email %>
+        <%= f.email_field :email, class: "border p-2 w-full", required: true %>
+      </div>
+
+      <div class="mb-4">
+        <%= f.label :gender %>
+        <%= f.select :gender, ["Male", "Female", "Other"], {}, class: "border p-2 w-full" %>
+      </div>
+
+      <div class="mb-4">
+        <%= f.label :date_of_birth %>
+        <%= f.date_field :date_of_birth, class: "border p-2 w-full", required: true %>
+      </div>
+
+      <div class="mb-4">
+        <%= f.label :password %>
+        <%= f.password_field :password, class: "border p-2 w-full", required: true %>
+      </div>
+
+      <div class="mb-4">
+        <%= f.label :password_confirmation %>
+        <%= f.password_field :password_confirmation, class: "border p-2 w-full", required: true %>
+      </div>
+
+      <div>
+        <%= f.submit @admin.new_record? ? "Create" : "Update", class: "bg-blue-600 text-white px-4 py-2 rounded" %>
+      </div>
+    <% end %>
 </div>

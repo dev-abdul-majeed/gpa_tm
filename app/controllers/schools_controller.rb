@@ -17,7 +17,7 @@ class SchoolsController < ApplicationController
   end
 
   def show
-
+      @admin = Admin.find_or_initialize_by(school: @school)
   end
 
   def edit

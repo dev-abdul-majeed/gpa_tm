@@ -19,6 +19,8 @@ Rails.application.routes.draw do
 
   # Allow registrations only for teachers and students
   devise_scope :user do
+    post   'admins',         to: 'users/registrations#create_admin', as: :admin_registration
+
     get    'teachers/sign_up', to: 'users/registrations#new_teacher', as: :new_teacher_registration
     post   'teachers',         to: 'users/registrations#create_teacher', as: :teacher_registration
 

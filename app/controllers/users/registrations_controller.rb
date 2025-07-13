@@ -23,6 +23,38 @@ class Users::RegistrationsController < Devise::RegistrationsController
         render :new_teacher, status: :unprocessable_entity
       end
     end
+
+    def create_admin
+      school_id = params[:admin][:school_id]
+
+      # Find existing admin for the school
+      existing_admin = Admin.find_by(school_id: school_id)
+
+      if existing_admin
+        if existing_admin.update(sign_up_params('admin'))
+          flash[:notice] = "Admin updated successfully."
+          redirect_to request.referrer
+        else
+          flash[:alert] = existing_admin.errors.full_messages.to_sentence
+          redirect_to request.referrer, status: :unprocessable_entity
+        end
+      else
+        # Build new admin if none exists
+        build_resource(sign_up_params('admin').merge(type: 'Admin'))
+
+        if resource.save
+          # Prevent sign-in if created by superadmin
+          # sign_up(resource_name, resource) # optional
+          flash[:notice] = "Admin created successfully."
+          redirect_to request.referrer
+        else
+          clean_up_passwords resource
+          flash[:alert] = resource.errors.full_messages.to_sentence
+          redirect_to request.referrer, status: :unprocessable_entity
+        end
+      end
+    end
+
   
     def new_student
       build_resource({})
@@ -47,11 +79,16 @@ class Users::RegistrationsController < Devise::RegistrationsController
         render :new_student, status: :unprocessable_entity
       end
     end
+
+    def sign_up(resource_name, resource)
+      # No-op: prevents Devise from signing in the new admin automatically
+    end
   
     private
   
-    def sign_up_params
-      params.require(:user).permit(:email, :password, :password_confirmation, :first_name, :last_name, :gender, :date_of_birth)
+    def sign_up_params(user_type)
+      params.require(user_type.to_sym).permit(:email, :password, :password_confirmation, :first_name, :last_name, :gender, :date_of_birth, :school_id)
     end
+
   end
   

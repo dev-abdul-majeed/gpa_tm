@@ -1,0 +1,6 @@
+first_name,last_name,email,gender,date_of_birth,password,password_confirmation
+John,Doe,john.doe@example.com,Male,1985-01-15,111111,111111
+Jane,Smith,jane.smith@example.com,Female,1990-04-10,111111,111111
+Ali,Khan,ali.khan@example.com,Male,1987-06-20,111111,111111
+Fatima,Ahmed,fatima.ahmed@example.com,Female,1992-09-25,111111,111111
+Sophia,Lee,sophia.lee@example.com,Female,1988-12-30,111111,111111

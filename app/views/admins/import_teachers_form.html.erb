@@ -1,0 +1,10 @@
+<h2 class="text-xl font-bold mb-4">Import Teachers from CSV</h2>
+
+  <%= form_with url: admins_import_teachers_path, local: true, multipart: true do |f| %>
+  <div class="mb-4">
+    <%= f.label :file, "Select CSV file" %>
+    <%= f.file_field :file, class: "border p-2 w-full", accept: ".csv" %>
+  </div>
+
+  <%= f.submit "Upload", class: "bg-blue-600 text-white px-4 py-2 rounded" %>
+<% end %>

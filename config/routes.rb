@@ -48,5 +48,8 @@ Rails.application.routes.draw do
   get 'super_admin/home', to: 'super_admins#home', as: :super_admin_home
 
   resources :schools
+
+  get  'admins/import_teachers', to: 'admins#import_teachers_form', as: :admins_import_teachers_form
+  post 'admins/import_teachers', to: 'admins#import_teachers', as: :admins_import_teachers
  
 end

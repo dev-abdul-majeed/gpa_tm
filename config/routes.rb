@@ -52,4 +52,6 @@ Rails.application.routes.draw do
   get  'admins/import_teachers', to: 'admins#import_teachers_form', as: :admins_import_teachers_form
   post 'admins/import_teachers', to: 'admins#import_teachers', as: :admins_import_teachers
  
+  get  'admins/import_students', to: 'admins#import_students_form', as: :admins_import_students_form
+  post 'admins/import_students', to: 'admins#import_students', as: :admins_import_students
 end

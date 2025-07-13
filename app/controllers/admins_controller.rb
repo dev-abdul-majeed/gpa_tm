@@ -24,4 +24,23 @@ class AdminsController < ApplicationController
       redirect_to admins_import_teachers_path, alert: "#{result[:success]} imported, #{result[:failed]} failed. Errors: #{error_msgs}"
     end
   end
+
+  def import_students_form
+  end
+
+  def import_students
+    if params[:file].blank?
+      redirect_to admins_import_students_path, alert: "Please upload a CSV file."
+      return
+    end
+
+    result = ::Importers::StudentImporter.new(file: params[:file], school: current_user.school).import
+
+    if result[:failed].zero?
+      redirect_to admin_home_path, notice: "#{result[:success]} students imported successfully."
+    else
+      error_msgs = result[:errors].map { |e| e[:messages].join(", ") }.join(" | ")
+      redirect_to admins_import_students_path, alert: "#{result[:success]} imported, #{result[:failed]} failed. Errors: #{error_msgs}"
+    end
+  end
 end

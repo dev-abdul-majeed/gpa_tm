@@ -1,0 +1,11 @@
+first_name,last_name,email,gender,date_of_birth,password,password_confirmation
+Ali,Khan,a@gmail.com,Male,2008-04-15,111111,111111
+Sara,Malik,b@gmail.com,Female,2007-12-30,111111,111111
+Zain,Raza,c@gmail.com,Male,2009-06-20,111111,111111
+Hiba,Ali,d@gmail.com,Female,2008-09-12,111111,111111
+Usman,Iqbal,e@gmail.com,Male,2007-11-01,111111,111111
+Ayesha,Ahmed,f@gmail.com,Female,2009-01-18,111111,111111
+Hamza,Fatani,g@gmail.com,Male,2008-07-25,111111,111111
+Fatima,Zahid,h@gmail.com,Female,2008-10-03,111111,111111
+Bilal,Siddiqui,i@gmail.com,Male,2007-08-10,111111,111111
+Noor,Javed,j@gmail.com,Female,2009-03-05,111111,111111

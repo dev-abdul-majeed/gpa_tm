@@ -1,7 +1,7 @@
 class SchoolsController < ApplicationController
   before_action :authenticate_user!
   before_action :require_super_admin!
-  before_action :set_school, only: [:edit, :update, :destroy]
+  before_action :set_school, only: [:show, :edit, :update, :destroy]
 
   def new
     @school = School.new
@@ -14,6 +14,10 @@ class SchoolsController < ApplicationController
     else
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def show
+
   end
 
   def edit

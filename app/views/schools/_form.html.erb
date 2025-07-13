@@ -1,3 +1,4 @@
+<div>
 <%= form_with(model: school, local: true) do |f| %>
   <% if school.errors.any? %>
     <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded">
@@ -10,17 +11,17 @@
     </div>
   <% end %>
 
-  <div class="mb-4">
+  <div class="mb-4 w-1/2">
     <%= f.label :name, class: "block text-sm font-medium text-gray-700" %>
     <%= f.text_field :name, class: "mt-1 block w-full border border-gray-300 rounded-md p-2", required: true %>
   </div>
 
-  <div class="mb-4">
+  <div class="mb-4 w-1/2">
     <%= f.label :location, class: "block text-sm font-medium text-gray-700" %>
     <%= f.text_field :location, class: "mt-1 block w-full border border-gray-300 rounded-md p-2", required: true %>
   </div>
 
-  <div class="mb-4">
+  <div class="mb-4 w-1/2">
     <%= f.label :domain, class: "block text-sm font-medium text-gray-700" %>
     <%= f.text_field :domain, class: "mt-1 block w-full border border-gray-300 rounded-md p-2", required: true %>
   </div>

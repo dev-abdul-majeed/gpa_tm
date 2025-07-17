@@ -26,6 +26,7 @@ class AdminsController < ApplicationController
   end
 
   def import_students_form
+    @students = current_user.school.students
   end
 
   def import_students

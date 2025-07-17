@@ -7,6 +7,7 @@ class AdminsController < ApplicationController
   end
 
   def import_teachers_form
+    @teachers = current_user.school.teachers
   end
 
   def import_teachers

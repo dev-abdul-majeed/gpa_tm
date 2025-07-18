@@ -1,1 +1,68 @@
-<h1> Hello and Welcome to GPA TM, Sign in as a user to begin </h1>
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-4xl font-bold text-center text-gray-800 mb-8">Hello and Welcome to GPA TM, Sign in as a user to begin</h1>
+
+  <div class="flex flex-row gap-6">
+    <!-- Admin Card -->
+    <div class="w-full relative h-80 flex flex-col items-center justify-center p-2 mt-10">
+      <%= link_to new_admin_session_path, class: "bg-gradient-to-br from-slate-50 to-blue-50 border-2 border-purple-200 rounded-lg w-full h-full flex flex-col items-center justify-center shadow-lg transition-all duration-300 cursor-pointer hover:shadow-2xl hover:shadow-indigo-500/30 hover:-translate-y-2 relative overflow-visible hover:border-indigo-300" do %>
+        <!-- 3D Floating Icon -->
+        <div class="absolute -top-8 -left-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full w-40 h-40 flex items-center justify-center shadow-xl transform rotate-12 hover:rotate-0 transition-transform duration-300 border-4 border-white">
+          <i class="fa-solid fa-users-gear fa-4x text-white"></i>
+        </div>
+        
+        <!-- Card Content -->
+        <div class="mt-10 flex flex-col items-center justify-center">
+          <h3 class="text-xl font-bold text-slate-700 mt-2 flex items-center gap-2 group">
+            Log in as Admin
+            <svg class="w-5 h-5 text-indigo-500 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+            </svg>
+          </h3>
+          <p class="text-sm text-slate-500 mt-1">Access administrative features</p>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Teacher Card -->
+    <div class="w-full relative h-80 flex flex-col items-center justify-center p-2 mt-10">
+      <%= link_to new_teacher_session_path, class: "bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200 rounded-lg w-full h-full flex flex-col items-center justify-center shadow-lg transition-all duration-300 cursor-pointer hover:shadow-2xl hover:shadow-emerald-500/30 hover:-translate-y-2 relative overflow-visible hover:border-emerald-300" do %>
+        <!-- 3D Floating Icon -->
+        <div class="absolute -top-8 -left-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full w-40 h-40 flex items-center justify-center shadow-xl transform rotate-12 hover:rotate-0 transition-transform duration-300 border-4 border-white">
+          <i class="fa-solid fa-chalkboard-user fa-4x text-white"></i>
+        </div>
+        
+        <!-- Card Content -->
+        <div class="mt-10 flex flex-col items-center justify-center">
+          <h3 class="text-xl font-bold text-slate-700 mt-2 flex items-center gap-2 group">
+            Log in as Teacher
+            <svg class="w-5 h-5 text-emerald-500 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+            </svg>
+          </h3>
+          <p class="text-sm text-slate-500 mt-1">Manage classes and grades</p>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Student Card -->
+    <div class="w-full relative h-80 flex flex-col items-center justify-center p-2 mt-10">
+      <%= link_to new_student_session_path, class: "bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-lg w-full h-full flex flex-col items-center justify-center shadow-lg transition-all duration-300 cursor-pointer hover:shadow-2xl hover:shadow-orange-500/30 hover:-translate-y-2 relative overflow-visible hover:border-orange-300" do %>
+        <!-- 3D Floating Icon -->
+        <div class="absolute -top-8 -left-8 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full w-40 h-40 flex items-center justify-center shadow-xl transform rotate-12 hover:rotate-0 transition-transform duration-300 border-4 border-white">
+          <i class="fa-solid fa-graduation-cap fa-4x text-white"></i>
+        </div>
+        
+        <!-- Card Content -->
+        <div class="mt-10 flex flex-col items-center justify-center">
+          <h3 class="text-xl font-bold text-slate-700 mt-2 flex items-center gap-2 group">
+            Log in as Student
+            <svg class="w-5 h-5 text-orange-500 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+            </svg>
+          </h3>
+          <p class="text-sm text-slate-500 mt-1">View grades and progress</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

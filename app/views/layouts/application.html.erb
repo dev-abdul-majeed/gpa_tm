@@ -23,11 +23,41 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
+  <body class="bg-slate-100 min-h-screen">
     <%= render 'shared/navbar' %>
-    <main>
-      <p class="notice"><%= notice %></p>
-      <p class="alert"><%= alert %></p>
+    
+    <!-- Fixed Alert Container -->
+    <div class="fixed top-20 right-4 z-50 space-y-3 max-w-md w-full">
+      <% if notice %>
+        <div class="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-6 py-4 rounded-lg shadow-lg border-l-4 border-emerald-400 transform transition-all duration-300 hover:shadow-xl animate-pulse">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <i class="fa-solid fa-check-circle text-xl"></i>
+              <span class="font-medium"><%= notice %></span>
+            </div>
+            <button onclick="this.parentElement.parentElement.remove()" class="text-white hover:text-emerald-200 transition-colors duration-200">
+              <i class="fa-solid fa-times"></i>
+            </button>
+          </div>
+        </div>
+      <% end %>
+      
+      <% if alert %>
+        <div class="bg-gradient-to-r from-red-500 to-pink-500 text-white px-6 py-4 rounded-lg shadow-lg border-l-4 border-red-400 transform transition-all duration-300 hover:shadow-xl animate-pulse">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <i class="fa-solid fa-exclamation-triangle text-xl"></i>
+              <span class="font-medium"><%= alert %></span>
+            </div>
+            <button onclick="this.parentElement.parentElement.remove()" class="text-white hover:text-red-200 transition-colors duration-200">
+              <i class="fa-solid fa-times"></i>
+            </button>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    
+    <main class="bg-slate-100 min-h-screen pt-4">
       <%= yield %>
     </main>
   </body>

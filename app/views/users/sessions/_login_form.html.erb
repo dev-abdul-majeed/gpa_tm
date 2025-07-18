@@ -1,36 +1,81 @@
-<div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-    <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-        <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-            Sign in to your account
-        </h1>
-        <%= form_for(:user, url: login_url, class: "space-y-4 md:space-y-6") do |f| %>
+<%
+  # Define color schemes based on the color_scheme variable
+  color_schemes = {
+    'admin' => {
+      icon_gradient: 'from-indigo-500 to-purple-600',
+      button_gradient: 'from-indigo-500 to-purple-600',
+      button_hover_gradient: 'from-indigo-600 to-purple-700',
+      focus_ring: 'focus:ring-indigo-300',
+      focus_border: 'focus:border-indigo-500',
+      accent_color: 'text-indigo-600',
+      accent_hover: 'hover:text-indigo-700',
+      icon_class: 'fa-shield-alt'
+    },
+    'teacher' => {
+      icon_gradient: 'from-emerald-500 to-teal-500',
+      button_gradient: 'from-emerald-500 to-teal-500',
+      button_hover_gradient: 'from-emerald-600 to-teal-600',
+      focus_ring: 'focus:ring-emerald-300',
+      focus_border: 'focus:border-emerald-500',
+      accent_color: 'text-emerald-600',
+      accent_hover: 'hover:text-emerald-700',
+      icon_class: 'fa-chalkboard-teacher'
+    },
+    'student' => {
+      icon_gradient: 'from-orange-500 to-amber-500',
+      button_gradient: 'from-orange-500 to-amber-500',
+      button_hover_gradient: 'from-orange-600 to-amber-600',
+      focus_ring: 'focus:ring-orange-300',
+      focus_border: 'focus:border-orange-500',
+      accent_color: 'text-orange-600',
+      accent_hover: 'hover:text-orange-700',
+      icon_class: 'fa-book-reader'
+    }
+  }
 
-            <div>
-                <%= f.label :email, class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
-                <%= f.email_field :email, class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: true, placeholder: 'xyz@company.com' %>
-                </div>
-            <div>
-            
-                <%= f.label :password, class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
-                <%= f.password_field :password, class: "bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500", required: true %>
-            </div>
-            <div class="flex items-center justify-between">
-                <div class="flex items-start">
-                    <div class="flex items-center h-5">
-                    <input id="remember" aria-describedby="remember" type="checkbox" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800">
-                    </div>
-                    <div class="ml-3 text-sm">
-                    <label for="remember" class="text-gray-500 dark:text-gray-300">Remember me</label>
-                    </div>
-                </div>
-                <a href="#" class="text-sm font-medium text-primary-600 hover:underline text-gray-400">Forgot password?</a>
-            </div>
-            <%= f.submit "Login", class: "w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-colors duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" %>
-            <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+  # Get the current color scheme or default to admin
+  current_scheme = color_schemes[color_scheme]
+%>
 
-                Don’t have an account yet? <a href="#" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</a>
-            </p>
-        <% end %>
-
-    </div>
+<div class="w-full bg-gradient-to-br from-slate-50 to-blue-50 border-2 border-slate-200 rounded-lg shadow-lg md:mt-0 sm:max-w-md xl:p-0 relative overflow-visible">
+  
+  <div class="p-6 space-y-4 md:space-y-6 sm:p-8 pt-12">
+    <h1 class="text-2xl font-bold text-center text-slate-700 md:text-3xl">
+      Sign in to your account
+    </h1>
+    
+    <%= form_for(:user, url: login_url, class: "space-y-4 md:space-y-6") do |f| %>
+      <div>
+        <%= f.label :email, class: "block mb-2 text-sm font-medium text-slate-700" %>
+        <%= f.email_field :email, class: "bg-white border-2 border-slate-200 text-slate-700 rounded-lg focus:ring-4 #{current_scheme[:focus_ring]} #{current_scheme[:focus_border]} block w-full p-3 transition-all duration-300 placeholder-slate-400 hover:border-slate-300", required: true, placeholder: 'xyz@company.com' %>
+      </div>
+      
+      <div>
+        <%= f.label :password, class: "block mb-2 text-sm font-medium text-slate-700" %>
+        <%= f.password_field :password, class: "bg-white border-2 border-slate-200 text-slate-700 rounded-lg focus:ring-4 #{current_scheme[:focus_ring]} #{current_scheme[:focus_border]} block w-full p-3 transition-all duration-300 placeholder-slate-400 hover:border-slate-300", required: true %>
+      </div>
+      
+      <div class="flex items-center justify-between">
+        <div class="flex items-start">
+          <div class="flex items-center h-5">
+            <input id="remember" aria-describedby="remember" type="checkbox" class="w-4 h-4 border-2 border-slate-300 rounded bg-white focus:ring-3 <%= current_scheme[:focus_ring] %> <%= current_scheme[:accent_color].gsub('text-', 'text-') %> transition-colors duration-300">
+          </div>
+          <div class="ml-3 text-sm">
+            <label for="remember" class="text-slate-500">Remember me</label>
+          </div>
+        </div>
+        <a href="#" class="text-sm font-medium <%= current_scheme[:accent_color] %> <%= current_scheme[:accent_hover] %> transition-colors duration-300">Forgot password?</a>
+      </div>
+      
+      <%= f.submit "Login", class: "w-full text-white bg-gradient-to-r #{current_scheme[:button_gradient]} hover:#{current_scheme[:button_hover_gradient]} focus:ring-4 focus:outline-none #{current_scheme[:focus_ring]} font-medium rounded-lg text-sm px-5 py-3 text-center transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex items-center justify-center gap-2" do %>
+        <i class="fa-solid fa-sign-in-alt"></i>
+        Login
+      <% end %>
+      
+      <p class="text-sm text-center text-slate-500">
+        Don't have an account yet? 
+        <a href="#" class="font-medium <%= current_scheme[:accent_color] %> <%= current_scheme[:accent_hover] %> transition-colors duration-300">Sign up</a>
+      </p>
+    <% end %>
+  </div>
 </div>

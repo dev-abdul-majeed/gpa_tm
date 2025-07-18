@@ -1,7 +1,33 @@
-<section class="bg-gray-50 dark:bg-gray-900">
-<div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-<img class="w-8 h-8 mr-2" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg" alt="logo">
-<h3 class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
-Teachers Portal     
-</h3>
-<%= render partial: 'users/sessions/login_form', locals: { login_url: teachers_sign_in_path } %>
+<section class="min-h-screen flex items-center justify-center p-6" style="background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);">
+  <div class="w-full max-w-md">
+    <!-- Floating Background Elements -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-70 left-10 w-32 h-32 rounded-full opacity-10 floating-animation" style="background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);"></div>
+      <div class="absolute bottom-20 right-10 w-24 h-24 rounded-full opacity-15 floating-animation" style="background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%); animation-delay: -2s;"></div>
+      <div class="absolute top-1/2 left-1/4 w-16 h-16 rounded-full opacity-20 floating-animation" style="background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%); animation-delay: -4s;"></div>
+    </div>
+
+    <!-- Login Card -->
+    <div class="rounded-2xl shadow-2xl p-8 border border-slate-200 relative z-10" style="backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.95);">
+      <!-- Logo Section -->
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-xl mb-4 shadow-lg" style="background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);">
+          <i class="fas fa-chalkboard-teacher text-white text-2xl"></i>
+        </div>
+        <h1 class="text-2xl font-bold text-slate-800 mb-2">Teacher Portal</h1>
+        <p class="text-slate-600">Educational excellence starts here</p>
+      </div>
+
+      
+
+      <%= render partial: 'users/sessions/login_form', locals: { login_url: teachers_sign_in_path, color_scheme: 'teacher' } %>
+
+      <!-- Footer -->
+      <div class="mt-6 text-center">
+        <p class="text-sm text-slate-500">
+          New to teaching? <a href="#" class="text-emerald-600 hover:text-emerald-500 font-medium">Get Started</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,4 +1,6 @@
 class Users::RegistrationsController < Devise::RegistrationsController
+  before_action :redirect_signed_in_user
+
     def new_teacher
       build_resource({})
       resource.type = 'Teacher'
@@ -88,6 +90,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
   
     def sign_up_params(user_type)
       params.require(user_type.to_sym).permit(:email, :password, :password_confirmation, :first_name, :last_name, :gender, :date_of_birth, :school_id)
+    end
+
+    def redirect_signed_in_user
+      if user_signed_in?
+        redirect_to after_sign_in_path_for(current_user)
+      end
     end
 
   end

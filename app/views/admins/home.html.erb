@@ -1,4 +1,73 @@
-<h1> Hello Admin! </h1>
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
+  <div class="max-w-6xl mx-auto">
+    <!-- Beautiful Header -->
+    <div class="text-center mb-12">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full mb-6 shadow-xl">
+        <i class="fas fa-shield-alt text-white text-3xl"></i>
+      </div>
+      <h1 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
+        Hello Admin!
+      </h1>
+      <p class="text-xl text-slate-600 max-w-2xl mx-auto">
+        Welcome to your administrative dashboard. Manage your educational platform with ease.
+      </p>
+    </div>
 
-<%= link_to "Import Teachers", admins_import_teachers_form_path, class: "text-blue-600 hover:underline" %>
-<%= link_to "Import Students", admins_import_students_form_path, class: "text-blue-600 hover:underline" %>
+    <!-- Action Cards -->
+    <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+      <!-- Import Teachers Card -->
+      <%= link_to admins_import_teachers_form_path, class: "group block" do %>
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 p-8 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <!-- Background Gradient Overlay -->
+          <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          
+          <!-- Icon -->
+          <div class="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
+            <i class="fas fa-chalkboard-teacher text-white text-2xl"></i>
+          </div>
+          
+          <!-- Content -->
+          <h3 class="text-2xl font-bold text-slate-800 mb-3 group-hover:text-indigo-600 transition-colors duration-300">
+            Import Teachers
+          </h3>
+          <p class="text-slate-600 mb-4 leading-relaxed">
+            Bulk import teacher accounts and manage educational staff efficiently across your platform.
+          </p>
+          
+          <!-- Action Arrow -->
+          <div class="flex items-center text-indigo-600 font-medium group-hover:text-purple-600 transition-colors duration-300">
+            <span>Get Started</span>
+            <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Import Students Card -->
+      <%= link_to admins_import_students_form_path, class: "group block" do %>
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 p-8 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+          <!-- Background Gradient Overlay -->
+          <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          
+          <!-- Icon -->
+          <div class="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
+            <i class="fas fa-user-graduate text-white text-2xl"></i>
+          </div>
+          
+          <!-- Content -->
+          <h3 class="text-2xl font-bold text-slate-800 mb-3 group-hover:text-indigo-600 transition-colors duration-300">
+            Import Students
+          </h3>
+          <p class="text-slate-600 mb-4 leading-relaxed">
+            Streamline student enrollment by importing student data and creating accounts in bulk.
+          </p>
+          
+          <!-- Action Arrow -->
+          <div class="flex items-center text-indigo-600 font-medium group-hover:text-purple-600 transition-colors duration-300">
+            <span>Get Started</span>
+            <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

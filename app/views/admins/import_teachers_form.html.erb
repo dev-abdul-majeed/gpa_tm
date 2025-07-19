@@ -1,64 +1,11 @@
-<h2 class="text-xl font-bold mb-4">Import Teachers from CSV</h2>
-
-  <%= form_with url: admins_import_teachers_path, local: true, multipart: true do |f| %>
-  <div class="mb-4">
-    <%= f.label :file, "Select CSV file" %>
-    <%= f.file_field :file, class: "border p-2 w-full", accept: ".csv" %>
-  </div>
-
-  <%= f.submit "Upload", class: "bg-blue-600 text-white px-4 py-2 rounded" %>
-<% end %>
-
-
-<% if @teachers.present? %>
-  <div class="overflow-x-auto shadow-lg rounded-lg">
-    <table class="min-w-full bg-white border border-gray-200">
-      <thead class="bg-gray-50">
-        <tr>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-            Name
-          </th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-            Email
-          </th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-            Gender
-          </th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-            Date of Birth
-          </th>
-        </tr>
-      </thead>
-      <tbody class="bg-white divide-y divide-gray-200">
-        <% @teachers.each do |teacher| %>
-          <tr class="hover:bg-gray-50 transition-colors duration-200">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-              <%= teacher.full_name %>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-              <%= teacher.email %>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= teacher.gender&.downcase == 'male' ? 'bg-blue-100 text-blue-800' : teacher.gender&.downcase == 'female' ? 'bg-pink-100 text-pink-800' : 'bg-gray-100 text-gray-800' %>">
-                <%= teacher.gender %>
-              </span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-              <%= teacher.date_of_birth&.strftime("%B %d, %Y") %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
-<% else %>
-  <div class="text-center py-12">
-    <div class="mx-auto h-12 w-12 text-gray-400">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
-      </svg>
-    </div>
-    <h3 class="mt-2 text-sm font-medium text-gray-900">No teachers found</h3>
-    <p class="mt-1 text-sm text-gray-500">Get started by adding a new teacher.</p>
-  </div>
-<% end %>
+<%= render 'import_form',
+    users: @teachers,
+    user_type: 'teacher',
+    form_url: admins_import_teachers_path,
+    icon_class: 'fas fa-chalkboard-teacher',
+    role_colors: {
+      from: 'emerald-500',
+      to: 'teal-500',
+      hover_from: 'emerald-600',
+      hover_to: 'teal-600'
+    } %>

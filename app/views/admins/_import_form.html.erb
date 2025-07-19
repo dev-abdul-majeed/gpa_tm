@@ -1,0 +1,141 @@
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header Section -->
+    <div class="mb-8">
+      <div class="flex items-center gap-4 mb-4">
+        <div class="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-<%= role_colors[:from] %> to-<%= role_colors[:to] %> rounded-xl shadow-lg">
+          <i class="<%= icon_class %> text-white text-xl"></i>
+        </div>
+        <h2 class="text-3xl font-bold bg-gradient-to-r from-<%= role_colors[:from] %> to-<%= role_colors[:to] %> bg-clip-text text-transparent">
+          Import <%= user_type.pluralize.titleize %> from CSV
+        </h2>
+      </div>
+      <p class="text-slate-600 ml-16">Upload a CSV file to bulk import <%= user_type %> accounts</p>
+    </div>
+
+    <!-- Upload Form Card -->
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 p-8 mb-8">
+      <%= form_with url: form_url, local: true, multipart: true, class: "space-y-6" do |f| %>
+        <div class="space-y-4">
+          <%= f.label :file, "Select CSV file", class: "block text-sm font-medium text-slate-700" %>
+          <div class="relative">
+            <%= f.file_field :file, 
+                class: "block w-full text-sm text-slate-500 file:mr-4 file:py-3 file:px-6 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-gradient-to-r file:from-#{role_colors[:from]} file:to-#{role_colors[:to]} file:text-white file:cursor-pointer file:hover:from-#{role_colors[:hover_from]} file:hover:to-#{role_colors[:hover_to]} file:transition-all file:duration-300 file:shadow-lg hover:file:shadow-xl border-2 border-dashed border-slate-300 rounded-lg p-6 hover:border-#{role_colors[:from]} transition-colors duration-300 bg-slate-50", 
+                accept: ".csv" %>
+            <p class="text-xs text-slate-500 mt-2">
+              <i class="fas fa-info-circle mr-1"></i>
+              Supported format: CSV files only
+            </p>
+          </div>
+        </div>
+
+        <div class="flex justify-end">
+          <%= f.submit "Upload & Import", 
+              class: "bg-gradient-to-r from-#{role_colors[:from]} to-#{role_colors[:to]} hover:from-#{role_colors[:hover_from]} hover:to-#{role_colors[:hover_to]} text-white font-medium py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 flex items-center gap-2" %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Results Section -->
+    <% if users.present? %>
+      <!-- Success Header -->
+      <div class="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl p-6 mb-6">
+        <div class="flex items-center gap-3">
+          <div class="flex items-center justify-center w-8 h-8 bg-emerald-100 rounded-full">
+            <i class="fas fa-check text-emerald-600"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-emerald-800">Import Successful!</h3>
+            <p class="text-emerald-700">Successfully imported <%= users.count %> <%= user_type %>(s)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Users Table -->
+      <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+        <div class="px-6 py-4 bg-gradient-to-r from-slate-50 to-blue-50 border-b border-slate-200">
+          <h3 class="text-lg font-semibold text-slate-800 flex items-center gap-2">
+            <i class="fas fa-table text-<%= role_colors[:from] %>"></i>
+            Imported <%= user_type.pluralize.titleize %>
+          </h3>
+        </div>
+        
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-slate-200">
+            <thead class="bg-slate-50">
+              <tr>
+                <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                  <i class="fas fa-user mr-2"></i>Name
+                </th>
+                <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                  <i class="fas fa-envelope mr-2"></i>Email
+                </th>
+                <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                  <i class="fas fa-venus-mars mr-2"></i>Gender
+                </th>
+                <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                  <i class="fas fa-birthday-cake mr-2"></i>Date of Birth
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-slate-200">
+              <% users.each_with_index do |user, index| %>
+                <tr class="hover:bg-slate-50 transition-colors duration-200 <%= 'bg-slate-25' if index.even? %>">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="flex-shrink-0 h-10 w-10">
+                        <div class="h-10 w-10 rounded-full bg-gradient-to-br from-<%= role_colors[:from] %> to-<%= role_colors[:to] %> flex items-center justify-center">
+                          <span class="text-sm font-medium text-white">
+                            <%= user.full_name&.first&.upcase || user_type.first.upcase %>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="ml-4">
+                        <div class="text-sm font-medium text-slate-900"><%= user.full_name %></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-slate-700 flex items-center gap-2">
+                      <i class="fas fa-at text-slate-400 text-xs"></i>
+                      <%= user.email %>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium <%= user.gender&.downcase == 'male' ? 'bg-blue-100 text-blue-800' : user.gender&.downcase == 'female' ? 'bg-pink-100 text-pink-800' : 'bg-gray-100 text-gray-800' %>">
+                      <i class="fas <%= user.gender&.downcase == 'male' ? 'fa-mars' : user.gender&.downcase == 'female' ? 'fa-venus' : 'fa-question' %> mr-1"></i>
+                      <%= user.gender %>
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">
+                    <div class="flex items-center gap-2">
+                      <i class="fas fa-calendar-alt text-slate-400 text-xs"></i>
+                      <%= user.date_of_birth&.strftime("%B %d, %Y") %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% else %>
+      <!-- Empty State -->
+      <div class="bg-white rounded-2xl shadow-xl border border-slate-200 p-12 text-center">
+        <div class="mx-auto h-16 w-16 text-slate-400 mb-4">
+          <div class="bg-slate-100 rounded-full p-4 inline-flex items-center justify-center">
+            <i class="<%= icon_class %> text-2xl"></i>
+          </div>
+        </div>
+        <h3 class="text-xl font-semibold text-slate-800 mb-2">No <%= user_type.pluralize %> imported yet</h3>
+        <p class="text-slate-600 mb-6 max-w-md mx-auto">
+          Upload a CSV file to get started with bulk importing <%= user_type %> accounts to your platform.
+        </p>
+        <div class="inline-flex items-center text-sm text-slate-500 bg-slate-50 px-4 py-2 rounded-lg">
+          <i class="fas fa-lightbulb mr-2 text-amber-500"></i>
+          Make sure your CSV includes: name, email, gender, and date_of_birth columns
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

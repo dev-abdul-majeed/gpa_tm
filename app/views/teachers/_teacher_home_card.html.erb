@@ -1,0 +1,20 @@
+<div class="gradient-border">
+  <%= link_to url, class: "block" do %>
+    <div class="card-hover card-gradient-hover rounded-xl p-8 h-full cursor-pointer group">
+      <div class="flex flex-col items-center text-center space-y-6">
+        <div class="w-20 h-20 bg-gradient-to-br from-emerald-500 via-teal-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
+          <i class="<%= icon %> text-white text-3xl"></i>
+        </div>
+        
+        <div>
+          <h3 class="text-2xl font-bold text-slate-800 group-hover:bg-gradient-to-r group-hover:from-emerald-600 group-hover:to-teal-600 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
+            <%= title %>
+          </h3>
+          <p class="text-slate-600 mt-2 transition-colors duration-300">
+            <%= tagline %>
+          </p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

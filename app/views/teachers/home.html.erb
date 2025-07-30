@@ -1,4 +1,88 @@
-<h1>Hello Dear Teacher <%= current_user.first_name %></h1>
+<div class="min-h-screen mh-0 bg-white">
+    <div class="min-h-screen p-6">
+        <div class="max-w-6xl mx-auto">
+            <!-- Header Section -->
+            <div class="mb-12 text-center">
+                <div class="flex items-center justify-center gap-4 mb-6">
+                    <div class="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-2xl shadow-xl floating-animation">
+                        <i class="fas fa-chalkboard-teacher text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                            Teacher Dashboard
+                        </h1>
+                        <p class="text-slate-600 text-lg mt-2">Welcome back! Manage your classes and assignments</p>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Dashboard Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <%= render 'teacher_home_card',
+                    icon: 'fas fa-plus-circle',
+                    title: 'Create New Class',
+                    tagline: 'Set up a new class with students and curriculum',
+                    url: '' %>
 
-<%= button_to "Sign Out", destroy_user_session_path, method: :delete, data: { turbo: false } %>
+                <%= render 'teacher_home_card',
+                    icon: 'fas fa-users',
+                    title: 'View My Classes',
+                    tagline: 'Manage and monitor all your active classes',
+                    url: '' %>
+
+                <%= render 'teacher_home_card',
+                    icon: 'fas fa-clipboard-check',
+                    title: 'Create Assignment',
+                    tagline: 'Design new assignments and homework tasks',
+                    url: '' %>
+
+                <%= render 'teacher_home_card',
+                    icon: 'fas fa-tasks',
+                    title: 'View Assignments',
+                    tagline: 'Review and grade submitted assignments',
+                    url: '' %>
+
+            </div>
+
+            <!-- Quick Stats Section -->
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-slate-200">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-graduation-cap text-white"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-slate-800">12</p>
+                            <p class="text-slate-600 text-sm">Active Classes</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-slate-200">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-clipboard-list text-white"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-slate-800">28</p>
+                            <p class="text-slate-600 text-sm">Assignments</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-slate-200">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-user-friends text-white"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-slate-800">340</p>
+                            <p class="text-slate-600 text-sm">Students</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

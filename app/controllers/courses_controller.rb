@@ -29,7 +29,7 @@ class CoursesController < ApplicationController
   
   def update
     if @course.update(course_params)
-      redirect_to @course, notice: 'Course successfully updated.'
+      redirect_to courses_path, notice: 'Course successfully updated.'
     else
       render :edit, status: :unprocessable_entity
     end

@@ -10,9 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_12_103237) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_31_002703) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "course_students", id: false, force: :cascade do |t|
+    t.bigint "course_id"
+    t.bigint "student_id"
+    t.index ["course_id"], name: "index_course_students_on_course_id"
+    t.index ["student_id"], name: "index_course_students_on_student_id"
+  end
+
+  create_table "courses", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.bigint "teacher_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["teacher_id", "name"], name: "index_courses_on_teacher_id_and_name", unique: true
+    t.index ["teacher_id"], name: "index_courses_on_teacher_id"
+  end
 
   create_table "schools", force: :cascade do |t|
     t.string "name"
@@ -43,5 +60,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_12_103237) do
     t.index ["type", "email"], name: "index_users_on_type_and_email"
   end
 
+  add_foreign_key "course_students", "courses"
+  add_foreign_key "course_students", "users", column: "student_id"
+  add_foreign_key "courses", "users", column: "teacher_id"
   add_foreign_key "users", "schools"
 end

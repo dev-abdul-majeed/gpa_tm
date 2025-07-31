@@ -6,5 +6,3 @@ belongs_to :teacher, class_name: 'Teacher', foreign_key: 'teacher_id'
   validates :name, presence: true
   validates :description, presence: true
 end
-
-

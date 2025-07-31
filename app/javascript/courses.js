@@ -14,3 +14,26 @@ function toggleAccordion(targetId) {
     chevron.style.transform = "rotate(0deg)";
   }
 }
+
+function toggleDropdown(studentId) {
+  const dropdown = document.getElementById(`dropdown-${studentId}`);
+  const allDropdowns = document.querySelectorAll('[id^="dropdown-student-"]');
+
+  // Close all other dropdowns
+  allDropdowns.forEach((d) => {
+    if (d.id !== `dropdown-${studentId}`) {
+      d.classList.add("hidden");
+    }
+  });
+
+  // Toggle current dropdown
+  dropdown.classList.toggle("hidden");
+}
+
+// Close dropdown when clicking outside
+document.addEventListener("click", function (e) {
+  if (!e.target.closest("[data-dropdown]")) {
+    const allDropdowns = document.querySelectorAll('[id^="dropdown-student-"]');
+    allDropdowns.forEach((d) => d.classList.add("hidden"));
+  }
+});

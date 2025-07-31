@@ -1,7 +1,7 @@
 class CoursesController < ApplicationController
   before_action :authenticate_user!
   before_action :ensure_teacher
-  before_action :set_course, only: [:show, :edit, :update, :destroy, :invite_students, :add_students]
+  before_action :set_course, only: [:show, :edit, :update, :destroy, :invite_students, :add_students, :remove_student]
   
   def index
     @courses = current_user.courses.includes(:students)
@@ -52,6 +52,14 @@ class CoursesController < ApplicationController
     else
       redirect_to invite_students_course_path(@course), alert: "Please select at least one student"
     end
+  end
+
+  def remove_student
+    @student = Student.find(params[:student_id])
+    
+    @course.students.delete(@student)
+    
+    redirect_to courses_path, notice: "#{@student.full_name} has been removed from #{@course.name}"
   end
 
   

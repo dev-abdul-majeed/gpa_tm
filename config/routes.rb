@@ -55,6 +55,11 @@ Rails.application.routes.draw do
   get  'admins/import_students', to: 'admins#import_students_form', as: :admins_import_students_form
   post 'admins/import_students', to: 'admins#import_students', as: :admins_import_students
 
-  resources :courses
+  resources :courses do
+    member do
+      get 'invite_students'
+      patch 'add_students'
+    end
+  end
 
 end

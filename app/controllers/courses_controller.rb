@@ -1,7 +1,7 @@
 class CoursesController < ApplicationController
   before_action :authenticate_user!
   before_action :ensure_teacher
-  before_action :set_course, only: [:show, :edit, :update, :destroy]
+  before_action :set_course, only: [:show, :edit, :update, :destroy, :invite_students, :add_students]
   
   def index
     @courses = current_user.courses.includes(:students)
@@ -39,6 +39,21 @@ class CoursesController < ApplicationController
     @course.destroy
     redirect_to courses_url, notice: 'Course successfully deleted.'
   end
+
+  def invite_students
+    @available_students = Student.where.not(id: @course.student_ids)
+  end
+
+  def add_students
+    if params[:course][:student_ids].present?
+      student_ids = params[:course][:student_ids].reject(&:blank?)
+      @course.student_ids += student_ids.map(&:to_i)
+      redirect_to courses_path, notice: "#{student_ids.count} students added to #{@course.name}"
+    else
+      redirect_to invite_students_course_path(@course), alert: "Please select at least one student"
+    end
+  end
+
   
   private
   
@@ -47,7 +62,7 @@ class CoursesController < ApplicationController
   end
   
   def course_params
-    params.require(:course).permit(:name, :description)
+    params.require(:course).permit(:name, :description, student_ids: [])
   end
   
   def ensure_teacher

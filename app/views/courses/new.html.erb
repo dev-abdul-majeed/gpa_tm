@@ -1,0 +1,26 @@
+<h1>Create a New Course</h1>
+
+<%= form_with model: @course do |form| %>
+  <% if @course.errors.any? %>
+    <div class="errors">
+      <h2>There were errors:</h2>
+      <ul>
+        <% @course.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_area :description %>
+  </div>
+
+  <%= form.submit "Create Course" %>
+<% end %>

@@ -12,7 +12,16 @@ class User < ApplicationRecord
   validates :date_of_birth, presence: true
   validates :type, presence: true
 
+
   def full_name
     "#{first_name} #{last_name}"
+  end
+
+  def teacher?
+    type == 'Teacher'
+  end
+  
+  def student?
+    type == 'Student'
   end
 end

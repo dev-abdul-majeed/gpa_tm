@@ -60,6 +60,13 @@ Rails.application.routes.draw do
       get 'invite_students'
       patch 'add_students'
       delete 'remove_student/:student_id', to: 'courses#remove_student', as: 'remove_student'
+      
+      resources :groups do
+        member do
+          post :add_student
+          delete :remove_student
+        end
+      end
     end
   end
 

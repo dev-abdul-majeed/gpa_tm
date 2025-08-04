@@ -13,12 +13,22 @@ class GroupsController < ApplicationController
 
   def new
     @group = @course.groups.build
+    @available_students = @course.students_without_groups
   end
 
   def create
     @group = @course.groups.build(group_params)
     
     if @group.save
+      # Add selected students to the group
+      if params[:group][:student_ids].present?
+        student_ids = params[:group][:student_ids].reject(&:blank?)
+        students = @course.students.where(id: student_ids)
+        students.each do |student|
+          @group.add_student(student)
+        end
+      end
+      
       redirect_to course_groups_path(@course), notice: 'Group was successfully created.'
     else
       render :new, status: :unprocessable_entity
@@ -67,7 +77,7 @@ class GroupsController < ApplicationController
   private
 
   def set_course
-    @course = Course.find(params[:id])
+    @course = Course.find(params[:course_id])
   end
 
   def set_group
@@ -75,6 +85,6 @@ class GroupsController < ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(:group_name)
+    params.require(:group).permit(:group_name, student_ids: [])
   end
 end

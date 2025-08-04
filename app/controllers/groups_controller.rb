@@ -36,11 +36,34 @@ class GroupsController < ApplicationController
   end
 
   def edit
+    @available_students = @group.students + @course.students_without_groups
   end
 
   def update
     if @group.update(group_params)
-      redirect_to course_group_path(@course, @group), notice: 'Group was successfully updated.'
+      # Update student assignments
+      if params[:group][:student_ids].present?
+        student_ids = params[:group][:student_ids].reject(&:blank?)
+        new_students = @course.students.where(id: student_ids)
+        
+        # Remove students not in the new selection
+        @group.students.each do |student|
+          unless new_students.include?(student)
+            membership = @group.group_memberships.find_by(student: student)
+            membership&.destroy
+          end
+        end
+        
+        # Add new students
+        new_students.each do |student|
+          @group.add_student(student)
+        end
+      else
+        # If no students selected, remove all
+        @group.group_memberships.destroy_all
+      end
+      
+      redirect_to course_groups_path(@course), notice: 'Group was successfully updated.'
     else
       render :edit, status: :unprocessable_entity
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_31_002703) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_31_141550) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -29,6 +29,25 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_31_002703) do
     t.datetime "updated_at", null: false
     t.index ["teacher_id", "name"], name: "index_courses_on_teacher_id_and_name", unique: true
     t.index ["teacher_id"], name: "index_courses_on_teacher_id"
+  end
+
+  create_table "group_memberships", force: :cascade do |t|
+    t.bigint "group_id", null: false
+    t.bigint "student_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["group_id"], name: "index_group_memberships_on_group_id"
+    t.index ["student_id", "group_id"], name: "index_group_memberships_on_student_id_and_group_id", unique: true
+    t.index ["student_id"], name: "index_group_memberships_on_student_id"
+  end
+
+  create_table "groups", force: :cascade do |t|
+    t.string "group_name", null: false
+    t.bigint "course_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["course_id", "group_name"], name: "index_groups_on_course_id_and_group_name", unique: true
+    t.index ["course_id"], name: "index_groups_on_course_id"
   end
 
   create_table "schools", force: :cascade do |t|
@@ -63,5 +82,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_31_002703) do
   add_foreign_key "course_students", "courses"
   add_foreign_key "course_students", "users", column: "student_id"
   add_foreign_key "courses", "users", column: "teacher_id"
+  add_foreign_key "group_memberships", "groups"
+  add_foreign_key "group_memberships", "users", column: "student_id"
+  add_foreign_key "groups", "courses"
   add_foreign_key "users", "schools"
 end

@@ -44,6 +44,7 @@ Rails.application.routes.draw do
   # Dashboards (next step)
   get 'teacher/home', to: 'teachers#home', as: :teacher_home
   get 'student/home', to: 'students#home', as: :student_home
+  get 'student/courses', to: 'students#courses', as: :students_courses
   get 'admin/home', to: 'admins#home', as: :admin_home
   get 'super_admin/home', to: 'super_admins#home', as: :super_admin_home
 

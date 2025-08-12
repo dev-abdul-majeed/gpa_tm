@@ -1,0 +1,168 @@
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+  <div class="container mx-auto px-4 py-8">
+    <!-- Header Section -->
+    <div class="mb-8">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-3xl font-bold text-slate-800 mb-2">My Courses</h1>
+            <p class="text-slate-600">Manage your enrolled courses and group memberships</p>
+          </div>
+          <div class="bg-gradient-to-r from-orange-500 to-amber-500 text-white p-4 rounded-lg">
+            <div class="text-center">
+              <div class="text-2xl font-bold"><%= @courses.count %></div>
+              <div class="text-sm opacity-90">Total Courses</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Course Statistics -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+        <div class="flex items-center">
+          <div class="bg-gradient-to-r from-orange-500 to-amber-500 p-3 rounded-lg">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-slate-600">Courses with Groups</p>
+            <p class="text-2xl font-semibold text-slate-800"><%= @grouped_courses.count %></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+        <div class="flex items-center">
+          <div class="bg-gradient-to-r from-orange-500 to-amber-500 p-3 rounded-lg">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+            </svg>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-slate-600">Individual Courses</p>
+            <p class="text-2xl font-semibold text-slate-800"><%= @ungrouped_courses.count %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Courses with Groups -->
+    <% if @grouped_courses.any? %>
+      <div class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-800 mb-4">Courses with Group Assignments</h2>
+        <div class="space-y-4">
+          <% @grouped_courses.each do |course| %>
+            <% student_groups = course.groups.joins(:group_memberships).where(group_memberships: { student_id: @student.id }) %>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+              <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4">
+                <div class="mb-4 lg:mb-0">
+                  <h3 class="text-xl font-semibold text-slate-800 mb-1"><%= course.name %></h3>
+                  <p class="text-slate-600 mb-2"><%= course.description %></p>
+                  <div class="flex items-center text-sm text-slate-500">
+                    <span class="mr-4">Teacher: <%= course.teacher.full_name %></span>
+                    <span><%= course.students.count %> total students</span>
+                  </div>
+                </div>
+                <div class="bg-gradient-to-r from-orange-500 to-amber-500 text-white px-4 py-2 rounded-lg text-center">
+                  <div class="text-sm opacity-90">Your Groups</div>
+                  <div class="text-lg font-bold"><%= student_groups.count %></div>
+                </div>
+              </div>
+
+              <!-- Student's Groups in this Course -->
+              <div class="border-t border-slate-200 pt-4">
+                <h4 class="text-sm font-medium text-slate-700 mb-3">Your Group Memberships:</h4>
+                <div class="space-y-4">
+                  <% student_groups.each do |group| %>
+                    <div class="border border-slate-200 rounded-lg p-4">
+                      <div class="flex items-center justify-between mb-3">
+                        <h5 class="font-medium text-slate-800"><%= group.group_name %></h5>
+                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">
+                          Member
+                        </span>
+                      </div>
+                      
+                      <!-- Group Members -->
+                      <div class="mb-3">
+                        <h6 class="text-xs font-medium text-slate-600 mb-2">Group Members (<%= group.students.count %>):</h6>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          <% group.students.each do |student| %>
+                            <div class="flex items-center justify-between p-2 rounded-lg <%= student.id == @student.id ? 'bg-gradient-to-r from-orange-100 to-amber-100 border border-orange-200' : 'bg-slate-50 border border-slate-200' %>">
+                              <div class="flex items-center space-x-2">
+                                <div class="w-6 h-6 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                                  <%= student.first_name[0].upcase %>
+                                </div>
+                                <div>
+                                  <div class="text-sm font-medium text-slate-800">
+                                    <%= student.full_name %>
+                                    <% if student.id == @student.id %>
+                                      <span class="text-orange-600 font-bold">(You)</span>
+                                    <% end %>
+                                  </div>
+                                  <div class="text-xs text-slate-500">ID: <%= student.id %></div>
+                                </div>
+                              </div>
+                              <% if student.id == @student.id %>
+                                <div class="flex items-center">
+                                  <svg class="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                  </svg>
+                                </div>
+                              <% end %>
+                            </div>
+                          <% end %>
+                        </div>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Individual Courses (No Groups) -->
+    <% if @ungrouped_courses.any? %>
+      <div class="mb-8">
+        <h2 class="text-xl font-semibold text-slate-800 mb-4">Individual Courses</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <% @ungrouped_courses.each do |course| %>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+              <div class="flex items-start justify-between mb-4">
+                <h3 class="text-lg font-semibold text-slate-800"><%= course.name %></h3>
+                <span class="bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs px-2 py-1 rounded-full">
+                  Individual
+                </span>
+              </div>
+              <p class="text-slate-600 text-sm mb-4 line-clamp-3"><%= course.description %></p>
+              <div class="border-t border-slate-200 pt-4">
+                <div class="flex items-center justify-between text-sm text-slate-500">
+                  <span>Teacher: <%= course.teacher.full_name %></span>
+                  <span><%= course.students.count %> students</span>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Empty State -->
+    <% if @courses.empty? %>
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-12">
+        <div class="text-center">
+          <svg class="mx-auto h-16 w-16 text-slate-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+          </svg>
+          <h3 class="text-xl font-medium text-slate-800 mb-2">No courses enrolled</h3>
+          <p class="text-slate-600 mb-6">You haven't been enrolled in any courses yet. Contact your teachers or administrators to get started.</p>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

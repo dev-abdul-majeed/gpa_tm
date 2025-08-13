@@ -10,9 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_31_141550) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_13_001452) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "assignments", force: :cascade do |t|
+    t.string "title", limit: 50, null: false
+    t.string "type", null: false
+    t.integer "rating_scale", default: 0, null: false
+    t.string "rating_model", default: "B"
+    t.boolean "calibration", default: false
+    t.datetime "start_date_time"
+    t.datetime "end_date_time"
+    t.decimal "self_rating_weight", precision: 5, scale: 2, default: "0.0"
+    t.bigint "course_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["calibration"], name: "index_assignments_on_calibration"
+    t.index ["course_id"], name: "index_assignments_on_course_id"
+    t.index ["rating_scale"], name: "index_assignments_on_rating_scale"
+    t.index ["type"], name: "index_assignments_on_type"
+  end
 
   create_table "course_students", id: false, force: :cascade do |t|
     t.bigint "course_id"
@@ -79,6 +97,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_31_141550) do
     t.index ["type", "email"], name: "index_users_on_type_and_email"
   end
 
+  add_foreign_key "assignments", "courses"
   add_foreign_key "course_students", "courses"
   add_foreign_key "course_students", "users", column: "student_id"
   add_foreign_key "courses", "users", column: "teacher_id"

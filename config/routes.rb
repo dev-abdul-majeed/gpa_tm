@@ -68,6 +68,7 @@ Rails.application.routes.draw do
           delete :remove_student
         end
       end
+    resources :assignments
   end
 
 end

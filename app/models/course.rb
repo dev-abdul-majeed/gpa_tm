@@ -5,6 +5,7 @@ class Course < ApplicationRecord
   
   has_many :groups, dependent: :destroy
   has_many :group_memberships, through: :groups
+  has_many :assignments, dependent: :destroy
   
   has_and_belongs_to_many :students, class_name: 'Student', join_table: :course_students
 

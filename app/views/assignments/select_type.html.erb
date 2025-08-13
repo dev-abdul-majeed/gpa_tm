@@ -79,7 +79,7 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+(function() {
   const typeCards = document.querySelectorAll('.type-card');
   const nextButton = document.getElementById('next-step');
   let selectedTypeId = null;
@@ -105,5 +105,5 @@ document.addEventListener('DOMContentLoaded', function() {
       window.location.href = `/courses/${courseId}/assignments/new?type=${selectedTypeId}`;
     }
   });
-});
+})();
 </script>

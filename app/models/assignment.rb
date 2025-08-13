@@ -2,7 +2,7 @@ class Assignment < ApplicationRecord
   belongs_to :course
 
   validates :title, presence: true, length: { maximum: 50 }
-  validates :type, presence: true, inclusion: { in: %w[qass webavalia] }
+  validates :assignment_type, presence: true, inclusion: { in: %w[qass webavalia] }
   validates :rating_scale, presence: true, numericality: { 
     only_integer: true, 
     greater_than_or_equal_to: 0, 

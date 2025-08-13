@@ -62,7 +62,7 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+(function() {
   const courseCards = document.querySelectorAll('.course-card');
   const nextButton = document.getElementById('next-step');
   let selectedCourseId = null;
@@ -87,5 +87,5 @@ document.addEventListener('DOMContentLoaded', function() {
       window.location.href = `/assignments/select_type?course_id=${selectedCourseId}`;
     }
   });
-});
+})();
 </script>

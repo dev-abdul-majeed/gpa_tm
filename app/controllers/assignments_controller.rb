@@ -1,7 +1,7 @@
 class AssignmentsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_course, only: [:new, :show, :edit, :update, :destroy]
-  before_action :set_assignment, only: [:show, :edit, :update, :destroy]
+  before_action :set_course, only: [:new, :create, :show, :edit, :update, :destroy, :success]
+  before_action :set_assignment, only: [:show, :edit, :update, :destroy, :success]
   before_action :ensure_teacher_or_admin
 
   def index
@@ -11,16 +11,19 @@ class AssignmentsController < ApplicationController
   def show
   end
 
+  def success
+  end
+
   def new
     @assignment = @course.assignments.build
-    @assignment.type = params[:type] if params[:type].present?
+    @assignment.assignment_type = params[:type] if params[:type].present?
   end
 
   def create
     @assignment = @course.assignments.build(assignment_params)
 
     if @assignment.save
-      redirect_to course_assignment_path(@course, @assignment), notice: 'Assignment was successfully created.'
+      redirect_to success_course_assignment_path(@course, @assignment), notice: 'Assignment was successfully created.'
     else
       render :new, status: :unprocessable_entity
     end
@@ -72,7 +75,7 @@ class AssignmentsController < ApplicationController
   def assignment_params
     params.require(:assignment).permit(
       :title, 
-      :type, 
+      :assignment_type, 
       :rating_scale, 
       :rating_model, 
       :calibration, 

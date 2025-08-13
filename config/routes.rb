@@ -68,7 +68,11 @@ Rails.application.routes.draw do
           delete :remove_student
         end
       end
-    resources :assignments
+    resources :assignments do
+      member do
+        get :success
+      end
+    end
   end
 
   # Assignment creation wizard routes

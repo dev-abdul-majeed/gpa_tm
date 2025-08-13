@@ -1,0 +1,182 @@
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+  <div class="container mx-auto px-4 py-8">
+    <!-- Success Header -->
+    <div class="text-center mb-8">
+      <div class="flex items-center justify-center gap-4 mb-6">
+        <div class="w-16 h-16 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center shadow-lg">
+          <i class="fas fa-check text-white text-2xl"></i>
+        </div>
+        <div>
+          <h1 class="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+            Assignment Created Successfully! 🎉
+          </h1>
+          <p class="text-slate-600 text-lg mt-2">Your new assignment will be live after start date and time</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success Animation -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center gap-2 bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full text-sm font-medium">
+        <i class="fas fa-rocket text-emerald-600"></i>
+        <span>Assignment launched successfully!</span>
+      </div>
+    </div>
+
+    <!-- Assignment Summary -->
+    <div class="max-w-4xl mx-auto">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 mb-6">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-semibold text-slate-800">Assignment Summary</h2>
+          <div class="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-4 py-2 rounded-lg text-sm font-medium">
+            <%= @assignment.assignment_type.upcase %>
+          </div>
+        </div>
+
+        <!-- Basic Info -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="space-y-4">
+            <div>
+              <h3 class="text-sm font-medium text-slate-600 mb-1">Assignment Title</h3>
+              <p class="text-lg font-semibold text-slate-800"><%= @assignment.title %></p>
+            </div>
+            
+            <div>
+              <h3 class="text-sm font-medium text-slate-600 mb-1">Course</h3>
+              <p class="text-lg font-semibold text-slate-800"><%= @course.name %></p>
+            </div>
+
+            <div>
+              <h3 class="text-sm font-medium text-slate-600 mb-1">Assignment Type</h3>
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
+                  <i class="<%= @assignment.assignment_type == 'qass' ? 'fas fa-question-circle' : 'fas fa-globe' %> text-white text-sm"></i>
+                </div>
+                <span class="text-lg font-semibold text-slate-800"><%= @assignment.assignment_type.titleize %></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <h3 class="text-sm font-medium text-slate-600 mb-1">Rating Scale</h3>
+              <p class="text-lg font-semibold text-slate-800">0 - <%= @assignment.rating_scale %></p>
+            </div>
+
+            <div>
+              <h3 class="text-sm font-medium text-slate-600 mb-1">Rating Model</h3>
+              <p class="text-lg font-semibold text-slate-800">
+                <%= @assignment.rating_model %> 
+                <span class="text-sm text-slate-500">
+                  (<%= case @assignment.rating_model
+                        when 'B' then '50 points'
+                        when 'C' then '100 points'
+                        when 'D' then '0 points'
+                        end %>)
+                </span>
+              </p>
+            </div>
+
+            <% if @assignment.assignment_type == 'webavalia' %>
+              <div>
+                <h3 class="text-sm font-medium text-slate-600 mb-1">Self-Rating Weight</h3>
+                <p class="text-lg font-semibold text-slate-800"><%= @assignment.self_rating_weight %>%</p>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Schedule -->
+        <div class="border-t border-slate-200 pt-6 mb-6">
+          <h3 class="text-lg font-semibold text-slate-800 mb-4">Schedule</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-50 rounded-lg p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-play text-green-600 text-sm"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-600">Start Date & Time</p>
+                  <p class="text-slate-800"><%= @assignment.start_date_time.strftime("%B %d, %Y at %I:%M %p") %></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-slate-50 rounded-lg p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-stop text-red-600 text-sm"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-600">End Date & Time</p>
+                  <p class="text-slate-800"><%= @assignment.end_date_time.strftime("%B %d, %Y at %I:%M %p") %></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings -->
+        <div class="border-t border-slate-200 pt-6">
+          <h3 class="text-lg font-semibold text-slate-800 mb-4">Settings</h3>
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 <%= @assignment.calibration ? 'bg-emerald-100' : 'bg-slate-100' %> rounded-full flex items-center justify-center">
+                <i class="fas fa-<%= @assignment.calibration ? 'check' : 'times' %> text-<%= @assignment.calibration ? 'emerald' : 'slate' %>-600 text-xs"></i>
+              </div>
+              <span class="text-slate-700">Calibration: <%= @assignment.calibration ? 'Enabled' : 'Disabled' %></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Next Steps -->
+      <div class="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-emerald-200 p-6 mb-6">
+        <h3 class="text-lg font-semibold text-slate-800 mb-4">What's Next?</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="text-center">
+            <div class="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+              <i class="fas fa-users text-emerald-600"></i>
+            </div>
+            <h4 class="font-medium text-slate-800 mb-1">Share with Students</h4>
+            <p class="text-sm text-slate-600">Students will be notified about the new assignment</p>
+          </div>
+          
+          <div class="text-center">
+            <div class="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+              <i class="fas fa-eye text-emerald-600"></i>
+            </div>
+            <h4 class="font-medium text-slate-800 mb-1">Monitor Progress</h4>
+            <p class="text-sm text-slate-600">Track student submissions and performance</p>
+          </div>
+          
+          <div class="text-center">
+            <div class="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+              <i class="fas fa-chart-bar text-emerald-600"></i>
+            </div>
+            <h4 class="font-medium text-slate-800 mb-1">View Analytics</h4>
+            <p class="text-sm text-slate-600">Analyze results and generate reports</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <%= link_to course_assignments_path(@course), class: "inline-flex items-center justify-center px-6 py-3 bg-white border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors" do %>
+          <i class="fas fa-list mr-2"></i>
+          View All Assignments
+        <% end %>
+        
+        <%= link_to new_assignment_wizard_path, class: "inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-lg hover:from-emerald-600 hover:to-teal-600 transition-colors" do %>
+          <i class="fas fa-plus mr-2"></i>
+          Create Another Assignment
+        <% end %>
+        
+        <%= link_to teacher_home_path, class: "inline-flex items-center justify-center px-6 py-3 bg-slate-800 text-white rounded-lg hover:bg-slate-900 transition-colors" do %>
+          <i class="fas fa-home mr-2"></i>
+          Back to Dashboard
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

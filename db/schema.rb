@@ -16,7 +16,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_13_001452) do
 
   create_table "assignments", force: :cascade do |t|
     t.string "title", limit: 50, null: false
-    t.string "type", null: false
+    t.string "assignment_type", null: false
     t.integer "rating_scale", default: 0, null: false
     t.string "rating_model", default: "B"
     t.boolean "calibration", default: false
@@ -26,10 +26,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_13_001452) do
     t.bigint "course_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["assignment_type"], name: "index_assignments_on_assignment_type"
     t.index ["calibration"], name: "index_assignments_on_calibration"
     t.index ["course_id"], name: "index_assignments_on_course_id"
     t.index ["rating_scale"], name: "index_assignments_on_rating_scale"
-    t.index ["type"], name: "index_assignments_on_type"
   end
 
   create_table "course_students", id: false, force: :cascade do |t|

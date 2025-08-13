@@ -1,0 +1,109 @@
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+  <div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <div class="flex items-center justify-center gap-4 mb-4">
+        <div class="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
+          <i class="fas fa-clipboard-check text-white text-xl"></i>
+        </div>
+        <h1 class="text-3xl font-bold text-slate-800">Create New Assignment</h1>
+      </div>
+      <p class="text-slate-600">Step 2: Select assignment type for <span class="font-semibold text-emerald-600"><%= @course.name %></span></p>
+    </div>
+
+    <!-- Assignment Type Selection -->
+    <div class="max-w-4xl mx-auto">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
+        <h2 class="text-xl font-semibold text-slate-800 mb-4">Assignment Types</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="type-selection">
+          <% @assignment_types.each do |type| %>
+            <div class="type-card border border-slate-200 rounded-lg p-6 cursor-pointer hover:shadow-md transition-all duration-200 hover:border-emerald-300" 
+                 data-type-id="<%= type[:id] %>" 
+                 data-type-name="<%= type[:name] %>">
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
+                  <i class="<%= type[:icon] %> text-white text-xl"></i>
+                </div>
+                <div class="text-sm bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-medium">
+                  <%= type[:name].upcase %>
+                </div>
+              </div>
+              <h3 class="text-lg font-semibold text-slate-800 mb-3"><%= type[:name] %></h3>
+              <p class="text-slate-600 mb-4"><%= type[:description] %></p>
+              
+              <!-- Type-specific features -->
+              <div class="space-y-2">
+                <% if type[:id] == 'qass' %>
+                  <div class="flex items-center text-sm text-slate-600">
+                    <i class="fas fa-check text-emerald-500 mr-2"></i>
+                    Question and answer format
+                  </div>
+                  <div class="flex items-center text-sm text-slate-600">
+                    <i class="fas fa-check text-emerald-500 mr-2"></i>
+                    Multiple choice questions
+                  </div>
+                  <div class="flex items-center text-sm text-slate-600">
+                    <i class="fas fa-check text-emerald-500 mr-2"></i>
+                    Auto-grading system
+                  </div>
+                <% else %>
+                  <div class="flex items-center text-sm text-slate-600">
+                    <i class="fas fa-check text-emerald-500 mr-2"></i>
+                    Web-based evaluation
+                  </div>
+                  <div class="flex items-center text-sm text-slate-600">
+                    <i class="fas fa-check text-emerald-500 mr-2"></i>
+                    Interactive assessments
+                  </div>
+                  <div class="flex items-center text-sm text-slate-600">
+                    <i class="fas fa-check text-emerald-500 mr-2"></i>
+                    Real-time feedback
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="max-w-4xl mx-auto flex justify-between items-center">
+      <%= link_to "← Back to Course Selection", new_assignment_wizard_path, class: "text-slate-600 hover:text-slate-800 transition-colors" %>
+      <button id="next-step" class="px-6 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-lg hover:from-emerald-600 hover:to-teal-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+        Create Assignment →
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const typeCards = document.querySelectorAll('.type-card');
+  const nextButton = document.getElementById('next-step');
+  let selectedTypeId = null;
+
+  typeCards.forEach(card => {
+    card.addEventListener('click', function() {
+      // Remove previous selection
+      typeCards.forEach(c => c.classList.remove('ring-2', 'ring-emerald-500', 'bg-emerald-50'));
+      
+      // Add selection to clicked card
+      this.classList.add('ring-2', 'ring-emerald-500', 'bg-emerald-50');
+      
+      // Enable next button
+      selectedTypeId = this.dataset.typeId;
+      nextButton.disabled = false;
+      nextButton.classList.remove('opacity-50', 'cursor-not-allowed');
+    });
+  });
+
+  nextButton.addEventListener('click', function() {
+    if (selectedTypeId) {
+      const courseId = new URLSearchParams(window.location.search).get('course_id');
+      window.location.href = `/courses/${courseId}/assignments/new?type=${selectedTypeId}`;
+    }
+  });
+});
+</script>

@@ -71,4 +71,9 @@ Rails.application.routes.draw do
     resources :assignments
   end
 
+  # Assignment creation wizard routes
+  get 'assignments/new_wizard', to: 'assignments#new_wizard', as: :new_assignment_wizard
+  get 'assignments/select_course', to: 'assignments#select_course', as: :select_assignment_course
+  get 'assignments/select_type', to: 'assignments#select_type', as: :select_assignment_type
+
 end

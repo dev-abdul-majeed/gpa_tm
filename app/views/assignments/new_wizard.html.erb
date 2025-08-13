@@ -1,0 +1,91 @@
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+  <div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <div class="flex items-center justify-center gap-4 mb-4">
+        <div class="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
+          <i class="fas fa-clipboard-check text-white text-xl"></i>
+        </div>
+        <h1 class="text-3xl font-bold text-slate-800">Create New Assignment</h1>
+      </div>
+      <p class="text-slate-600">Step 1: Select the course for your assignment</p>
+    </div>
+
+    <!-- Course Selection -->
+    <div class="max-w-4xl mx-auto">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
+        <h2 class="text-xl font-semibold text-slate-800 mb-4">Your Courses</h2>
+        
+        <% if @courses.any? %>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="course-selection">
+            <% @courses.each do |course| %>
+              <div class="course-card border border-slate-200 rounded-lg p-4 cursor-pointer hover:shadow-md transition-all duration-200 hover:border-emerald-300" 
+                   data-course-id="<%= course.id %>" 
+                   data-course-name="<%= course.name %>">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-book text-white"></i>
+                  </div>
+                  <div class="text-xs bg-emerald-100 text-emerald-800 px-2 py-1 rounded-full">
+                    <%= course.students.count %> students
+                  </div>
+                </div>
+                <h3 class="font-semibold text-slate-800 mb-2"><%= course.name %></h3>
+                <p class="text-sm text-slate-600 line-clamp-2"><%= course.description %></p>
+                <div class="mt-3 text-xs text-slate-500">
+                  Teacher: <%= course.teacher.full_name %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="text-center py-8">
+            <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-book text-slate-400 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-medium text-slate-800 mb-2">No courses found</h3>
+            <p class="text-slate-600 mb-4">You need to create a course first before creating assignments.</p>
+            <%= link_to "Create Course", new_course_path, class: "inline-flex items-center px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-lg hover:from-emerald-600 hover:to-teal-600 transition-colors" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="max-w-4xl mx-auto flex justify-between items-center">
+      <%= link_to "← Back to Dashboard", teacher_home_path, class: "text-slate-600 hover:text-slate-800 transition-colors" %>
+      <button id="next-step" class="px-6 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-lg hover:from-emerald-600 hover:to-teal-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+        Next Step →
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const courseCards = document.querySelectorAll('.course-card');
+  const nextButton = document.getElementById('next-step');
+  let selectedCourseId = null;
+
+  courseCards.forEach(card => {
+    card.addEventListener('click', function() {
+      // Remove previous selection
+      courseCards.forEach(c => c.classList.remove('ring-2', 'ring-emerald-500', 'bg-emerald-50'));
+      
+      // Add selection to clicked card
+      this.classList.add('ring-2', 'ring-emerald-500', 'bg-emerald-50');
+      
+      // Enable next button
+      selectedCourseId = this.dataset.courseId;
+      nextButton.disabled = false;
+      nextButton.classList.remove('opacity-50', 'cursor-not-allowed');
+    });
+  });
+
+  nextButton.addEventListener('click', function() {
+    if (selectedCourseId) {
+      window.location.href = `/assignments/select_type?course_id=${selectedCourseId}`;
+    }
+  });
+});
+</script>

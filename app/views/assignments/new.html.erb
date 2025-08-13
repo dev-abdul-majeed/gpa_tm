@@ -1,0 +1,112 @@
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+  <div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <div class="flex items-center justify-center gap-4 mb-4">
+        <div class="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
+          <i class="fas fa-clipboard-check text-white text-xl"></i>
+        </div>
+        <h1 class="text-3xl font-bold text-slate-800">Create New Assignment</h1>
+      </div>
+      <p class="text-slate-600">Step 3: Configure your <%= @assignment.type&.upcase %> assignment for <span class="font-semibold text-emerald-600"><%= @course.name %></span></p>
+    </div>
+
+    <!-- Assignment Form -->
+    <div class="max-w-4xl mx-auto">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+        <%= form_with model: [@course, @assignment], local: true, class: "space-y-6" do |form| %>
+          <% if @assignment.errors.any? %>
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <i class="fas fa-exclamation-triangle text-red-400"></i>
+                </div>
+                <div class="ml-3">
+                  <h3 class="text-sm font-medium text-red-800">
+                    <%= pluralize(@assignment.errors.count, "error") %> prohibited this assignment from being saved:
+                  </h3>
+                  <div class="mt-2 text-sm text-red-700">
+                    <ul class="list-disc pl-5 space-y-1">
+                      <% @assignment.errors.full_messages.each do |message| %>
+                        <li><%= message %></li>
+                      <% end %>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+
+          <!-- Basic Information -->
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-slate-800 border-b border-slate-200 pb-2">Basic Information</h3>
+            
+            <div>
+              <%= form.label :title, class: "block text-sm font-medium text-slate-700 mb-2" %>
+              <%= form.text_field :title, class: "w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500", placeholder: "Enter assignment title" %>
+            </div>
+
+            <div>
+              <%= form.label :type, "Assignment Type", class: "block text-sm font-medium text-slate-700 mb-2" %>
+              <%= form.select :type, options_for_select([['Qass', 'qass'], ['Webavalia', 'webavalia']], @assignment.type), {}, class: "w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" %>
+            </div>
+          </div>
+
+          <!-- Rating Configuration -->
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-slate-800 border-b border-slate-200 pb-2">Rating Configuration</h3>
+            
+            <div>
+              <%= form.label :rating_scale, "Rating Scale (0-100)", class: "block text-sm font-medium text-slate-700 mb-2" %>
+              <%= form.number_field :rating_scale, min: 0, max: 100, step: 1, class: "w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500", placeholder: "Enter rating scale (0-100)" %>
+              <p class="text-xs text-slate-500 mt-1">Scale from 0 to 100, incrementing by 1</p>
+            </div>
+
+            <div>
+              <%= form.label :rating_model, "Rating Model", class: "block text-sm font-medium text-slate-700 mb-2" %>
+              <%= form.select :rating_model, options_for_select([['B (50 points)', 'B'], ['C (100 points)', 'C'], ['D (0 points)', 'D']], @assignment.rating_model), {}, class: "w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" %>
+            </div>
+
+            <div>
+              <%= form.label :self_rating_weight, "Self-Rating Weight (%)", class: "block text-sm font-medium text-slate-700 mb-2" %>
+              <%= form.number_field :self_rating_weight, min: 0.0, max: 100.0, step: 0.01, class: "w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500", placeholder: "Enter self-rating weight (0.00-100.00)" %>
+              <p class="text-xs text-slate-500 mt-1">Weight percentage for self-assessment (0.00 to 100.00)</p>
+            </div>
+
+            <div class="flex items-center">
+              <%= form.check_box :calibration, class: "h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-slate-300 rounded" %>
+              <%= form.label :calibration, "Enable Calibration", class: "ml-2 block text-sm text-slate-700" %>
+            </div>
+          </div>
+
+          <!-- Schedule -->
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-slate-800 border-b border-slate-200 pb-2">Schedule</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <%= form.label :start_date_time, "Start Date & Time", class: "block text-sm font-medium text-slate-700 mb-2" %>
+                <%= form.datetime_local_field :start_date_time, class: "w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" %>
+              </div>
+
+              <div>
+                <%= form.label :end_date_time, "End Date & Time", class: "block text-sm font-medium text-slate-700 mb-2" %>
+                <%= form.datetime_local_field :end_date_time, class: "w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" %>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="flex justify-between items-center pt-6 border-t border-slate-200">
+            <%= link_to "← Back to Type Selection", select_assignment_type_path(course_id: @course.id), class: "text-slate-600 hover:text-slate-800 transition-colors" %>
+            
+            <div class="space-x-3">
+              <%= link_to "Cancel", course_assignments_path(@course), class: "px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors" %>
+              <%= form.submit "Create Assignment", class: "px-6 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-lg hover:from-emerald-600 hover:to-teal-600 transition-colors" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

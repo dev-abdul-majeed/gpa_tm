@@ -52,7 +52,7 @@
     <!-- Courses with Groups -->
     <% if @grouped_courses.any? %>
       <div class="mb-8">
-        <h2 class="text-xl font-semibold text-slate-800 mb-4">Courses with Group Assignments</h2>
+        <h2 class="text-xl font-semibold text-slate-800 mb-4">Courses with Groups</h2>
         <div class="space-y-4">
           <% @grouped_courses.each do |course| %>
             <% student_groups = course.groups.joins(:group_memberships).where(group_memberships: { student_id: @student.id }) %>

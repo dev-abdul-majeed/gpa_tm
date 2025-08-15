@@ -45,7 +45,7 @@ class AssignmentsController < ApplicationController
 
   def update
     if @assignment.update(assignment_params)
-      redirect_to course_assignment_path(@course, @assignment), notice: 'Assignment was successfully updated.'
+      redirect_to assignments_path, notice: 'Assignment was successfully updated.'
     else
       render :edit, status: :unprocessable_entity
     end
@@ -53,7 +53,7 @@ class AssignmentsController < ApplicationController
 
   def destroy
     @assignment.destroy
-    redirect_to course_assignments_path(@course), notice: 'Assignment was successfully deleted.'
+    redirect_to assignments_path, notice: 'Assignment was successfully deleted.'
   end
 
   # Wizard methods for multi-step assignment creation

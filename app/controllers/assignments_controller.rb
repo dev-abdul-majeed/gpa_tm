@@ -5,7 +5,18 @@ class AssignmentsController < ApplicationController
   before_action :ensure_teacher_or_admin
 
   def index
-    @assignments = @course.assignments.order(created_at: :desc)
+    if params[:course_id].present?
+      @course = Course.find(params[:course_id])
+      @assignments = @course.assignments.order(created_at: :desc)
+    else
+      if current_user.teacher?
+        @assignments = Assignment.joins(:course)
+                                  .where(courses: { teacher_id: current_user.id })
+                                  .order(created_at: :desc)
+      else
+        @assignments = Assignment.order(created_at: :desc)
+      end
+    end
   end
 
   def show

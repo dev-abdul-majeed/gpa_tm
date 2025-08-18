@@ -1,31 +1,192 @@
-<h1 class="text-2xl font-bold mb-4">Welcome, <%= current_user.full_name %>!</h1>
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+  <div class="container mx-auto px-4 py-8">
+    <!-- Header Section -->
+    <div class="mb-8 text-center">
+      <div class="flex items-center justify-center gap-4 mb-6">
+        <div class="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-xl floating-animation">
+          <i class="fas fa-crown text-white text-2xl"></i>
+        </div>
+        <div>
+          <h1 class="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            Super Admin Dashboard
+          </h1>
+          <p class="text-slate-600 text-lg mt-2">Welcome back, <%= current_user.full_name %>! Manage all schools and system-wide operations</p>
+        </div>
+      </div>
+    </div>
 
-<h2 class="text-xl font-semibold mb-2">All Schools</h2>
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+            <i class="fas fa-school text-white"></i>
+          </div>
+          <div>
+            <p class="text-2xl font-bold text-slate-800"><%= @schools.count %></p>
+            <p class="text-slate-600 text-sm">Total Schools</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
+            <i class="fas fa-chalkboard-teacher text-white"></i>
+          </div>
+          <div>
+            <p class="text-2xl font-bold text-slate-800"><%= Teacher.count %></p>
+            <p class="text-slate-600 text-sm">Total Teachers</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-500 rounded-lg flex items-center justify-center">
+            <i class="fas fa-user-graduate text-white"></i>
+          </div>
+          <div>
+            <p class="text-2xl font-bold text-slate-800"><%= Student.count %></p>
+            <p class="text-slate-600 text-sm">Total Students</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+            <i class="fas fa-clipboard-list text-white"></i>
+          </div>
+          <div>
+            <p class="text-2xl font-bold text-slate-800"><%= Assignment.count %></p>
+            <p class="text-slate-600 text-sm">Total Assignments</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<%= link_to "Add New School", new_school_path, class: "bg-blue-500 text-white px-4 py-2 rounded mb-4 inline-block" %>
+    <!-- Schools Management Section -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+            <i class="fas fa-school text-white"></i>
+          </div>
+          <h2 class="text-2xl font-semibold text-slate-800">All Schools</h2>
+        </div>
+        <%= link_to new_school_path, class: "inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg hover:from-indigo-600 hover:to-purple-700 transition-colors" do %>
+          <i class="fas fa-plus"></i>
+          <span>Add New School</span>
+        <% end %>
+      </div>
 
-<table class="w-full table-auto border mt-4">
-  <thead>
-    <tr class="bg-gray-100">
-      <th class="border px-4 py-2">Name</th>
-      <th class="border px-4 py-2">Location</th>
-      <th class="border px-4 py-2">Domain</th>
-      <th class="border px-4 py-2">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @schools.each do |school| %>
-      <tr>
-        <td class="border px-4 py-2"><%= link_to school.name, school_path(school), class: "text-blue-800 hover:underline "%></td>
-        <td class="border px-4 py-2"><%= school.location %></td>
-        <td class="border px-4 py-2"><%= school.domain %></td>
-        <td class="border px-4 py-2 space-x-2">
-          <%= link_to "Edit", edit_school_path(school), class: "text-blue-600 hover:underline" %>
-          <%= link_to "Delete", school_path(school), data: {turbo_method: :delete, turbo_confirm: 'Are you sure?'}, class: "text-red-600 hover:underline" %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+      <% if @schools.any? %>
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-slate-200">
+                <th class="text-left py-3 px-4 font-semibold text-slate-700">School Name</th>
+                <th class="text-left py-3 px-4 font-semibold text-slate-700">Location</th>
+                <th class="text-left py-3 px-4 font-semibold text-slate-700">Domain</th>
+                <th class="text-left py-3 px-4 font-semibold text-slate-700">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200">
+              <% @schools.each do |school| %>
+                <tr class="hover:bg-slate-50 transition-colors">
+                  <td class="py-4 px-4">
+                    <%= link_to school.name, school_path(school), class: "font-medium text-indigo-600 hover:text-indigo-800 transition-colors" %>
+                  </td>
+                  <td class="py-4 px-4 text-slate-600">
+                    <div class="flex items-center gap-2">
+                      <i class="fas fa-map-marker-alt text-slate-400"></i>
+                      <%= school.location %>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4 text-slate-600">
+                    <div class="flex items-center gap-2">
+                      <i class="fas fa-globe text-slate-400"></i>
+                      <%= school.domain %>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">
+                    <div class="flex items-center gap-2">
+                      <%= link_to edit_school_path(school), class: "inline-flex items-center gap-1 px-3 py-1.5 text-sm bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors" do %>
+                        <i class="fas fa-edit"></i>
+                        <span>Edit</span>
+                      <% end %>
+                      <%= link_to school_path(school), data: {turbo_method: :delete, turbo_confirm: 'Are you sure you want to delete this school?'}, class: "inline-flex items-center gap-1 px-3 py-1.5 text-sm bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors" do %>
+                        <i class="fas fa-trash"></i>
+                        <span>Delete</span>
+                      <% end %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div class="text-center py-12">
+          <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-school text-slate-400 text-xl"></i>
+          </div>
+          <h3 class="text-lg font-medium text-slate-800 mb-2">No schools found</h3>
+          <p class="text-slate-600 mb-4">Get started by adding your first school to the system.</p>
+          <%= link_to "Add First School", new_school_path, class: "inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg hover:from-indigo-600 hover:to-purple-700 transition-colors" %>
+        </div>
+      <% end %>
+    </div>
 
-<%= button_to "Sign Out", destroy_user_session_path, method: :delete, data: { turbo: false } %>
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
+            <i class="fas fa-chalkboard-teacher text-white"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-slate-800">Teacher Management</h3>
+        </div>
+        <p class="text-slate-600 text-sm mb-4">Manage teachers across all schools and monitor their activities.</p>
+        <%= link_to "#", class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium" do %>
+          View Teachers <i class="fas fa-arrow-right ml-1"></i>
+        <% end %>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-10 h-10 bg-gradient-to-r from-orange-500 to-amber-500 rounded-lg flex items-center justify-center">
+            <i class="fas fa-user-graduate text-white"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-slate-800">Student Analytics</h3>
+        </div>
+        <p class="text-slate-600 text-sm mb-4">View comprehensive student data and performance analytics.</p>
+        <%= link_to "#", class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium" do %>
+          View Analytics <i class="fas fa-arrow-right ml-1"></i>
+        <% end %>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+            <i class="fas fa-cog text-white"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-slate-800">System Settings</h3>
+        </div>
+        <p class="text-slate-600 text-sm mb-4">Configure system-wide settings and manage global preferences.</p>
+        <%= link_to "#", class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium" do %>
+          Manage Settings <i class="fas fa-arrow-right ml-1"></i>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Sign Out Section -->
+    <div class="text-center">
+      <%= button_to destroy_user_session_path, method: :delete, data: { turbo: false }, class: "inline-flex items-center gap-2 px-6 py-3 bg-slate-800 text-white rounded-lg hover:bg-slate-900 transition-colors" do %>
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Sign Out</span>
+      <% end %>
+    </div>
+  </div>
+</div>

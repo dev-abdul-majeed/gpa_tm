@@ -13,15 +13,13 @@ class StudentPeerMarksController < ApplicationController
     if @submission.submitted?
       redirect_to student_peer_mark_summary_path(@course, @assignment), alert: 'Your marks are already submitted and locked.' and return
     end
-    ActiveRecord::Base.transaction do
-      params.fetch(:peer_marks, {}).each do |receiver_id, score_params|
-        score = score_params[:score].to_i
-        peer_mark = PeerMark.find_or_initialize_by(assignment: @assignment, group: @group, giver: current_user, receiver_id: receiver_id)
-        peer_mark.score = score
-        peer_mark.save!
-      end
+    ActiveRecord::Base.transaction { save_marks_from_params! }
+    if params[:finalize].present?
+      finalize_submission!
+      redirect_to student_peer_mark_summary_path(@course, @assignment), notice: 'Peer marks submitted successfully.'
+    else
+      redirect_to student_peer_marking_path(@course, @assignment), notice: 'Draft saved successfully.'
     end
-    redirect_to student_peer_marking_path(@course, @assignment), notice: 'Draft saved successfully.'
   rescue ActiveRecord::RecordInvalid => e
     @peer_marks = load_or_build_marks
     flash.now[:alert] = e.record.errors.full_messages.to_sentence
@@ -29,17 +27,7 @@ class StudentPeerMarksController < ApplicationController
   end
 
   def submit
-    ActiveRecord::Base.transaction do
-      # Finalize scores from form first (without redirect)
-      params.fetch(:peer_marks, {}).each do |receiver_id, score_params|
-        score = score_params[:score].to_i
-        peer_mark = PeerMark.find_or_initialize_by(assignment: @assignment, group: @group, giver: current_user, receiver_id: receiver_id)
-        peer_mark.score = score
-        peer_mark.save!
-      end
-      # Ensure totals and lock submission
-      @submission.update!(submitted: true)
-    end
+    ActiveRecord::Base.transaction { save_marks_from_params!; finalize_submission! }
     redirect_to student_peer_mark_summary_path(@course, @assignment), notice: 'Peer marks submitted successfully.'
   rescue ActiveRecord::RecordInvalid => e
     @peer_marks = load_or_build_marks
@@ -79,6 +67,19 @@ class StudentPeerMarksController < ApplicationController
     @group_members.each_with_object({}) do |member, hash|
       hash[member.id] = marks[member.id] || PeerMark.new(assignment: @assignment, group: @group, giver: current_user, receiver: member, score: 0)
     end
+  end
+
+  def save_marks_from_params!
+    params.fetch(:peer_marks, {}).each do |receiver_id, score_params|
+      score = score_params[:score].to_i
+      peer_mark = PeerMark.find_or_initialize_by(assignment: @assignment, group: @group, giver: current_user, receiver_id: receiver_id)
+      peer_mark.score = score
+      peer_mark.save!
+    end
+  end
+
+  def finalize_submission!
+    @submission.update!(submitted: true)
   end
 end
 

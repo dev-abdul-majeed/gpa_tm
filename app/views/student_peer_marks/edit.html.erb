@@ -41,7 +41,7 @@
         <div class="space-x-3">
           <% unless @submission.submitted? %>
             <button type="submit" class="inline-flex items-center px-4 py-2 border border-orange-500 text-orange-600 rounded-lg hover:bg-orange-50"><i class="fa-solid fa-save mr-2"></i> Save Draft</button>
-            <%= button_to 'Submit', submit_student_peer_marking_path(@course, @assignment), method: :post, class: "inline-flex items-center px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600", form: { data: { turbo_confirm: 'Submit and lock your marks? You will not be able to edit after submitting.' } } %>
+            <button type="submit" name="finalize" value="true" data-turbo-confirm="Submit and lock your marks? You will not be able to edit after submitting." class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600"><i class="fa-solid fa-check mr-2"></i> Submit</button>
           <% else %>
             <%= link_to 'View Summary', student_peer_mark_summary_path(@course, @assignment), class: "inline-flex items-center px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600" %>
           <% end %>

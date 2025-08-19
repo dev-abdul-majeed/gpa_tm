@@ -45,6 +45,7 @@ Rails.application.routes.draw do
   get 'teacher/home', to: 'teachers#home', as: :teacher_home
   get 'student/home', to: 'students#home', as: :student_home
   get 'student/courses', to: 'students#courses', as: :students_courses
+  get 'student/assignments', to: 'students#assignments', as: :students_assignments
   get 'admin/home', to: 'admins#home', as: :admin_home
   get 'super_admin/home', to: 'super_admins#home', as: :super_admin_home
 
@@ -77,6 +78,12 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  # Student peer marking flow
+  get  'student/courses/:course_id/assignments/:assignment_id/marking', to: 'student_peer_marks#edit',   as: :student_peer_marking
+  patch 'student/courses/:course_id/assignments/:assignment_id/marking', to: 'student_peer_marks#update', as: :update_student_peer_marking
+  post 'student/courses/:course_id/assignments/:assignment_id/submit',   to: 'student_peer_marks#submit', as: :submit_student_peer_marking
+  get  'student/courses/:course_id/assignments/:assignment_id/summary',  to: 'student_peer_marks#summary', as: :student_peer_mark_summary
 
   # Assignment creation wizard routes
   get 'assignments/new_wizard', to: 'assignments#new_wizard', as: :new_assignment_wizard

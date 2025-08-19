@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_13_001452) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_19_115005) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -68,6 +68,34 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_13_001452) do
     t.index ["course_id"], name: "index_groups_on_course_id"
   end
 
+  create_table "peer_mark_submissions", force: :cascade do |t|
+    t.bigint "assignment_id", null: false
+    t.bigint "giver_id", null: false
+    t.boolean "submitted", default: false, null: false
+    t.datetime "submitted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assignment_id", "giver_id"], name: "index_peer_mark_submissions_on_assignment_and_giver", unique: true
+    t.index ["assignment_id"], name: "index_peer_mark_submissions_on_assignment_id"
+    t.index ["giver_id"], name: "index_peer_mark_submissions_on_giver_id"
+  end
+
+  create_table "peer_marks", force: :cascade do |t|
+    t.bigint "assignment_id", null: false
+    t.bigint "group_id", null: false
+    t.bigint "giver_id", null: false
+    t.bigint "receiver_id", null: false
+    t.integer "score", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assignment_id", "giver_id", "receiver_id"], name: "index_peer_marks_on_assignment_giver_receiver", unique: true
+    t.index ["assignment_id"], name: "index_peer_marks_on_assignment_id"
+    t.index ["giver_id"], name: "index_peer_marks_on_giver_id"
+    t.index ["group_id"], name: "index_peer_marks_on_group_id"
+    t.index ["receiver_id"], name: "index_peer_marks_on_receiver_id"
+    t.check_constraint "score >= 0 AND score <= 100", name: "peer_marks_score_range"
+  end
+
   create_table "schools", force: :cascade do |t|
     t.string "name"
     t.string "location"
@@ -104,5 +132,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_13_001452) do
   add_foreign_key "group_memberships", "groups"
   add_foreign_key "group_memberships", "users", column: "student_id"
   add_foreign_key "groups", "courses"
+  add_foreign_key "peer_mark_submissions", "assignments"
+  add_foreign_key "peer_mark_submissions", "users", column: "giver_id"
+  add_foreign_key "peer_marks", "assignments"
+  add_foreign_key "peer_marks", "groups"
+  add_foreign_key "peer_marks", "users", column: "giver_id"
+  add_foreign_key "peer_marks", "users", column: "receiver_id"
   add_foreign_key "users", "schools"
 end

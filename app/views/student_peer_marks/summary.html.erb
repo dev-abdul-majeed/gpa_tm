@@ -1,0 +1,31 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 max-w-3xl mx-auto">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-800">Your Given Marks</h1>
+        <p class="text-slate-600">These are the marks you assigned to your group members for this assignment.</p>
+      </div>
+      <div class="text-sm text-slate-500">
+        <span class="font-semibold">Course:</span> <%= @course.name %> · 
+        <span class="font-semibold">Assignment:</span> <%= @assignment.title %>
+      </div>
+    </div>
+
+    <div class="divide-y divide-slate-200">
+      <% @given_marks.each do |mark| %>
+        <div class="flex items-center justify-between py-3">
+          <div class="text-slate-700">
+            <i class="fa-solid fa-user mr-2 text-slate-400"></i>
+            <%= mark.receiver.first_name %> <%= mark.receiver.last_name %>
+          </div>
+          <div class="text-slate-900 font-semibold"><%= mark.score %></div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="mt-6">
+      <%= link_to 'Back to Assignments', students_assignments_path, class: "inline-flex items-center px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600" %>
+    </div>
+  </div>
+</div>
+

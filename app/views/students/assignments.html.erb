@@ -1,0 +1,37 @@
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-2xl font-bold text-slate-800 mb-6">Your Assignments</h1>
+
+  <% @assignments_by_course.each do |course, assignments| %>
+    <div class="mb-8">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-xl font-semibold text-slate-700"><i class="fa-solid fa-book-open text-orange-500 mr-2"></i><%= course.name %></h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% assignments.each do |assignment| %>
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div class="flex items-start justify-between">
+              <div>
+                <h3 class="text-lg font-semibold text-slate-800"><%= assignment.title %></h3>
+                <p class="text-slate-500 text-sm">Due: <%= assignment.end_date_time&.strftime('%b %d, %Y %H:%M') || '—' %></p>
+              </div>
+            </div>
+            <div class="mt-4 flex items-center justify-between">
+              <% submission = PeerMarkSubmission.find_by(assignment: assignment, giver: current_user) %>
+              <% if submission&.submitted? %>
+                <%= link_to student_peer_mark_summary_path(course, assignment), class: "inline-flex items-center px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600" do %>
+                  <i class="fa-solid fa-check mr-2"></i> View Submitted Marks
+                <% end %>
+              <% else %>
+                <%= link_to student_peer_marking_path(course, assignment), class: "inline-flex items-center px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600" do %>
+                  <i class="fa-solid fa-pen mr-2"></i> Start Group Marking
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
+

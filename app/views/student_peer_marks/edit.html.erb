@@ -18,7 +18,7 @@
     <% end %>
 
     <%= form_with url: update_student_peer_marking_path(@course, @assignment), method: :patch, local: true do %>
-      <div class="space-y-4">
+      <div class="space-y-4" id="peer-marks-list">
         <% @group_members.each do |member| %>
           <% mark = @peer_marks[member.id] %>
           <div class="flex items-center justify-between">
@@ -37,7 +37,7 @@
       </div>
 
       <div class="mt-6 flex items-center justify-between">
-        <div class="text-slate-600 text-sm">Total must equal <span class="font-semibold">100</span>.</div>
+        <div class="text-slate-600 text-sm">Total: <span id="peer-marks-total" class="font-semibold">0</span> / <span class="font-semibold">100</span></div>
         <div class="space-x-3">
           <% unless @submission.submitted? %>
             <button type="submit" class="inline-flex items-center px-4 py-2 border border-orange-500 text-orange-600 rounded-lg hover:bg-orange-50"><i class="fa-solid fa-save mr-2"></i> Save Draft</button>
@@ -50,4 +50,29 @@
     <% end %>
   </div>
 </div>
+
+<script>
+  (function() {
+    const container = document.getElementById('peer-marks-list');
+    if (!container) return;
+    const inputs = container.querySelectorAll('input[type="number"]');
+    const totalEl = document.getElementById('peer-marks-total');
+
+    function updateTotal() {
+      let sum = 0;
+      inputs.forEach((i) => {
+        const val = parseInt(i.value, 10);
+        if (!isNaN(val)) sum += val;
+      });
+      if (totalEl) totalEl.textContent = sum;
+    }
+
+    inputs.forEach((i) => {
+      i.addEventListener('input', updateTotal);
+      i.addEventListener('change', updateTotal);
+    });
+
+    updateTotal();
+  })();
+</script>
 

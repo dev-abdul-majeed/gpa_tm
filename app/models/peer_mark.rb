@@ -15,7 +15,7 @@ class PeerMark < ApplicationRecord
     validate :receiver_belongs_to_group
     validate :locked_after_submission
 
-    before_destroy :prevent_destroy_if_submitted
+    # before_destroy :prevent_destroy_if_submitted
 
     scope :for_assignment, ->(assignment) { where(assignment: assignment) }
     scope :for_giver, ->(giver) { where(giver: giver) }

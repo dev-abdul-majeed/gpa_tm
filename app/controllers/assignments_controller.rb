@@ -20,6 +20,21 @@ class AssignmentsController < ApplicationController
   end
 
   def show
+    @course = @assignment.course
+    @groups = @course.groups.includes(:students)
+    
+    # Optional: Get some statistics for each group
+    @group_stats = {}
+    @groups.each do |group|
+      @group_stats[group.id] = {
+        student_count: group.students.count,
+        peer_marks_count: PeerMark.where(group: ).count,
+        submissions_count: PeerMarkSubmission
+                            .where(assignment: @assignment, giver_id: group.students.select(:id))
+                            .where(submitted: true)
+                            .count
+      }
+    end
   end
 
   def success
@@ -54,6 +69,10 @@ class AssignmentsController < ApplicationController
   def destroy
     @assignment.destroy
     redirect_to assignments_path, notice: 'Assignment was successfully deleted.'
+  end
+
+  def view_marks
+    @assignment = Assignment.find_by(id: params[:assignment_id])
   end
 
   # Wizard methods for multi-step assignment creation

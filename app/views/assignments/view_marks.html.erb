@@ -1,1 +1,100 @@
-<h1><%= @assignment.title %></h1>
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header Section -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
+      <div class="flex items-center space-x-3 mb-2">
+        <div class="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
+          <i class="fas fa-clipboard-list text-white text-lg"></i>
+        </div>
+        <h1 class="text-2xl font-bold text-slate-800"><%= @assignment.title %></h1>
+      </div>
+      <p class="text-slate-600">Peer evaluation matrix showing scores between students</p>
+    </div>
+
+    <!-- Table Section -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="min-w-full">
+          <thead>
+            <tr class="bg-gradient-to-r from-emerald-50 to-teal-50 border-b border-slate-200">
+              <th class="px-6 py-4 text-left">
+                <div class="flex items-center space-x-2">
+                  <i class="fas fa-users text-emerald-600"></i>
+                  <span class="font-semibold text-slate-700">Giver ↓ / Receiver →</span>
+                </div>
+              </th>
+              <% @students.each do |receiver| %>
+                <th class="px-4 py-4 text-center border-l border-slate-200">
+                  <div class="flex flex-col items-center space-y-1">
+                    <div class="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center">
+                      <i class="fas fa-user text-white text-xs"></i>
+                    </div>
+                    <span class="font-medium text-slate-700 text-sm"><%= receiver.full_name %></span>
+                  </div>
+                </th>
+              <% end %>
+            </tr>
+          </thead>
+          <tbody>
+            <% @students.each_with_index do |giver, index| %>
+              <tr class="<%= index.even? ? 'bg-slate-50/50' : 'bg-white' %> hover:bg-emerald-50/30 transition-colors duration-200">
+                <td class="px-6 py-4 border-r border-slate-200">
+                  <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center">
+                      <i class="fas fa-user text-white text-xs"></i>
+                    </div>
+                    <span class="font-medium text-slate-700"><%= giver.full_name %></span>
+                  </div>
+                </td>
+                <% @students.each do |receiver| %>
+                  <td class="px-4 py-4 text-center border-l border-slate-200">
+                    <% if giver == receiver %>
+                      <div class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-200">
+                        <span class="text-slate-400 font-medium">–</span>
+                      </div>
+                    <% else %>
+                      <% mark = @marks_by_pair[[giver.id, receiver.id]] %>
+                      <% if mark.present? %>
+                        <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-emerald-100 to-teal-100 border-2 border-emerald-200">
+                          <span class="font-bold text-emerald-700 text-lg"><%= mark.score %></span>
+                        </div>
+                      <% else %>
+                        <div class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 border border-slate-200">
+                          <span class="text-slate-400 text-sm">N/A</span>
+                        </div>
+                      <% end %>
+                    <% end %>
+                  </td>
+                <% end %>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Legend Section -->
+    <div class="mt-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+      <div class="flex items-center justify-center space-x-8 text-sm text-slate-600">
+        <div class="flex items-center space-x-2">
+          <div class="w-6 h-6 rounded-full bg-gradient-to-r from-emerald-100 to-teal-100 border-2 border-emerald-200 flex items-center justify-center">
+            <span class="text-emerald-700 font-bold text-xs">5</span>
+          </div>
+          <span>Score Given</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <div class="w-6 h-6 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center">
+            <span class="text-slate-400 text-xs">N/A</span>
+          </div>
+          <span>No Score</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center">
+            <span class="text-slate-400 font-medium text-xs">–</span>
+          </div>
+          <span>Self Evaluation</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

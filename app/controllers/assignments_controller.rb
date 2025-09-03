@@ -1,6 +1,6 @@
 class AssignmentsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_course, only: [:new, :create, :show, :edit, :update, :destroy, :success]
+  before_action :set_course, only: [:new, :create, :show, :edit, :update, :destroy, :success, :view_marks]
   before_action :set_assignment, only: [:show, :edit, :update, :destroy, :success]
   before_action :ensure_teacher_or_admin
 
@@ -73,6 +73,22 @@ class AssignmentsController < ApplicationController
 
   def view_marks
     @assignment = Assignment.find_by(id: params[:assignment_id])
+    @group = Group.find(params[:id])
+
+    # Only consider students who submitted
+    submitted_givers = PeerMarkSubmission
+      .where(assignment: @assignment, submitted: true)
+      .pluck(:giver_id)
+
+    @students = @group.students
+
+    # Preload all peer marks (only from submitted givers)
+    @peer_marks = PeerMark
+      .where(assignment: @assignment, group: @group, giver_id: submitted_givers)
+      .to_a
+
+    # Build lookup hash for fast access
+    @marks_by_pair = @peer_marks.index_by { |m| [m.giver_id, m.receiver_id] }
   end
 
   # Wizard methods for multi-step assignment creation

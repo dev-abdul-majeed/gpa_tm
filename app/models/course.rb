@@ -4,7 +4,7 @@ class Course < ApplicationRecord
   belongs_to :teacher, class_name: 'Teacher', foreign_key: 'teacher_id'
   
   has_many :groups, dependent: :destroy
-  has_many :group_memberships, through: :groups
+  has_many :group_memberships, through: :groups, dependent: :destroy
   has_many :assignments, dependent: :destroy
   
   has_and_belongs_to_many :students, class_name: 'Student', join_table: :course_students

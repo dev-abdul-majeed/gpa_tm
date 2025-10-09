@@ -22,7 +22,8 @@ class StudentPeerMarksController < ApplicationController
     end
   rescue ActiveRecord::RecordInvalid => e
     @peer_marks = load_or_build_marks
-    redirect_to student_peer_marking_path(@course, @assignment), alert: e.record.errors.full_messages.to_sentence
+    flash.now[:alert] = e.record.errors.full_messages.to_sentence
+    render :edit, status: :unprocessable_entity
   end
 
   def submit

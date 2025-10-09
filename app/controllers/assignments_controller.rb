@@ -43,6 +43,7 @@ class AssignmentsController < ApplicationController
   def new
     @assignment = @course.assignments.build
     @assignment.assignment_type = params[:type] if params[:type].present?
+    @step = params[:type] == 'webavalia' ? 5 : 1
   end
 
   def create

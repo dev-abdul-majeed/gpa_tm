@@ -7,7 +7,10 @@
           <i class="fas fa-clipboard-list text-white text-lg"></i>
         </div>
         <h1 class="text-2xl font-bold text-slate-800"><%= @assignment.title %></h1>
+
       </div>
+      <h4 class="text-xl font-bold text-slate-800"><%= @assignment.assignment_type.titleize %></h1>
+
       <p class="text-slate-600">Peer evaluation matrix showing scores between students</p>
     </div>
 
@@ -48,7 +51,7 @@
                 </td>
                 <% @students.each do |receiver| %>
                   <td class="px-4 py-4 text-center border-l border-slate-200">
-                    <% if giver == receiver %>
+                    <% if giver == receiver && @assignment.assignment_type == 'qass' %>
                       <div class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-200">
                         <span class="text-slate-400 font-medium">–</span>
                       </div>

@@ -30,7 +30,7 @@
               <% end %>
             </div>
             <div>
-              <input type="number" name="peer_marks[<%= member.id %>][score]" value="<%= mark&.score || 0 %>" min="0" max="100" class="w-24 border border-slate-300 rounded-lg px-3 py-2 text-right" <%= 'disabled' if @submission.submitted? %>>
+              <input type="number" name="peer_marks[<%= member.id %>][score]" value="<%= mark&.score || 0 %>" min="0" max="100" step=<%= @marking_step %> class="w-24 border border-slate-300 rounded-lg px-3 py-2 text-right" <%= 'disabled' if @submission.submitted? %>>
             </div>
           </div>
         <% end %>

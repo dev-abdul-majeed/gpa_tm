@@ -7,6 +7,7 @@ class StudentPeerMarksController < ApplicationController
 
   def edit
     @peer_marks = load_or_build_marks
+    @marking_step = @assignment.rating_scale
   end
 
   def update
@@ -15,15 +16,15 @@ class StudentPeerMarksController < ApplicationController
     end
     ActiveRecord::Base.transaction { save_marks_from_params! }
     if params[:finalize].present?
-      finalize_submission!
-      redirect_to student_peer_mark_summary_path(@course, @assignment), notice: 'Peer marks submitted successfully.'
+      if finalize_submission!
+        redirect_to student_peer_mark_summary_path(@course, @assignment), notice: 'Peer marks submitted successfully.'
+      end
     else
       redirect_to student_peer_marking_path(@course, @assignment), notice: 'Draft saved successfully.'
     end
   rescue ActiveRecord::RecordInvalid => e
     @peer_marks = load_or_build_marks
-    flash.now[:alert] = e.record.errors.full_messages.to_sentence
-    render :edit, status: :unprocessable_entity
+    redirect_to student_peer_marking_path(@course, @assignment), alert: e.record.errors.full_messages.to_sentence
   end
 
   def submit

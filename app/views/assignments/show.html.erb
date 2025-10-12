@@ -119,9 +119,15 @@
 
                 <!-- View Marks Button -->
                 <%= link_to assignment_view_marks_path(@assignment, group, params: { course_id: @course.id }),
-                            class: 'w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center space-x-2' do %>
+                            class: 'w-40 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center space-x-2' do %>
                   <i class="fas fa-chart-line"></i>
                   <span>View Evaluation Matrix</span>
+                <% end %>
+
+                <%= link_to assignment_view_marks_path(@assignment, group, params: { course_id: @course.id }),
+                            class: 'w-40 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center space-x-2' do %>
+                  <i class="fas fa-chart-line"></i>
+                  <span>Generate Sample Peer Marks</span>
                 <% end %>
               </div>
             </div>

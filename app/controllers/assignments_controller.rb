@@ -1,6 +1,6 @@
 class AssignmentsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_course, only: [:new, :create, :show, :edit, :update, :destroy, :success, :view_marks]
+  before_action :set_course, only: [:new, :create, :show, :edit, :update, :destroy, :success, :view_marks, :generate_sample_peer_marks]
   before_action :set_assignment, only: [:show, :edit, :update, :destroy, :success]
   before_action :ensure_teacher_or_admin
 
@@ -92,6 +92,59 @@ class AssignmentsController < ApplicationController
     @marks_by_pair = @peer_marks.index_by { |m| [m.giver_id, m.receiver_id] }
   end
 
+  def generate_sample_peer_marks
+    @assignment = Assignment.find(params[:id])
+    
+    # Only allow in development mode
+    unless Rails.env.development?
+      redirect_to course_assignment_path(@course, @assignment), alert: 'This feature is only available in development mode.'
+      return
+    end
+
+    generated_count = 0
+    
+    PeerMark.where(assignment: @assignment).destroy_all
+    PeerMarkSubmission.where(assignment: @assignment).destroy_all
+    
+    @assignment.course.groups.each do |group|
+      # Find students who haven't submitted marks yet
+      
+      givers = group.students
+      
+      givers.each do |giver|
+        # Generate marks for all other students in the group
+        receivers = group.students
+        next if receivers.empty?
+        
+        # Generate random marks that sum to 100 and follow rating scale
+        marks = generate_marks_for_students(receivers.count, @assignment.rating_scale)
+        
+        # Create peer marks
+        receivers.each_with_index do |receiver, index|
+          puts "==========#{giver.id}:  marks to #{receiver.id}========"
+          PeerMark.create!(
+            assignment: @assignment,
+            group: group,
+            giver: giver,
+            receiver: receiver,
+            score: marks[index]
+          )
+        end
+        
+        # Create or update submission record
+        pms = PeerMarkSubmission.find_or_initialize_by(assignment: @assignment, giver: giver)
+        pms.submitted = true
+        pms.submitted_at ||= Time.current
+        pms.save!
+        
+        generated_count += 1
+      end
+    end
+    
+    redirect_to course_assignment_path(@course, @assignment), 
+                notice: "Generated sample peer marks for #{generated_count} students."
+  end
+
   # Wizard methods for multi-step assignment creation
   def new_wizard
     @courses = current_user.courses.order(:name)
@@ -136,5 +189,32 @@ class AssignmentsController < ApplicationController
     unless current_user.teacher? || current_user.admin? || current_user.super_admin?
       redirect_to root_path, alert: 'You are not authorized to manage assignments.'
     end
+  end
+
+  def generate_marks_for_students(student_count, rating_scale)
+    return [] if student_count == 0
+    
+    # Generate random marks that sum to 100 and follow rating scale
+    marks = []
+    remaining_points = 100
+    
+    (student_count - 1).times do
+      # Calculate max possible points for this student
+      max_points = remaining_points - (student_count - marks.length - 1) * rating_scale
+      max_points = [max_points, remaining_points].min
+      
+      # Generate random mark within constraints
+      min_mark = [rating_scale, max_points].min
+      mark = (rand(min_mark..max_points) / rating_scale).floor * rating_scale
+      mark = [mark, remaining_points].min
+      
+      marks << mark
+      remaining_points -= mark
+    end
+    
+    # Last student gets remaining points
+    marks << remaining_points
+    
+    marks.shuffle
   end
 end

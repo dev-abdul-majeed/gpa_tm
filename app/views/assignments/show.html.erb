@@ -23,9 +23,21 @@
         </div>
         
         <div class="flex space-x-3">
+          <% if Rails.env.development? %>
+            <%= link_to generate_sample_peer_marks_course_assignment_path(@course, @assignment), 
+                        method: :post,
+                        data: { 
+                          turbo_method: :post, 
+                          turbo_confirm: 'Are you sure you want to generate sample peer marks for all unsubmitted students? This action cannot be undone.' 
+                        },
+                        class: "inline-flex items-center px-4 py-2 bg-red-500 hover:bg-orange-600 text-white font-medium rounded-lg transition duration-200" do %>
+              <i class="fas fa-magic mr-2"></i>
+              Generate Sample Peer Marks
+            <% end %>
+          <% end %>
           <%= link_to assignments_path(@course), class: 'inline-flex items-center px-4 py-2 bg-slate-500 hover:bg-slate-600 text-white font-medium rounded-lg transition duration-200' do %>
             <i class="fas fa-arrow-left mr-2"></i>
-            Back to Assignments
+            Back to Assignmentsssss
           <% end %>
         </div>
       </div>
@@ -119,15 +131,9 @@
 
                 <!-- View Marks Button -->
                 <%= link_to assignment_view_marks_path(@assignment, group, params: { course_id: @course.id }),
-                            class: 'w-40 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center space-x-2' do %>
+                            class: 'w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center space-x-2' do %>
                   <i class="fas fa-chart-line"></i>
                   <span>View Evaluation Matrix</span>
-                <% end %>
-
-                <%= link_to assignment_view_marks_path(@assignment, group, params: { course_id: @course.id }),
-                            class: 'w-40 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center space-x-2' do %>
-                  <i class="fas fa-chart-line"></i>
-                  <span>Generate Sample Peer Marks</span>
                 <% end %>
               </div>
             </div>

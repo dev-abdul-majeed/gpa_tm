@@ -75,6 +75,7 @@ Rails.application.routes.draw do
     resources :assignments do
       member do
         get :success
+        post :generate_sample_peer_marks
       end
     end
   end

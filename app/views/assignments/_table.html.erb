@@ -6,33 +6,33 @@
             <th class="px-6 py-4 text-left">
             <div class="flex items-center space-x-2">
                 <i class="fas fa-users text-emerald-600"></i>
-                <span class="font-semibold text-slate-700">Giver ↓ / Receiver →</span>
+                <span class="font-semibold text-slate-700">Receiver ↓ / Giver →</span>
             </div>
             </th>
-            <% @students.each do |receiver| %>
+            <% @students.each do |giver| %>
             <th class="px-4 py-4 text-center border-l border-slate-200">
                 <div class="flex flex-col items-center space-y-1">
                 <div class="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center">
                     <i class="fas fa-user text-white text-xs"></i>
                 </div>
-                <span class="font-medium text-slate-700 text-sm"><%= receiver.full_name %></span>
+                <span class="font-medium text-slate-700 text-sm"><%= giver.full_name %></span>
                 </div>
             </th>
             <% end %>
         </tr>
         </thead>
         <tbody>
-        <% @students.each_with_index do |giver, index| %>
+        <% @students.each_with_index do |receiver, index| %>
             <tr class="<%= index.even? ? 'bg-slate-50/50' : 'bg-white' %> hover:bg-emerald-50/30 transition-colors duration-200">
             <td class="px-6 py-4 border-r border-slate-200">
                 <div class="flex items-center space-x-3">
                 <div class="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center">
                     <i class="fas fa-user text-white text-xs"></i>
                 </div>
-                <span class="font-medium text-slate-700"><%= giver.full_name %></span>
+                <span class="font-medium text-slate-700"><%= receiver.full_name %></span>
                 </div>
             </td>
-            <% @students.each do |receiver| %>
+            <% @students.each do |giver| %>
                 <td class="px-4 py-4 text-center border-l border-slate-200">
                 <% if giver == receiver && @assignment.assignment_type == 'qass' %>
                     <div class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-200">

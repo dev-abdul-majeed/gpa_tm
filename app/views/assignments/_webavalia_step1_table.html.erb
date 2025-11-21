@@ -1,7 +1,7 @@
-<% w = @assignment.self_rating_weight/100 %>
+<% w = @assignment.self_rating_weight / 100.0 %>
 <% n = @students.count %>
 
-<%# Calculate row sums for each receiver %>
+<%# Calculate row sums for each receiver (sum of marks received) %>
 <% row_sums = {} %>
 <% @students.each do |receiver| %>
   <% sum = 0 %>
@@ -10,7 +10,7 @@
     <% if giver == receiver && mark.present? %>
       <% sum += mark.score * w %>
     <% elsif mark.present? %>
-      <% sum += (1-(w/100))/(n-1) %>
+      <% sum += mark.score * ((1 - w) / (n - 1)) %>
     <% end %>
   <% end %>
   <% row_sums[receiver.id] = sum %>
@@ -44,16 +44,16 @@
             <th class="px-6 py-4 text-left">
             <div class="flex items-center space-x-2">
                 <i class="fas fa-users text-emerald-600"></i>
-                <span class="font-semibold text-slate-700">Giver ↓ / Receiver →</span>
+                <span class="font-semibold text-slate-700">Receiver ↓ / Giver →</span>
             </div>
             </th>
-            <% @students.each do |receiver| %>
+            <% @students.each do |giver| %>
             <th class="px-4 py-4 text-center border-l border-slate-200">
                 <div class="flex flex-col items-center space-y-1">
                 <div class="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center">
                     <i class="fas fa-user text-white text-xs"></i>
                 </div>
-                <span class="font-medium text-slate-700 text-sm"><%= receiver.full_name %></span>
+                <span class="font-medium text-slate-700 text-sm"><%= giver.full_name %></span>
                 </div>
             </th>
             <% end %>
@@ -92,27 +92,27 @@
         </tr>
         </thead>
         <tbody>
-        <% @students.each_with_index do |giver, index| %>
+        <% @students.each_with_index do |receiver, index| %>
             <tr class="<%= index.even? ? 'bg-slate-50/50' : 'bg-white' %> hover:bg-emerald-50/30 transition-colors duration-200">
             <td class="px-6 py-4 border-r border-slate-200">
                 <div class="flex items-center space-x-3">
                 <div class="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center">
                     <i class="fas fa-user text-white text-xs"></i>
                 </div>
-                <span class="font-medium text-slate-700"><%= giver.full_name %></span>
+                <span class="font-medium text-slate-700"><%= receiver.full_name %></span>
                 </div>
             </td>
-            <% @students.each do |receiver| %>
+            <% @students.each do |giver| %>
                 <% mark = @marks_by_pair[[giver.id, receiver.id]] %>
                 <td class="px-4 py-4 text-center border-l border-slate-200">
                 <% if giver == receiver && mark.present? %>
                     <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-emerald-100 to-teal-100 border-2 border-emerald-200">
-                    <span class="font-bold text-emerald-700 text-lg"><%= sprintf('%.2f', mark.score*w) %></span>
+                    <span class="font-bold text-emerald-700 text-lg"><%= sprintf('%.2f', mark.score * w) %></span>
                     </div>
                 <% else %>
                     <% if mark.present? %>
                     <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-emerald-100 to-teal-100 border-2 border-emerald-200">
-                        <span class="font-bold text-emerald-700 text-lg"><%= sprintf('%.2f', (1-(w/100))/(n-1)) %></span>
+                        <span class="font-bold text-emerald-700 text-lg"><%= sprintf('%.2f', mark.score * ((1 - w) / (n - 1))) %></span>
                     </div>
                     <% else %>
                     <div class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 border border-slate-200">
@@ -126,28 +126,28 @@
             <%# Row_Sum column %>
             <td class="px-4 py-4 text-center border-l border-slate-200 bg-gradient-to-r from-blue-50 to-indigo-50">
                 <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 border-2 border-blue-200">
-                    <span class="font-bold text-blue-700 text-lg"><%= sprintf('%.2f', row_sums[giver.id]) %></span>
+                    <span class="font-bold text-blue-700 text-lg"><%= sprintf('%.2f', row_sums[receiver.id]) %></span>
                 </div>
             </td>
             
             <%# DivideMax column %>
             <td class="px-4 py-4 text-center border-l border-slate-200 bg-gradient-to-r from-purple-50 to-pink-50">
                 <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-purple-100 to-pink-100 border-2 border-purple-200">
-                    <span class="font-bold text-purple-700 text-lg"><%= sprintf('%.2f', max_sum > 0 ? row_sums[giver.id] / max_sum : 0) %></span>
+                    <span class="font-bold text-purple-700 text-lg"><%= sprintf('%.2f', max_sum > 0 ? row_sums[receiver.id] / max_sum : 0) %></span>
                 </div>
             </td>
             
             <%# Grade column %>
             <td class="px-4 py-4 text-center border-l border-slate-200 bg-gradient-to-r from-orange-50 to-red-50">
                 <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-orange-100 to-red-100 border-2 border-orange-200">
-                    <span class="font-bold text-orange-700 text-lg grade-value" data-divide-max="<%= max_sum > 0 ? row_sums[giver.id] / max_sum : 0 %>"><%= sprintf('%.2f', max_sum > 0 ? (row_sums[giver.id] / max_sum) * 18 : 0) %></span>
+                    <span class="font-bold text-orange-700 text-lg grade-value" data-divide-max="<%= max_sum > 0 ? row_sums[receiver.id] / max_sum : 0 %>"><%= sprintf('%.2f', max_sum > 0 ? (row_sums[receiver.id] / max_sum) * 18 : 0) %></span>
                 </div>
             </td>
             
             <%# Final Grade column %>
             <td class="px-4 py-4 text-center border-l border-slate-200 bg-gradient-to-r from-green-50 to-emerald-50">
                 <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-green-100 to-emerald-100 border-2 border-green-200">
-                    <span class="font-bold text-green-700 text-lg final-grade-value" data-divide-max="<%= max_sum > 0 ? row_sums[giver.id] / max_sum : 0 %>"><%= max_sum > 0 ? ((row_sums[giver.id] / max_sum) * 18).round : 0 %></span>
+                    <span class="font-bold text-green-700 text-lg final-grade-value" data-divide-max="<%= max_sum > 0 ? row_sums[receiver.id] / max_sum : 0 %>"><%= max_sum > 0 ? ((row_sums[receiver.id] / max_sum) * 18).round : 0 %></span>
                 </div>
             </td>
             </tr>

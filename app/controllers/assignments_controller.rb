@@ -57,6 +57,7 @@ class AssignmentsController < ApplicationController
   end
 
   def edit
+    @step = @assignment.assignment_type == 'webavalia' ? 5 : 1
   end
 
   def update

@@ -41,6 +41,8 @@ end
 puts "✅ Finished seeding schools!"
 puts "Seeding Users...."
 
+User.destroy_all
+
 begin
   User.create([
     {email: 'student.1@gmail.com', first_name: 'student', last_name: '.1', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Student', school_id: 1},

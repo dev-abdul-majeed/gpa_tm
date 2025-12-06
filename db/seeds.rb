@@ -41,22 +41,23 @@ end
 puts "✅ Finished seeding schools!"
 puts "Seeding Users...."
 
-begin
-  User.create([
-    {email: 'student.1@gmail.com', first_name: 'student', last_name: '.1', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Student', school_id: 1},
-    {email: 'student.2@gmail.com', first_name: 'student', last_name: '.2', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Student', school_id: 1},
-    {email: 'student.3@gmail.com', first_name: 'student', last_name: '.3', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Student', school_id: 1},
-    {email: 'student.4@gmail.com', first_name: 'student', last_name: '.4', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Student', school_id: 1},
-    {email: 'student.5@gmail.com', first_name: 'student', last_name: '.5', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Student', school_id: 1},
-    {email: 'teacher.1@gmail.com', first_name: 'teacher', last_name: '.1', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Teacher', school_id: 1},
-    {email: 'teacher.2@gmail.com', first_name: 'teacher', last_name: '.3', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Teacher', school_id: 1},
-    {email: 'teacher.3@gmail.com', first_name: 'teacher', last_name: '.4', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Teacher', school_id: 1},
-    {email: 'teacher.4@gmail.com', first_name: 'teacher', last_name: '.5', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Teacher', school_id: 1},
-    {email: 'super.admin@gmail.com', first_name: 'Super', last_name: 'Admin', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'SuperAdmin', school_id: 1},
-    {email: 'school.admin@gmail.com', first_name: 'School', last_name: 'Admin', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Admin', school_id: 1},
-  ])
-rescue => exception
-  puts "FAILED CREATING SAME USERS again"
-end
+# begin
+#   User.create([
+#     {email: 'student.1@gmail.com', first_name: 'student', last_name: '.1', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Student', school_id: 1},
+#     {email: 'student.2@gmail.com', first_name: 'student', last_name: '.2', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Student', school_id: 1},
+#     {email: 'student.3@gmail.com', first_name: 'student', last_name: '.3', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Student', school_id: 1},
+#     {email: 'student.4@gmail.com', first_name: 'student', last_name: '.4', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Student', school_id: 1},
+#     {email: 'student.5@gmail.com', first_name: 'student', last_name: '.5', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Student', school_id: 1},
+#     {email: 'teacher.1@gmail.com', first_name: 'teacher', last_name: '.1', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Teacher', school_id: 1},
+#     {email: 'teacher.2@gmail.com', first_name: 'teacher', last_name: '.3', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Teacher', school_id: 1},
+#     {email: 'teacher.3@gmail.com', first_name: 'teacher', last_name: '.4', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Teacher', school_id: 1},
+#     {email: 'teacher.4@gmail.com', first_name: 'teacher', last_name: '.5', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Teacher', school_id: 1},
+#     {email: 'super.admin@gmail.com', first_name: 'Super', last_name: 'Admin', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'SuperAdmin', school_id: 1},
+#     {email: 'school.admin@gmail.com', first_name: 'School', last_name: 'Admin', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Admin', school_id: 1},
+#   ])
+# rescue => exception
+#   puts "FAILED CREATING SAME USERS again"
+# end
+User.destroy_all
 
 puts "✅ Finished seeding users"

@@ -7,3 +7,15 @@ class School < ApplicationRecord
   validates :location, presence: true, length: { maximum: 150 }
   validates :domain, presence: true, length: { maximum: 100 }
 end
+
+# == Schema Information
+#
+# Table name: schools
+#
+#  id         :integer          not null, primary key
+#  name       :string
+#  location   :string
+#  domain     :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#

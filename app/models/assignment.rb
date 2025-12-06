@@ -36,3 +36,28 @@ class Assignment < ApplicationRecord
     self.rating_model ||= 'B'
   end
 end
+
+# == Schema Information
+#
+# Table name: assignments
+#
+#  id                 :integer          not null, primary key
+#  title              :string(50)       not null
+#  assignment_type    :string           not null
+#  rating_scale       :integer          default("0"), not null
+#  rating_model       :string           default("B")
+#  calibration        :boolean          default("false")
+#  start_date_time    :datetime
+#  end_date_time      :datetime
+#  self_rating_weight :decimal(5, 2)    default("0.0")
+#  course_id          :integer          not null
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#
+# Indexes
+#
+#  index_assignments_on_assignment_type  (assignment_type)
+#  index_assignments_on_calibration      (calibration)
+#  index_assignments_on_course_id        (course_id)
+#  index_assignments_on_rating_scale     (rating_scale)
+#

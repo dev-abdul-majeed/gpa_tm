@@ -47,7 +47,7 @@ begin
     {email: 'student.2@gmail.com', first_name: 'student', last_name: '.2', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Student', school_id: 1},
     {email: 'student.3@gmail.com', first_name: 'student', last_name: '.3', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Student', school_id: 1},
     {email: 'student.4@gmail.com', first_name: 'student', last_name: '.4', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Student', school_id: 1},
-    {email: 'student.4@gmail.com', first_name: 'student', last_name: '.4', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Student', school_id: 1},
+    {email: 'student.5@gmail.com', first_name: 'student', last_name: '.5', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Student', school_id: 1},
     {email: 'teacher.1@gmail.com', first_name: 'teacher', last_name: '.1', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Teacher', school_id: 1},
     {email: 'teacher.2@gmail.com', first_name: 'teacher', last_name: '.3', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Teacher', school_id: 1},
     {email: 'teacher.3@gmail.com', first_name: 'teacher', last_name: '.4', gender: 'Male', date_of_birth: Date.today, password: '123456789', type: 'Teacher', school_id: 1},

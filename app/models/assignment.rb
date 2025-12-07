@@ -53,6 +53,11 @@ end
 #  course_id          :integer          not null
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
+#  lower_bound        :integer          default("1")
+#  upper_bound        :integer          default("7")
+#  border_size        :float            default("0.003")
+#  polarity_factor    :float            default("1.0")
+#  group_spread       :float            default("0.5")
 #
 # Indexes
 #

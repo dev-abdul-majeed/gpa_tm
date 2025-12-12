@@ -14,6 +14,7 @@
       <p class="text-slate-600">Peer evaluation matrix showing scores between students</p>
     </div>
 
+
     <!-- Table Section -->
     <%= render 'table' %>
 
@@ -41,6 +42,36 @@
       </div>
     </div>
 
-    <%= render 'webavalia_step1_table' %>
+
+    <!-- Legend Section -->
+
+    <% if @assignment.qass? %>
+
+      <% qass_service = QassStandardizationService.new(@assignment.id, @group.id) %>
+      <% standardized_ratings = qass_service.qass_standardization %>
+      <% if standardized_ratings.present? %>
+        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <h3 class="mx-4 text-center text-emerald-700">Standardized Ratings</h3>
+        </div>
+        <%= render partial: 'qass_rating_table', locals: { marks_by_pair: standardized_ratings } %>
+      <% end %>
+      <% bordered_peer_ratings = qass_service.bordered_peer_ratings %>
+      <% if bordered_peer_ratings.present? %>
+        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <h3 class="mx-4 text-center text-emerald-700">Bordered Peer Ratings</h3>
+        </div>
+        <%= render partial: 'qass_rating_table', locals: { marks_by_pair: bordered_peer_ratings } %>
+      <% end %>
+
+      <% rescaled_peer_ratings = qass_service.rescaled_peer_ratings %>
+      <% if rescaled_peer_ratings.present? %>
+        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <h3 class="mx-4 text-center text-emerald-700">Bordered Peer Ratings</h3>
+        </div>
+        <%= render partial: 'qass_rating_table', locals: { marks_by_pair: rescaled_peer_ratings } %>
+      <% end %>
+    <% else %>
+      <%= render 'webavalia_step1_table' %>
+    <% end %>
   </div>
 </div>

@@ -25,7 +25,7 @@
     <!-- Basic Information -->
     <div class="space-y-4">
       <h3 class="text-lg font-semibold text-slate-800 border-b border-slate-200 pb-2">Basic Information</h3>
-      
+
       <div>
         <%= form.label :title, class: "block text-sm font-medium text-slate-700 mb-2" %>
         <%= form.text_field :title, class: "w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500", placeholder: "Enter assignment title" %>
@@ -42,7 +42,7 @@
 
     <div class="space-y-4">
       <h3 class="text-lg font-semibold text-slate-800 border-b border-slate-200 pb-2">Rating Configuration</h3>
-      
+
       <div>
         <%= form.label :rating_scale, "Rating Scale (0-100)", class: "block text-sm font-medium text-slate-700 mb-2" %>
         <%= form.number_field :rating_scale, min: 0, max: 100, step: @step, class: "w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500", placeholder: "Enter rating scale (0-100)" %>
@@ -55,6 +55,32 @@
         <% is_disabled = @assignment.assignment_type == 'webavalia' %>
         <%= form.select :rating_model, options_for_select([['B (50 points)', 'B'], ['C (100 points)', 'C'], ['D (0 points)', 'D']], default_rating_model), {}, { disabled: is_disabled, class: "w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 #{is_disabled ? 'bg-slate-100 text-slate-600' : ''}" } %>
       </div>
+
+      <div>
+        <%= form.label :lower_bound, class: "block text-sm font-medium text-slate-700 mb-2" %>
+        <%= form.number_field :lower_bound, min: 1, max: 7, step: 1, class: "w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" %>
+      </div>
+
+      <div>
+        <%= form.label :upper_bound, class: "block text-sm font-medium text-slate-700 mb-2" %>
+        <%= form.number_field :upper_bound, min: 1, max: 7, step: 1, class: "w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" %>
+      </div>
+
+      <div>
+        <%= form.label :border_size, class: "block text-sm font-medium text-slate-700 mb-2" %>
+        <%= form.number_field :border_size, min: 0.001, max: 0.1, step: 0.001, class: "w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" %>
+      </div>
+
+      <div>
+        <%= form.label :polarity_factor, class: "block text-sm font-medium text-slate-700 mb-2" %>
+        <%= form.number_field :polarity_factor, min: 0.001, max: 1.0, step: 0.001, class: "w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" %>
+      </div>
+
+      <div>
+        <%= form.label :group_spread, class: "block text-sm font-medium text-slate-700 mb-2" %>
+        <%= form.number_field :group_spread, min: 0.001, max: 0.9, step: 0.001, class: "w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" %>
+      </div>
+
 
       <div id="self-rating-section" class="<%= @assignment.assignment_type == 'webavalia' ? '' : 'hidden' %>">
         <%= form.label :self_rating_weight, "Self-Rating Weight (%)", class: "block text-sm font-medium text-slate-700 mb-2" %>
@@ -74,7 +100,7 @@
     <!-- Schedule -->
     <div class="space-y-4">
       <h3 class="text-lg font-semibold text-slate-800 border-b border-slate-200 pb-2">Schedule</h3>
-      
+
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <%= form.label :start_date_time, "Start Date & Time", class: "block text-sm font-medium text-slate-700 mb-2" %>
@@ -95,7 +121,7 @@
       <% else %>
         <%= link_to "← Back to Type Selection", select_assignment_type_path(course_id: @course.id), class: "text-slate-600 hover:text-slate-800 transition-colors" %>
       <% end %>
-      
+
       <div class="space-x-3">
         <%= link_to "Cancel", assignments_path, class: "px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors" %>
         <%= form.submit (@assignment.persisted? ? "Update Assignment" : "Create Assignment"), class: "px-6 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-lg hover:from-emerald-600 hover:to-teal-600 transition-colors" %>
@@ -110,7 +136,7 @@
   const selfRatingSection = document.getElementById('self-rating-section');
   const calibrationSection = document.getElementById('calibration-section');
   const ratingModel = document.getElementById('assignment_rating_model');
-  
+
   if (assignmentType === 'webavalia') {
     console.log('webavalia');
     selfRatingSection.classList.remove('hidden');

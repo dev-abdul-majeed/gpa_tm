@@ -22,7 +22,7 @@ class AssignmentsController < ApplicationController
   def show
     @course = @assignment.course
     @groups = @course.groups.includes(:students)
-    
+
     # Optional: Get some statistics for each group
     @group_stats = {}
     @groups.each do |group|
@@ -49,6 +49,7 @@ class AssignmentsController < ApplicationController
   def create
     @assignment = @course.assignments.build(assignment_params)
 
+
     if @assignment.save
       redirect_to success_course_assignment_path(@course, @assignment), notice: 'Assignment was successfully created.'
     else
@@ -74,6 +75,7 @@ class AssignmentsController < ApplicationController
   end
 
   def view_marks
+
     @assignment = Assignment.find_by(id: params[:assignment_id])
     @group = Group.find(params[:id])
 
@@ -95,7 +97,7 @@ class AssignmentsController < ApplicationController
 
   def generate_sample_peer_marks
     @assignment = Assignment.find(params[:id])
-    
+
     # Only allow in development mode
     unless Rails.env.development?
       redirect_to course_assignment_path(@course, @assignment), alert: 'This feature is only available in development mode.'
@@ -103,23 +105,23 @@ class AssignmentsController < ApplicationController
     end
 
     generated_count = 0
-    
+
     PeerMark.where(assignment: @assignment).destroy_all
     PeerMarkSubmission.where(assignment: @assignment).destroy_all
-    
+
     @assignment.course.groups.each do |group|
       # Find students who haven't submitted marks yet
-      
+
       givers = group.students
-      
+
       givers.each do |giver|
         # Generate marks for all other students in the group
         receivers = group.students
         next if receivers.empty?
-        
+
         # Generate random marks that sum to 100 and follow rating scale
         marks = generate_marks_for_students(receivers.count, @assignment.rating_scale)
-        
+
         # Create peer marks
         receivers.each_with_index do |receiver, index|
           puts "==========#{giver.id}:  marks to #{receiver.id}========"
@@ -131,18 +133,18 @@ class AssignmentsController < ApplicationController
             score: marks[index]
           )
         end
-        
+
         # Create or update submission record
         pms = PeerMarkSubmission.find_or_initialize_by(assignment: @assignment, giver: giver)
         pms.submitted = true
         pms.submitted_at ||= Time.current
         pms.save!
-        
+
         generated_count += 1
       end
     end
-    
-    redirect_to course_assignment_path(@course, @assignment), 
+
+    redirect_to course_assignment_path(@course, @assignment),
                 notice: "Generated sample peer marks for #{generated_count} students."
   end
 
@@ -175,14 +177,19 @@ class AssignmentsController < ApplicationController
 
   def assignment_params
     params.require(:assignment).permit(
-      :title, 
-      :assignment_type, 
-      :rating_scale, 
-      :rating_model, 
-      :calibration, 
-      :start_date_time, 
-      :end_date_time, 
-      :self_rating_weight
+      :title,
+      :assignment_type,
+      :rating_scale,
+      :rating_model,
+      :calibration,
+      :start_date_time,
+      :end_date_time,
+      :self_rating_weight,
+      :lower_bound,
+      :upper_bound,
+      :border_size,
+      :polarity_factor,
+      :group_spread
     )
   end
 
@@ -194,28 +201,28 @@ class AssignmentsController < ApplicationController
 
   def generate_marks_for_students(student_count, rating_scale)
     return [] if student_count == 0
-    
+
     # Generate random marks that sum to 100 and follow rating scale
     marks = []
     remaining_points = 100
-    
+
     (student_count - 1).times do
       # Calculate max possible points for this student
       max_points = remaining_points - (student_count - marks.length - 1) * rating_scale
       max_points = [max_points, remaining_points].min
-      
+
       # Generate random mark within constraints
       min_mark = [rating_scale, max_points].min
       mark = (rand(min_mark..max_points) / rating_scale).floor * rating_scale
       mark = [mark, remaining_points].min
-      
+
       marks << mark
       remaining_points -= mark
     end
-    
+
     # Last student gets remaining points
     marks << remaining_points
-    
+
     marks.shuffle
   end
 end

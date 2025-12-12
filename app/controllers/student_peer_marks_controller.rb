@@ -7,13 +7,15 @@ class StudentPeerMarksController < ApplicationController
 
   def edit
     @peer_marks = load_or_build_marks
-    @marking_step = @assignment.rating_scale
+    @marking_step = @assignment.assignment_type == 'qass' ? 0.01 : @assignment.rating_scale
   end
 
   def update
+
     if @submission.submitted?
       redirect_to student_peer_mark_summary_path(@course, @assignment), alert: 'Your marks are already submitted and locked.' and return
     end
+
     ActiveRecord::Base.transaction { save_marks_from_params! }
     if params[:finalize].present?
       if finalize_submission!
@@ -72,7 +74,7 @@ class StudentPeerMarksController < ApplicationController
 
   def save_marks_from_params!
     params.fetch(:peer_marks, {}).each do |receiver_id, score_params|
-      score = score_params[:score].to_i
+      score = @assignment.qass? ? score_params[:score].to_f : score_params[:score].to_i
       peer_mark = PeerMark.find_or_initialize_by(assignment: @assignment, group: @group, giver: current_user, receiver_id: receiver_id)
       peer_mark.score = score
       peer_mark.save!
@@ -83,4 +85,3 @@ class StudentPeerMarksController < ApplicationController
     @submission.update!(submitted: true)
   end
 end
-

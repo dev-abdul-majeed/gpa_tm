@@ -5,14 +5,12 @@ class PeerMark < ApplicationRecord
     belongs_to :giver, class_name: "Student"
     belongs_to :receiver, class_name: "Student"
 
-    validates :score, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
+    validates :score, presence: true, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
     validates :assignment, :group, :giver, :receiver, presence: true
     validates :receiver_id, uniqueness: { scope: [:assignment_id, :giver_id] }
 
     validate :group_matches_assignment_course
     validate :giver_and_receiver_in_same_group
-    validate :giver_belongs_to_group
-    validate :receiver_belongs_to_group
     validate :locked_after_submission
 
     # before_destroy :prevent_destroy_if_submitted
@@ -34,20 +32,6 @@ class PeerMark < ApplicationRecord
 
         unless group.students.exists?(giver.id) && group.students.exists?(receiver.id)
             errors.add(:base, "Giver and receiver must both be members of the group")
-        end
-    end
-
-    def giver_belongs_to_group
-        return unless giver && group
-        unless group.students.exists?(giver.id)
-            errors.add(:giver, "must belong to the group")
-        end
-    end
-
-    def receiver_belongs_to_group
-        return unless receiver && group
-        unless group.students.exists?(receiver.id)
-            errors.add(:receiver, "must belong to the group")
         end
     end
 
@@ -78,7 +62,7 @@ end
 #  group_id      :integer          not null
 #  giver_id      :integer          not null
 #  receiver_id   :integer          not null
-#  score         :integer          not null
+#  score         :float            not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #

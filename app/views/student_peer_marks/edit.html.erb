@@ -3,10 +3,10 @@
     <div class="flex items-center justify-between mb-6">
       <div>
         <h1 class="text-2xl font-bold text-slate-800">Group Marking</h1>
-        <p class="text-slate-600">Distribute exactly 100 points across your group members (including yourself).</p>
+        <p class="text-slate-600"><%= should_distribute_marks_or_not_prompt(@assignment) %></p>
       </div>
       <div class="text-sm text-slate-500">
-        <span class="font-semibold">Course:</span> <%= @course.name %> · 
+        <span class="font-semibold">Course:</span> <%= @course.name %> ·
         <span class="font-semibold">Assignment:</span> <%= @assignment.title %>
       </div>
     </div>
@@ -30,7 +30,7 @@
               <% end %>
             </div>
             <div>
-              <input type="number" name="peer_marks[<%= member.id %>][score]" value="<%= mark&.score || 0 %>" min="0" max="100" step=<%= @marking_step %> class="w-24 border border-slate-300 rounded-lg px-3 py-2 text-right" <%= 'disabled' if @submission.submitted? %>>
+              <input type="number" name="peer_marks[<%= member.id %>][score]" value="<%= default_or_saved_score(@submission,mark) %>" min="<%= peer_mark_min(@assignment) %>" max="<%=peer_mark_max(@assignment) %>" step="<%= @marking_step %>" class="w-24 border border-slate-300 rounded-lg px-3 py-2 text-right" <%= 'readonly' if disbale_peer_marks?(@submission,mark)  %>>
             </div>
           </div>
         <% end %>
@@ -75,4 +75,3 @@
     updateTotal();
   })();
 </script>
-

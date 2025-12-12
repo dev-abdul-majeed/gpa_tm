@@ -11,6 +11,7 @@
       <p class="text-slate-600">Step 3: Configure your <%= @assignment.assignment_type&.upcase %> assignment for <span class="font-semibold text-emerald-600"><%= @course.name %></span></p>
     </div>
 
+
     <!-- Assignment Form -->
     <div class="max-w-4xl mx-auto">
       <%= render 'form', assignment: @assignment, course: @course %>

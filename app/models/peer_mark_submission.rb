@@ -22,8 +22,11 @@ class PeerMarkSubmission < ApplicationRecord
     private
 
     def total_score_must_equal_100
-        total = PeerMark.where(assignment: assignment, giver: giver).sum(:score)
-        errors.add(:base, "Total score must equal 100") unless total == 100
+      # should not check equal to 100 condition for qass
+      return if assignment.assignment_type == 'qass'
+
+      total = PeerMark.where(assignment: assignment, giver: giver).sum(:score)
+      errors.add(:base, "Total score must equal 100") unless total == 100
     end
 
     def set_submitted_at_timestamp

@@ -48,8 +48,8 @@ class QassStandardizationService
           [ pair, (1 - ((1-border_size)*(1-score))).round(2) ]
         end
       elsif @assignment.rating_model == 'C'
-        [ pair, (((1-border_size)*score) + (border_size* (1-score)).round(2) ]
-      elsif @assignment.rating_model == 'C'
+        [ pair, (((1-border_size)*score)) + (border_size* (1-score)).round(2) ]
+      elsif @assignment.rating_model == 'D'
         if giver == receiver
           [pair, 0.0]
         else

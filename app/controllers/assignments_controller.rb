@@ -121,7 +121,7 @@ class AssignmentsController < ApplicationController
 
         # Generate random marks that sum to 100 and follow rating scale
         marks = generate_marks_for_students(receivers.count, @assignment.rating_scale)
-
+        puts marks
         # Create peer marks
         receivers.each_with_index do |receiver, index|
           puts "==========#{giver.id}:  marks to #{receiver.id}========"
@@ -206,22 +206,30 @@ class AssignmentsController < ApplicationController
     marks = []
     remaining_points = 100
 
-    (student_count - 1).times do
-      # Calculate max possible points for this student
-      max_points = remaining_points - (student_count - marks.length - 1) * rating_scale
-      max_points = [max_points, remaining_points].min
+    if (@assignment.assignment_type == 'webavalia')
+      (student_count - 1).times do
+        # Calculate max possible points for this student
 
-      # Generate random mark within constraints
-      min_mark = [rating_scale, max_points].min
-      mark = (rand(min_mark..max_points) / rating_scale).floor * rating_scale
-      mark = [mark, remaining_points].min
+        max_points = remaining_points - (student_count - marks.length - 1) * rating_scale
+        max_points = [max_points, remaining_points].min
 
-      marks << mark
-      remaining_points -= mark
+        # Generate random mark within constraints
+        min_mark = [rating_scale, max_points].min
+        mark = (rand(min_mark..max_points) / rating_scale).floor * rating_scale
+        mark = [mark, remaining_points].min
+
+        marks << mark
+        remaining_points -= mark
+      end
+
+      # Last student gets remaining points
+      marks << remaining_points
+    else
+      (student_count).times do
+        mark = rand(@assignment.lower_bound..@assignment.upper_bound).to_f
+        marks << mark
+      end
     end
-
-    # Last student gets remaining points
-    marks << remaining_points
 
     marks.shuffle
   end

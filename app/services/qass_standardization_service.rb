@@ -76,4 +76,20 @@ class QassStandardizationService
       end
     end
   end
+
+  def calibrated_peer_ratings
+    rs_peer_ratings = rescaled_peer_ratings
+
+    rating_model = @assignment.rating_model
+
+    return rs_peer_ratings if %W[C D].include?(rating_model)
+
+    rs_peer_ratings unless rs_peer_ratings.present?
+    rs_peer_ratings_copy = rs_peer_ratings
+    rs_peer_ratings.map do |pair, value|
+      giver, receiver = *pair
+
+      [ pair, ((value/(1-value))/(rs_peer_ratings_copy[[receiver, receiver]]/(1 - rs_peer_ratings_copy[[receiver, receiver]]))).round(2) ]
+    end.to_h
+  end
 end

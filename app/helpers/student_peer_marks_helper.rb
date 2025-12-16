@@ -5,7 +5,7 @@ module StudentPeerMarksHelper
     assignment = peer_mark.assignment
     is_qass_type = assignment.assignment_type == 'qass'
 
-    if is_qass_type && %w[B D].include?(assignment.rating_model) && peer_mark.receiver_id == current_user.id
+    if is_qass_type && %w[C D].include?(assignment.rating_model) && peer_mark.receiver_id == current_user.id
       true
     else
       false
@@ -18,8 +18,8 @@ module StudentPeerMarksHelper
     assignment = peer_mark.assignment
     is_qass_type = assignment.assignment_type == 'qass'
 
-    if is_qass_type && %w[B D].include?(assignment.rating_model) && peer_mark.receiver_id == current_user.id
-      if assignment.rating_model == 'B'
+    if is_qass_type && %w[C D].include?(assignment.rating_model) && peer_mark.receiver_id == current_user.id
+      if assignment.rating_model == 'C'
         assignment.upper_bound.to_f
       elsif assignment.rating_model == 'D'
         assignment.lower_bound.to_f

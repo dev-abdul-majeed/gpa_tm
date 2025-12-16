@@ -22,12 +22,12 @@ class QassStandardizationService
     return nil unless @peer_marks.count == (@students.count ** 2)
     return nil unless @assignment.qass?
 
-    lower_bound = @assignment.lower_bound
-    upper_bound = @assignment.upper_bound
+    lower_bound = @assignment.lower_bound.to_f
+    upper_bound = @assignment.upper_bound.to_f
 
     pair_marks_with_values =  @marks_by_pair.transform_values(&:score)
 
-    pair_marks_with_values.transform_values { |score| ((score - lower_bound)/(upper_bound - lower_bound)).to_f.round(2) }
+    pair_marks_with_values.transform_values { |score| ((score - lower_bound)/(upper_bound - lower_bound)).round(2)}
   end
 
   def bordered_peer_ratings
@@ -39,7 +39,7 @@ class QassStandardizationService
 
     values_hash.map do |pair, score|
       giver, receiver = *pair
-      border_rating = lambda {|score_value| (1 - ((1-border_size)*(1-score))).round(2) }
+      border_rating = lambda {|score_value| (1 - ((1-border_size)*(1-score))) }
 
       if @assignment.rating_model == 'C'
         if giver == receiver

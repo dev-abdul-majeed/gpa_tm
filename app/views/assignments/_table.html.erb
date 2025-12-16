@@ -34,7 +34,7 @@
             </td>
             <% @students.each do |giver| %>
                 <td class="px-4 py-4 text-center border-l border-slate-200">
-                <% if giver == receiver && @assignment.assignment_type == 'qass' %>
+                <% if giver == receiver && @assignment.assignment_type == 'qass' && @assignment.rating_model != 'B' %>
                     <div class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-200">
                     <span class="text-slate-400 font-medium">–</span>
                     </div>

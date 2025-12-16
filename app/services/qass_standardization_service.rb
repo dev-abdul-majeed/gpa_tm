@@ -41,14 +41,14 @@ class QassStandardizationService
       giver, receiver = *pair
       border_rating = lambda {|score_value| (1 - ((1-border_size)*(1-score))).round(2) }
 
-      if @assignment.rating_model == 'B'
+      if @assignment.rating_model == 'C'
         if giver == receiver
           [ pair, 1.0 ]
         else
           [ pair, (1 - ((1-border_size)*(1-score))).round(2) ]
         end
-      elsif @assignment.rating_model == 'C'
-        [ pair, (((1-border_size)*score)) + (border_size* (1-score)).round(2) ]
+      elsif @assignment.rating_model == 'B'
+        [ pair, ((((1-border_size)*score)) + (border_size* (1-score))).round(2) ]
       elsif @assignment.rating_model == 'D'
         if giver == receiver
           [pair, 0.0]
@@ -67,9 +67,9 @@ class QassStandardizationService
     rating_model = @assignment.rating_model
 
     bpratings.transform_values do |v|
-      if rating_model == 'B'
+      if rating_model == 'C'
         (v / (2- v)).round(2)
-      elsif rating_model == 'C'
+      elsif rating_model == 'B'
         (v / (1 - v)).round(2)
       elsif rating_model == 'D'
         ((1 + v) / (1 - v)).round(2)

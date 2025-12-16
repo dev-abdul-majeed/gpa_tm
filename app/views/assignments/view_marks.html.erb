@@ -70,6 +70,14 @@
         </div>
         <%= render partial: 'qass_rating_table', locals: { marks_by_pair: rescaled_peer_ratings } %>
       <% end %>
+
+      <% calibrated_peer_ratings = qass_service.calibrated_peer_ratings %>
+      <% if calibrated_peer_ratings.present? %>
+        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <h3 class="mx-4 text-center text-emerald-700">Calibrated Peer Ratings</h3>
+        </div>
+        <%= render partial: 'qass_rating_table', locals: { marks_by_pair: calibrated_peer_ratings } %>
+      <% end %>
     <% else %>
       <%= render 'webavalia_step1_table' %>
     <% end %>

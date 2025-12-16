@@ -85,11 +85,13 @@ class QassStandardizationService
     return rs_peer_ratings if %W[C D].include?(rating_model)
 
     rs_peer_ratings unless rs_peer_ratings.present?
+
+    bp_ratings = bordered_peer_ratings
     rs_peer_ratings_copy = rs_peer_ratings
     rs_peer_ratings.map do |pair, value|
       giver, receiver = *pair
 
-      [ pair, ((value/(1-value))/(rs_peer_ratings_copy[[receiver, receiver]]/(1 - rs_peer_ratings_copy[[receiver, receiver]]))).round(2) ]
+      [ pair, ((value)/(bp_ratings[[receiver, receiver]]/(1 - bp_ratings[[receiver, receiver]]))).round(2) ]
     end.to_h
   end
 
@@ -98,6 +100,7 @@ class QassStandardizationService
 
     return nil if c_peer_ratings.blank?
 
+    # return nil
     rating_model = @assignment.rating_model
 
     c_peer_ratings_copy = c_peer_ratings
@@ -106,11 +109,11 @@ class QassStandardizationService
       giver, receiver = *pair
 
       if rating_model == "B"
-        [ pair, (((value/(1-value))/(c_peer_ratings_copy[[receiver, receiver]]/(1 - c_peer_ratings_copy[[receiver, receiver]])))**weightj).round(2) ]
+        [ pair, (value ** weightj).round(2) ]
       elsif rating_model == "C"
-        [ pair, ((value / (2 - value)) ** weightj).round(2) ]
+        [ pair, (value ** weightj).round(2) ]
       elsif rating_model == "D"
-        [ pair, (((1 + value)/(1-value))**weightj) ]
+        [ pair, (value ** weightj).round(2) ]
       end
     end.to_h
   end

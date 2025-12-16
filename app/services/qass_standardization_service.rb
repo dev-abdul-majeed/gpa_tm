@@ -92,4 +92,26 @@ class QassStandardizationService
       [ pair, ((value/(1-value))/(rs_peer_ratings_copy[[receiver, receiver]]/(1 - rs_peer_ratings_copy[[receiver, receiver]]))).round(2) ]
     end.to_h
   end
+
+  def weighted_peer_ratings
+    c_peer_ratings = calibrated_peer_ratings
+
+    return nil if c_peer_ratings.blank?
+
+    rating_model = @assignment.rating_model
+
+    c_peer_ratings_copy = c_peer_ratings
+    weightj = 0.14
+    c_peer_ratings.map do |pair, value|
+      giver, receiver = *pair
+
+      if rating_model == "B"
+        [ pair, (((value/(1-value))/(c_peer_ratings_copy[[receiver, receiver]]/(1 - c_peer_ratings_copy[[receiver, receiver]])))**weightj).round(2) ]
+      elsif rating_model == "C"
+        [ pair, ((value / (2 - value)) ** weightj).round(2) ]
+      elsif rating_model == "D"
+        [ pair, (((1 + value)/(1-value))**weightj) ]
+      end
+    end.to_h
+  end
 end

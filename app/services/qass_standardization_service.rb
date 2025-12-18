@@ -27,7 +27,7 @@ class QassStandardizationService
 
     pair_marks_with_values =  @marks_by_pair.transform_values(&:score)
 
-    pair_marks_with_values.transform_values { |score| ((score - lower_bound)/(upper_bound - lower_bound)).round(2)}
+    pair_marks_with_values.transform_values { |score| ((score - lower_bound)/(upper_bound - lower_bound))}
   end
 
   def bordered_peer_ratings
@@ -45,15 +45,15 @@ class QassStandardizationService
         if giver == receiver
           [ pair, 1.0 ]
         else
-          [ pair, (1 - ((1-border_size)*(1-score))).round(2) ]
+          [ pair, (1 - ((1-border_size)*(1-score))) ]
         end
       elsif @assignment.rating_model == 'B'
-        [ pair, ((((1-border_size)*score)) + (border_size* (1-score))).round(2) ]
+        [ pair, ((((1-border_size)*score)) + (border_size* (1-score))) ]
       elsif @assignment.rating_model == 'D'
         if giver == receiver
           [pair, 0.0]
         else
-          [pair, ((1-border_size)*score).round(2)]
+          [pair, ((1-border_size)*score)]
         end
       end
     end.to_h
@@ -68,11 +68,11 @@ class QassStandardizationService
 
     bpratings.transform_values do |v|
       if rating_model == 'C'
-        (v / (2- v)).round(2)
+        (v / (2- v))
       elsif rating_model == 'B'
-        (v / (1 - v)).round(2)
+        (v / (1 - v))
       elsif rating_model == 'D'
-        ((1 + v) / (1 - v)).round(2)
+        ((1 + v) / (1 - v))
       end
     end
   end
@@ -91,7 +91,7 @@ class QassStandardizationService
     rs_peer_ratings.map do |pair, value|
       giver, receiver = *pair
 
-      [ pair, ((value)/(bp_ratings[[receiver, receiver]]/(1 - bp_ratings[[receiver, receiver]]))).round(2) ]
+      [ pair, ((value)/(bp_ratings[[receiver, receiver]]/(1 - bp_ratings[[receiver, receiver]]))) ]
     end.to_h
   end
 
@@ -104,16 +104,16 @@ class QassStandardizationService
     rating_model = @assignment.rating_model
 
     c_peer_ratings_copy = c_peer_ratings
-    weightj = 0.14
+    weightj = 0.20
     c_peer_ratings.map do |pair, value|
       giver, receiver = *pair
 
       if rating_model == "B"
-        [ pair, (value ** weightj).round(2) ]
+        [ pair, (value ** weightj) ]
       elsif rating_model == "C"
-        [ pair, (value ** weightj).round(2) ]
+        [ pair, (value ** weightj) ]
       elsif rating_model == "D"
-        [ pair, (value ** weightj).round(2) ]
+        [ pair, (value ** weightj) ]
       end
     end.to_h
   end

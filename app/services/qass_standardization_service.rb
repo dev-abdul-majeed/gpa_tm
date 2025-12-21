@@ -15,6 +15,8 @@ class QassStandardizationService
 
     # Build lookup hash for fast access
     @marks_by_pair = @peer_marks.index_by { |m| [m.giver_id, m.receiver_id] }
+
+    @weightj = 0.20
   end
 
   def qass_standardization
@@ -104,17 +106,95 @@ class QassStandardizationService
     rating_model = @assignment.rating_model
 
     c_peer_ratings_copy = c_peer_ratings
-    weightj = 0.20
+    # weightj = 0.20
     c_peer_ratings.map do |pair, value|
       giver, receiver = *pair
 
       if rating_model == "B"
-        [ pair, (value ** weightj) ]
+        [ pair, (value ** @weightj) ]
       elsif rating_model == "C"
-        [ pair, (value ** weightj) ]
+        [ pair, (value ** @weightj) ]
       elsif rating_model == "D"
-        [ pair, (value ** weightj) ]
+        [ pair, (value ** @weightj) ]
       end
     end.to_h
+  end
+
+  def student_ratings
+    w_peer_ratings = weighted_peer_ratings
+
+    return nil if w_peer_ratings.blank?
+
+    student_ids = w_peer_ratings.keys.flatten(1).uniq
+
+    # result = {}
+    student_ids.map do |receiver|
+
+      [receiver, student_ids.inject(1) {|acc, giver| acc * w_peer_ratings[[giver, receiver]] }]
+      # student_ids.each do |giver|
+      #   mul = w_peer_ratings[giver, receiver] * mul
+      # end
+
+      # result[receiver] = mul
+
+    end.to_h
+  end
+
+  def mean_student_rating
+    s_ratings = student_ratings
+
+    return nil if s_ratings.blank?
+
+    # weightj = 0.20
+
+    s_ratings.transform_values{ |v| v** @weightj }.values.inject(1){|acc, v| acc * v }
+  end
+
+  def student_contributions
+    m_student_rating = mean_student_rating
+
+    return nil if m_student_rating.blank?
+
+    polarity_factor = @assignment.polarity_factor
+    rating_model = @assignment.rating_model
+
+    s_ratings = student_ratings
+    m_s_rating = mean_student_rating
+
+    if rating_model == 'B'
+      s_ratings.transform_values{ |v| (v ** polarity_factor)/(mean_student_rating ** polarity_factor) }
+    elsif rating_model == 'C'
+      s_ratings.transform_values{ |v| ((v /mean_student_rating)**(1/polarity_factor)) }
+
+    elsif rating_model == 'D'
+      s_ratings.transform_values{ |v| ((v /mean_student_rating)**(polarity_factor)) }
+    end
+  end
+
+  def mean_student_contribution
+    s_contributions = student_contributions
+
+    return nil if s_contributions.blank?
+
+    s_contributions.transform_values{|v| v ** @weightj }
+                   .values
+                   .inject(1) {|acc, v| acc * v }
+  end
+
+
+  def c_bar
+    m_s_contribution = mean_student_contribution
+
+    return nil if m_s_contribution.blank?
+
+    rating_model = @assignment.rating_model
+
+    if rating_model == 'B'
+     (m_s_contribution - 1)/(m_s_contribution + 1)
+    elsif rating_model == 'C'
+      (3 * m_s_contribution)/4
+    elsif rating_model == 'D'
+     (m_s_contribution - 3)/(m_s_contribution + 1)
+    end
   end
 end

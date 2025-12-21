@@ -86,6 +86,38 @@
         </div>
         <%= render partial: 'qass_rating_table', locals: { marks_by_pair: weighted_peer_ratings } %>
       <% end %>
+
+      <% student_ratings = qass_service.student_ratings %>
+      <% if student_ratings.present? %>
+        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <h3 class="mx-4 text-center text-emerald-700">Student Ratings</h3>
+        </div>
+        <%= render partial: 'two_column_table', locals: { marks_by_students: student_ratings, formula: 'ri/(1-r1)' } %>
+      <% end %>
+
+      <% mean_student_rating = qass_service.mean_student_rating %>
+      <% if mean_student_rating.present? %>
+        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <h3 class="mx-4 text-center text-emerald-700">Mean Student Ratings</h3>
+        </div>
+        <%= render partial: 'one_row_table', locals: { value: mean_student_rating, formula: 'ri_bar/(1-r1_bar)' } %>
+      <% end %>
+
+      <% student_contributions = qass_service.student_contributions %>
+      <% if student_contributions.present? %>
+        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <h3 class="mx-4 text-center text-emerald-700">Student Contributions</h3>
+        </div>
+        <%= render partial: 'two_column_table', locals: { marks_by_students: student_contributions, formula: '(1 + c1 )/(1 - r1)' } %>
+      <% end %>
+
+      <% mean_student_contribution = qass_service.mean_student_contribution %>
+      <% if mean_student_contribution.present? %>
+        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <h3 class="mx-4 text-center text-emerald-700">Mean Student Ratings</h3>
+        </div>
+        <%= render partial: 'one_row_table', locals: { value: mean_student_contribution, formula: 'Multiplied Result' } %>
+      <% end %>
     <% else %>
       <%= render 'webavalia_step1_table' %>
     <% end %>

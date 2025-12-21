@@ -1,0 +1,31 @@
+<div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="overflow-x-auto">
+    <table class="min-w-full">
+        <thead>
+        <tr class="bg-gradient-to-r from-emerald-50 to-teal-50 border-b border-slate-200">
+
+            <th class="px-4 py-4 text-center border-l border-slate-200">
+                <div class="flex flex-col items-center space-y-1">
+                <div class="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center">
+                    <i class="fas fa-user text-white text-xs"></i>
+                </div>
+                <span class="font-medium text-slate-700 text-sm"><%= formula %></span>
+                </div>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+              <tr class= "bg-slate-50/50 hover:bg-emerald-50/30 transition-colors duration-200">
+                <td class="px-6 py-4 border-r border-slate-200">
+                    <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-white text-xs"></i>
+                    </div>
+                    <span class="font-medium text-slate-700"><%= value %></span>
+                    </div>
+                </td>
+              </tr>
+        </tbody>
+      </table>
+    </div>
+</div>

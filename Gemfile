@@ -66,6 +66,12 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+  gem "rspec-rails"
+  gem "factory_bot_rails"
+  gem "database_cleaner"
+  gem "cuprite"
+  gem "faker"
+  gem "shoulda-matchers"
 end
 
 gem "devise", "~> 4.9"

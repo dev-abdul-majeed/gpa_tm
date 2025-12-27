@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_19_115005) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_06_173732) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -26,6 +26,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_19_115005) do
     t.bigint "course_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "lower_bound", default: 1
+    t.integer "upper_bound", default: 7
+    t.float "border_size", default: 0.003
+    t.float "polarity_factor", default: 1.0
+    t.float "group_spread", default: 0.5
     t.index ["assignment_type"], name: "index_assignments_on_assignment_type"
     t.index ["calibration"], name: "index_assignments_on_calibration"
     t.index ["course_id"], name: "index_assignments_on_course_id"

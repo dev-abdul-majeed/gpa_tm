@@ -16,3 +16,9 @@ end
 #  course_id  :integer          not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#
+# Indexes
+#
+#  index_groups_on_course_id                 (course_id)
+#  index_groups_on_course_id_and_group_name  (course_id,group_name) UNIQUE
+#

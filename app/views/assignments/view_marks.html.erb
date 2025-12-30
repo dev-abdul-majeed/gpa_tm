@@ -118,6 +118,23 @@
         </div>
         <%= render partial: 'one_row_table', locals: { value: mean_student_contribution, formula: 'Multiplied Result' } %>
       <% end %>
+
+      <% mean_student_score = qass_service.mean_student_score %>
+      <% if mean_student_score.present? %>
+        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <h3 class="mx-4 text-center text-emerald-700">Mean Student Score</h3>
+        </div>
+        <%= render partial: 'one_row_table', locals: { value: mean_student_score, formula: 'ś = t ^ (z ^ ć)' } %>
+      <% end %>
+
+      <% student_scores = qass_service.student_scores %>
+      <% if student_scores.present? %>
+        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <h3 class="mx-4 text-center text-emerald-700">Student Scores</h3>
+        </div>
+        <%= render partial: 'two_column_table', locals: { marks_by_students: student_scores, formula: 'Student Scores' } %>
+      <% end %>
+
     <% else %>
       <%= render 'webavalia_step1_table' %>
     <% end %>

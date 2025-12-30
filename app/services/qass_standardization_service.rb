@@ -171,6 +171,22 @@ class QassStandardizationService
     end
   end
 
+  def student_contributions_ci
+    s_contributions = student_contributions
+
+    return nil if s_contributions.blank?
+
+    rating_model = @assignment.rating_model
+
+    if rating_model == 'B'
+      s_contributions.transform_values { |v| ((v - 1)/(v + 1)) }
+    elsif rating_model == 'C'
+      s.contributions.transform_values { |v| (((3 * v) - 1)/(v + 1))}
+    elsif rating_model == 'D'
+      s.contributions.transform_values { |v| ((v - 3)/(v + 1))}
+    end
+  end
+
   def mean_student_contribution
     s_contributions = student_contributions
 
@@ -196,5 +212,25 @@ class QassStandardizationService
     elsif rating_model == 'D'
      (m_s_contribution - 3)/(m_s_contribution + 1)
     end
+  end
+
+  def mean_student_score
+    t = @assignment.group_score
+    z = @assignment.group_spread
+
+    c_bar_v = c_bar
+
+    (t ** (z ** c_bar_v))
+  end
+
+  def student_scores
+    ci = student_contributions_ci
+
+    return nil if ci.blank?
+
+    t = @assignment.group_score
+    z = @assignment.group_spread
+
+    ci.transform_values {|v| (t ** (z ** v))}
   end
 end

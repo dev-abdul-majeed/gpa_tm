@@ -62,6 +62,7 @@ end
 #  border_size        :float            default("0.003")
 #  polarity_factor    :float            default("1.0")
 #  group_spread       :float            default("0.5")
+#  group_score        :float            default("0.8"), not null
 #
 # Indexes
 #

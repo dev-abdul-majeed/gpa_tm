@@ -86,7 +86,7 @@ class QassStandardizationService
 
     return rs_peer_ratings if %W[C D].include?(rating_model)
 
-    rs_peer_ratings unless rs_peer_ratings.present?
+    return nil unless rs_peer_ratings.present?
 
     bp_ratings = bordered_peer_ratings
     rs_peer_ratings_copy = rs_peer_ratings
@@ -181,9 +181,9 @@ class QassStandardizationService
     if rating_model == 'B'
       s_contributions.transform_values { |v| ((v - 1)/(v + 1)) }
     elsif rating_model == 'C'
-      s.contributions.transform_values { |v| (((3 * v) - 1)/(v + 1))}
+      s_contributions.transform_values { |v| (((3 * v) - 1)/(v + 1))}
     elsif rating_model == 'D'
-      s.contributions.transform_values { |v| ((v - 3)/(v + 1))}
+      s_contributions.transform_values { |v| ((v - 3)/(v + 1))}
     end
   end
 
@@ -219,6 +219,8 @@ class QassStandardizationService
     z = @assignment.group_spread
 
     c_bar_v = c_bar
+
+    return nil unless c_bar_v
 
     (t ** (z ** c_bar_v))
   end

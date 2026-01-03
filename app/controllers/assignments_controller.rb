@@ -125,12 +125,22 @@ class AssignmentsController < ApplicationController
         # Create peer marks
         receivers.each_with_index do |receiver, index|
           puts "==========#{giver.id}:  marks to #{receiver.id}========"
+          score = marks[index]
+
+          if @assignment.qass?
+            if @assignment.rating_model == 'C' && giver == receiver
+              score = @assignment.upper_bound.to_f
+            elsif @assignment.rating_model == 'D' && giver == receiver
+              score = @assignment.lower_bound.to_f
+            end
+          end
+
           PeerMark.create!(
             assignment: @assignment,
             group: group,
             giver: giver,
             receiver: receiver,
-            score: marks[index]
+            score: score
           )
         end
 

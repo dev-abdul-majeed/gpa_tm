@@ -1,18 +1,18 @@
 Rails.application.routes.draw do
-  
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-  
+
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
-  
+
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
-  
+
   # Defines the root path route ("/")
   # root "posts#index"
-  
+
   root to: "home#index"
 
   devise_for :users, skip: [:registrations]
@@ -50,13 +50,13 @@ Rails.application.routes.draw do
   get 'super_admin/home', to: 'super_admins#home', as: :super_admin_home
 
   resources :schools
-  
+
   # Top-level assignments index for teachers/admins
   resources :assignments, only: [:index]
 
   get  'admins/import_teachers', to: 'admins#import_teachers_form', as: :admins_import_teachers_form
   post 'admins/import_teachers', to: 'admins#import_teachers', as: :admins_import_teachers
- 
+
   get  'admins/import_students', to: 'admins#import_students_form', as: :admins_import_students_form
   post 'admins/import_students', to: 'admins#import_students', as: :admins_import_students
 
@@ -67,6 +67,10 @@ Rails.application.routes.draw do
       delete 'remove_student/:student_id', to: 'courses#remove_student', as: 'remove_student'
     end
     resources :groups do
+        collection do
+          get  :random
+          post :generate_random
+        end
         member do
           post :add_student
           delete :remove_student

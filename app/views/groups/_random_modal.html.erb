@@ -1,0 +1,52 @@
+<turbo-frame id="modal">
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+
+      <!-- Header -->
+      <h2 class="text-xl font-semibold text-slate-800 mb-1">
+        Generate Random Groups
+      </h2>
+      <p class="text-sm text-slate-500 mb-6">
+        Choose how many students should be in each group
+      </p>
+
+      <%= form_with url: generate_random_course_groups_path(course), method: :post do |f| %>
+        <!-- Input -->
+        <div class="mb-6">
+          <%= f.label :group_size,
+                "Students per group",
+                class: "block text-sm font-medium text-slate-700 mb-2" %>
+
+          <%= f.number_field :group_size,
+                min: 1,
+                required: true,
+                placeholder: "e.g. 3",
+                class: "block w-full rounded-lg border border-slate-300 px-3 py-2
+                        text-slate-800 shadow-sm
+                        focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500
+                        focus:outline-none transition" %>
+
+          <p class="mt-2 text-xs text-slate-500">
+            Last group may have fewer students if numbers don’t divide evenly.
+          </p>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex justify-end gap-3">
+          <%= link_to "Cancel",
+              "",
+              data: { turbo_frame: "modal" },
+              class: "px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 transition" %>
+
+
+          <%= f.submit "Generate",
+                class: "px-5 py-2 text-sm font-medium text-white
+                        bg-emerald-500 hover:bg-emerald-600
+                        rounded-lg shadow-sm hover:shadow
+                        transition" %>
+        </div>
+      <% end %>
+
+    </div>
+  </div>
+</turbo-frame>

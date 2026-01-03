@@ -25,7 +25,7 @@
 
   <body class="bg-slate-100 min-h-screen">
     <%= render 'shared/navbar' %>
-    
+
     <!-- Fixed Alert Container -->
     <div class="fixed top-20 right-4 z-50 space-y-3 max-w-md w-full">
       <% if notice %>
@@ -41,7 +41,7 @@
           </div>
         </div>
       <% end %>
-      
+
       <% if alert %>
         <div class="bg-gradient-to-r from-red-500 to-pink-500 text-white px-6 py-4 rounded-lg shadow-lg border-l-4 border-red-400 transform transition-all duration-300 hover:shadow-xl animate-pulse">
           <div class="flex items-center justify-between">
@@ -56,9 +56,12 @@
         </div>
       <% end %>
     </div>
-    
+
     <main class="bg-slate-100 min-h-screen pt-4">
       <%= yield %>
     </main>
+
+    <turbo-frame id="modal"></turbo-frame>
+
   </body>
 </html>

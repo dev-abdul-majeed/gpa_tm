@@ -18,7 +18,7 @@ class GroupsController < ApplicationController
 
   def create
     @group = @course.groups.build(group_params)
-    
+
     if @group.save
       # Add selected students to the group
       if params[:group][:student_ids].present?
@@ -28,7 +28,7 @@ class GroupsController < ApplicationController
           @group.add_student(student)
         end
       end
-      
+
       redirect_to course_groups_path(@course), notice: 'Group was successfully created.'
     else
       render :new, status: :unprocessable_entity
@@ -45,7 +45,7 @@ class GroupsController < ApplicationController
       if params[:group][:student_ids].present?
         student_ids = params[:group][:student_ids].reject(&:blank?)
         new_students = @course.students.where(id: student_ids)
-        
+
         # Remove students not in the new selection
         @group.students.each do |student|
           unless new_students.include?(student)
@@ -53,7 +53,7 @@ class GroupsController < ApplicationController
             membership&.destroy
           end
         end
-        
+
         # Add new students
         new_students.each do |student|
           @group.add_student(student)
@@ -62,7 +62,7 @@ class GroupsController < ApplicationController
         # If no students selected, remove all
         @group.group_memberships.destroy_all
       end
-      
+
       redirect_to course_groups_path(@course), notice: 'Group was successfully updated.'
     else
       render :edit, status: :unprocessable_entity
@@ -76,7 +76,7 @@ class GroupsController < ApplicationController
 
   def add_student
     student = Student.find(params[:student_id])
-    
+
     if @course.students.include?(student)
       @group.add_student(student)
       redirect_to course_group_path(@course, @group), notice: 'Student was successfully added to group.'
@@ -88,13 +88,31 @@ class GroupsController < ApplicationController
   def remove_student
     student = Student.find(params[:student_id])
     membership = @group.group_memberships.find_by(student: student)
-    
+
     if membership
       membership.destroy
       redirect_to course_group_path(@course, @group), notice: 'Student was successfully removed from group.'
     else
       redirect_to course_group_path(@course, @group), alert: 'Student is not in this group.'
     end
+  end
+
+  def random
+    render partial: "groups/random_modal", locals: { course: @course }
+  end
+
+  def generate_random
+    group_size = params[:group_size].to_i
+    students   =  @course.students.includes(:group_memberships).where(group_memberships: { id: nil }).to_a.shuffle
+
+    students.each_slice(group_size).with_index(1) do |students_slice, index|
+      group = @course.groups.create!(
+        group_name: "Group #{index}"
+      )
+      group.students << students_slice
+    end
+
+    redirect_to course_path(@course), notice: "Random groups generated successfully"
   end
 
   private

@@ -103,13 +103,15 @@ class GroupsController < ApplicationController
 
   def generate_random
     group_size = params[:group_size].to_i
-    students   =  @course.students.includes(:group_memberships).where(group_memberships: { id: nil }).to_a.shuffle
+    students = @course.students_without_groups.to_a.shuffle
 
     students.each_slice(group_size).with_index(1) do |students_slice, index|
       group = @course.groups.create!(
         group_name: "Group #{index}"
       )
-      group.students << students_slice
+      students_slice.each do |student|
+        group.add_student(student)
+      end
     end
 
     redirect_to course_path(@course), notice: "Random groups generated successfully"

@@ -26,6 +26,10 @@ class Assignment < ApplicationRecord
     assignment_type == 'qass'
   end
 
+  def webavalia?
+    assignment_type == 'webavalia'
+  end
+
   private
 
   def end_date_after_start_date

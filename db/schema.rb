@@ -10,9 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_06_173732) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_08_203400) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "assignment_group_scores", force: :cascade do |t|
+    t.bigint "assignment_id", null: false
+    t.bigint "group_id"
+    t.decimal "group_score", precision: 5, scale: 2, null: false
+    t.datetime "set_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assignment_id", "group_id"], name: "idx_ags_on_assignment_and_group", unique: true
+    t.index ["assignment_id"], name: "idx_ags_on_assignment_id"
+    t.index ["assignment_id"], name: "index_assignment_group_scores_on_assignment_id"
+    t.index ["group_id"], name: "index_assignment_group_scores_on_group_id"
+  end
 
   create_table "assignments", force: :cascade do |t|
     t.string "title", limit: 50, null: false
@@ -31,6 +44,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_06_173732) do
     t.float "border_size", default: 0.003
     t.float "polarity_factor", default: 1.0
     t.float "group_spread", default: 0.5
+    t.float "group_score", default: 0.8, null: false
     t.index ["assignment_type"], name: "index_assignments_on_assignment_type"
     t.index ["calibration"], name: "index_assignments_on_calibration"
     t.index ["course_id"], name: "index_assignments_on_course_id"
@@ -52,6 +66,25 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_06_173732) do
     t.datetime "updated_at", null: false
     t.index ["teacher_id", "name"], name: "index_courses_on_teacher_id_and_name", unique: true
     t.index ["teacher_id"], name: "index_courses_on_teacher_id"
+  end
+
+  create_table "final_marks", force: :cascade do |t|
+    t.bigint "student_id", null: false
+    t.bigint "assignment_id", null: false
+    t.bigint "group_id", null: false
+    t.bigint "assignment_group_score_id", null: false
+    t.decimal "score", precision: 5, scale: 2, null: false
+    t.datetime "calculated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assignment_group_score_id"], name: "idx_fm_on_ags_id"
+    t.index ["assignment_group_score_id"], name: "index_final_marks_on_assignment_group_score_id"
+    t.index ["assignment_id"], name: "idx_fm_on_assignment_id"
+    t.index ["assignment_id"], name: "index_final_marks_on_assignment_id"
+    t.index ["group_id"], name: "idx_fm_on_group_id"
+    t.index ["group_id"], name: "index_final_marks_on_group_id"
+    t.index ["student_id", "assignment_id"], name: "idx_fm_on_student_and_assignment", unique: true
+    t.index ["student_id"], name: "index_final_marks_on_student_id"
   end
 
   create_table "group_memberships", force: :cascade do |t|
@@ -130,10 +163,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_06_173732) do
     t.index ["type", "email"], name: "index_users_on_type_and_email"
   end
 
+  add_foreign_key "assignment_group_scores", "assignments"
+  add_foreign_key "assignment_group_scores", "groups"
   add_foreign_key "assignments", "courses"
   add_foreign_key "course_students", "courses"
   add_foreign_key "course_students", "users", column: "student_id"
   add_foreign_key "courses", "users", column: "teacher_id"
+  add_foreign_key "final_marks", "assignment_group_scores"
+  add_foreign_key "final_marks", "assignments"
+  add_foreign_key "final_marks", "groups"
+  add_foreign_key "final_marks", "users", column: "student_id"
   add_foreign_key "group_memberships", "groups"
   add_foreign_key "group_memberships", "users", column: "student_id"
   add_foreign_key "groups", "courses"

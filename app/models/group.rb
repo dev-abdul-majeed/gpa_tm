@@ -2,6 +2,8 @@ class Group < ApplicationRecord
   belongs_to :course
   has_many :group_memberships, dependent: :destroy
   has_many :students, through: :group_memberships, source: :student
+  has_many :assignment_group_scores, dependent: :destroy
+  has_many :final_marks, dependent: :destroy
   
   validates :group_name, presence: true
   validates :group_name, uniqueness: { scope: :course_id }

@@ -6,6 +6,7 @@ class Student < User
 
   has_many :group_memberships, foreign_key: 'student_id', dependent: :destroy
   has_many :groups, through: :group_memberships
+  has_many :final_marks, foreign_key: 'student_id', dependent: :destroy
 
   def group_for_course(course)
     groups.joins(:course).where(courses: { id: course.id }).first

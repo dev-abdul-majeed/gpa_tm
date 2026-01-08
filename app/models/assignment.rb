@@ -3,6 +3,8 @@ class Assignment < ApplicationRecord
 
   has_many :peer_marks, dependent: :destroy
   has_many :peer_mark_submissions, dependent: :destroy
+  has_many :assignment_group_scores, dependent: :destroy
+  has_many :final_marks, dependent: :destroy
 
   validates :title, presence: true, length: { maximum: 50 }
   validates :assignment_type, presence: true, inclusion: { in: %w[qass webavalia] }

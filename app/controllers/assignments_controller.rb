@@ -96,7 +96,9 @@ class AssignmentsController < ApplicationController
 
     # Load existing group score if available
     @assignment_group_score = AssignmentGroupScore.find_or_initialize_for(@assignment, @group)
-    @current_group_score = @assignment_group_score.group_score || 18
+    if @assignment.webavalia?
+      @current_group_score = @assignment_group_score.group_score || 18
+    end
   end
 
   def save_group_marks

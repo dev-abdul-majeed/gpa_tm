@@ -214,8 +214,8 @@ class QassStandardizationService
     end
   end
 
-  def mean_student_score
-    t = @assignment.group_score
+  def mean_student_score(group_score = nil)
+    t = group_score || @assignment.group_score
     z = @assignment.group_spread
 
     c_bar_v = c_bar
@@ -225,12 +225,12 @@ class QassStandardizationService
     (t ** (z ** c_bar_v))
   end
 
-  def student_scores
+  def student_scores(group_score = nil)
     ci = student_contributions_ci
 
     return nil if ci.blank?
 
-    t = @assignment.group_score
+    t = group_score || @assignment.group_score
     z = @assignment.group_spread
 
     ci.transform_values {|v| (t ** (z ** v))}

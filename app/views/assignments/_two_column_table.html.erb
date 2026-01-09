@@ -32,7 +32,7 @@
                 </td>
                 <td>
                   <div class="px-6 py-4 flex">
-                    <span class="font-medium text-slate-700"><%= marks_by_students[receiver.id] %></span>
+                    <span class="font-medium text-slate-700" <%= "data-student-id=#{receiver.id} data-ci-value=#{student_contributions_ci[receiver.id]}" if defined?(student_contributions_ci) && student_contributions_ci.present? %>><%= marks_by_students[receiver.id] %></span>
                   </div>
                 </td>
               </tr>

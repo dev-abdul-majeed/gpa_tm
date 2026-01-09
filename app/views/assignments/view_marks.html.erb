@@ -119,20 +119,47 @@
         <%= render partial: 'one_row_table', locals: { value: mean_student_contribution, formula: 'Multiplied Result' } %>
       <% end %>
 
-      <% mean_student_score = qass_service.mean_student_score %>
-      <% if mean_student_score.present? %>
-        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-          <h3 class="mx-4 text-center text-emerald-700">Mean Student Score</h3>
+      <% qass_group_score = @assignment_group_score&.group_score || @assignment.group_score || 0.8 %>
+      <% student_contributions_ci = qass_service.student_contributions_ci %>
+      <% if student_contributions_ci.present? %>
+        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+          <div class="flex items-center space-x-4 flex-wrap gap-4">
+            <div class="flex items-center space-x-2">
+              <label for="qass_group_score" class="text-lg font-semibold text-slate-700">Group Score (t):</label>
+              <input type="number"
+                     id="qass_group_score"
+                     name="qass_group_score"
+                     value="<%= qass_group_score %>"
+                     min="0.00"
+                     max="1.00"
+                     step="0.01"
+                     class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-lg font-medium"
+                     onchange="updateQassScores()">
+            </div>
+            <span class="text-sm text-slate-500">(Enter value between 0.00 and 1.00)</span>
+          </div>
         </div>
-        <%= render partial: 'one_row_table', locals: { value: mean_student_score, formula: 'ś = t ^ (z ^ ć)' } %>
-      <% end %>
 
-      <% student_scores = qass_service.student_scores %>
-      <% if student_scores.present? %>
-        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-          <h3 class="mx-4 text-center text-emerald-700">Student Scores</h3>
-        </div>
-        <%= render partial: 'two_column_table', locals: { marks_by_students: student_scores, formula: 'Student Scores' } %>
+        <% mean_student_score = qass_service.mean_student_score(qass_group_score) %>
+        <% c_bar = qass_service.c_bar %>
+        <% if mean_student_score.present? %>
+          <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+            <h3 class="mx-4 text-center text-emerald-700">Mean Student Score</h3>
+          </div>
+          <div id="mean_student_score_container" data-c-bar="<%= c_bar %>">
+            <%= render partial: 'one_row_table', locals: { value: mean_student_score, formula: 'ś = t ^ (z ^ ć)', id: 'mean_student_score' } %>
+          </div>
+        <% end %>
+
+        <% student_scores = qass_service.student_scores(qass_group_score) %>
+        <% if student_scores.present? %>
+          <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+            <h3 class="mx-4 text-center text-emerald-700">Student Scores</h3>
+          </div>
+          <div id="student_scores_table">
+            <%= render partial: 'two_column_table', locals: { marks_by_students: student_scores, formula: 'Student Scores', student_contributions_ci: student_contributions_ci } %>
+          </div>
+        <% end %>
       <% end %>
 
     <% else %>
@@ -140,3 +167,31 @@
     <% end %>
   </div>
 </div>
+
+<% if @assignment.qass? %>
+<script>
+function updateQassScores() {
+  const groupScore = parseFloat(document.getElementById('qass_group_score').value) || 0;
+  const groupSpread = <%= @assignment.group_spread %>;
+
+  // Update mean student score
+  const meanStudentScoreContainer = document.getElementById('mean_student_score_container');
+  const meanStudentScoreElement = document.getElementById('mean_student_score');
+  if (meanStudentScoreContainer && meanStudentScoreElement) {
+    const cBar = parseFloat(meanStudentScoreContainer.getAttribute('data-c-bar')) || 0;
+    const newMeanScore = Math.pow(groupScore, Math.pow(groupSpread, 1));
+    console.log(groupScore);
+    console.log(groupSpread);
+    meanStudentScoreElement.textContent = newMeanScore.toFixed(6);
+  }
+  
+  // Update student scores
+  const studentScoreElements = document.querySelectorAll('[data-student-id][data-ci-value]');
+  studentScoreElements.forEach(element => {
+    const ci = parseFloat(element.getAttribute('data-ci-value'));
+    const newScore = Math.pow(groupScore, Math.pow(groupSpread, ci));
+    element.textContent = newScore.toFixed(6);
+  });
+}
+</script>
+<% end %>

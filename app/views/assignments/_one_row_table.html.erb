@@ -21,7 +21,7 @@
                     <div class="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center">
                         <i class="fas fa-user text-white text-xs"></i>
                     </div>
-                    <span class="font-medium text-slate-700"><%= value %></span>
+                    <span class="font-medium text-slate-700" <%= "id=#{id}" if defined?(id) && id.present? %>><%= value %></span>
                     </div>
                 </td>
               </tr>

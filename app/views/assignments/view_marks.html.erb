@@ -188,7 +188,7 @@ function updateQassScores() {
   const meanStudentScoreElement = document.getElementById('mean_student_score');
   if (meanStudentScoreContainer && meanStudentScoreElement) {
     const cBar = parseFloat(meanStudentScoreContainer.getAttribute('data-c-bar')) || 0;
-    const newMeanScore = Math.pow(groupScore, Math.pow(groupSpread, 1));
+    const newMeanScore = Math.pow(groupScore, Math.pow(groupSpread, cBar));
     meanStudentScoreElement.textContent = newMeanScore.toFixed(6);
     console.log(newMeanScore);
   }

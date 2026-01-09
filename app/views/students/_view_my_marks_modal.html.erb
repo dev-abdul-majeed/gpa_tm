@@ -1,0 +1,84 @@
+<turbo-frame id="modal">
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onclick="event.target === this && this.closest('turbo-frame').innerHTML = ''">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 m-4 max-h-[90vh] overflow-y-auto">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-2xl font-semibold text-slate-800 mb-1">
+            My Final Marks
+          </h2>
+          <p class="text-sm text-slate-500">
+            <%= @assignment.title %> - <%= @assignment.course.name %>
+          </p>
+        </div>
+        <%= link_to "", 
+            data: { turbo_frame: "modal" },
+            class: "text-slate-400 hover:text-slate-600 transition-colors" do %>
+          <i class="fa-solid fa-times text-2xl"></i>
+        <% end %>
+      </div>
+
+      <!-- Marks Display -->
+      <div class="space-y-6">
+        <!-- Final Score Card -->
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border-2 border-blue-200">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-slate-600 mb-1">Final Score</p>
+              <p class="text-4xl font-bold text-blue-700"><%= sprintf('%.2f', @final_mark.score) %></p>
+            </div>
+            <div class="bg-gradient-to-r from-blue-500 to-indigo-500 p-4 rounded-full">
+              <i class="fa-solid fa-star text-white text-3xl"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Assignment Details -->
+        <div class="bg-slate-50 rounded-lg p-4 space-y-3">
+          <h3 class="font-semibold text-slate-800 mb-3">Assignment Details</h3>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <p class="text-xs text-slate-500 mb-1">Assignment Type</p>
+              <p class="font-medium text-slate-800"><%= @assignment.assignment_type.upcase %></p>
+            </div>
+            
+            <div>
+              <p class="text-xs text-slate-500 mb-1">Group Score Used</p>
+              <p class="font-medium text-slate-800"><%= sprintf('%.2f', @final_mark.assignment_group_score.group_score) %></p>
+            </div>
+            
+            <div>
+              <p class="text-xs text-slate-500 mb-1">Calculated On</p>
+              <p class="font-medium text-slate-800"><%= @final_mark.calculated_at&.strftime('%b %d, %Y %H:%M') || '—' %></p>
+            </div>
+            
+            <div>
+              <p class="text-xs text-slate-500 mb-1">Group</p>
+              <p class="font-medium text-slate-800"><%= @final_mark.group.group_name %></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Info for Webavalia -->
+        <% if @assignment.webavalia? %>
+          <div class="bg-emerald-50 rounded-lg p-4 border border-emerald-200">
+            <p class="text-sm text-slate-600">
+              <i class="fa-solid fa-info-circle text-emerald-600 mr-2"></i>
+              This score is calculated based on peer evaluations and the group project score set by your teacher.
+            </p>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Close Button -->
+      <div class="mt-6 flex justify-end">
+        <%= link_to "Close", 
+            "", 
+            data: { turbo_frame: "modal" },
+            class: "px-6 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 font-medium rounded-lg transition-colors" %>
+      </div>
+    </div>
+  </div>
+</turbo-frame>
+

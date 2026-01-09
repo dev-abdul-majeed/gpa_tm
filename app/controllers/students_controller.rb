@@ -11,6 +11,24 @@ class StudentsController < ApplicationController
                                      .includes(:course)
                                      .order(end_date_time: :asc)
                                      .limit(6)
+    
+    # Preload final marks for efficient checking
+    assignment_ids = @student_assignments.pluck(:id)
+    @final_marks_by_assignment = FinalMark.where(student: @student, assignment_id: assignment_ids)
+                                           .index_by(&:assignment_id)
+  end
+
+  def view_my_marks
+    @student = current_user
+    @assignment = Assignment.find(params[:assignment_id])
+    @final_mark = FinalMark.find_by(student: @student, assignment: @assignment)
+    
+    unless @final_mark
+      render turbo_frame: "modal", status: :not_found, plain: "Marks not found"
+      return
+    end
+    
+    render partial: "view_my_marks_modal"
   end
 
   def courses

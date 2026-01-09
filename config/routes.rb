@@ -89,11 +89,14 @@ Rails.application.routes.draw do
   patch 'student/courses/:course_id/assignments/:assignment_id/marking', to: 'student_peer_marks#update', as: :update_student_peer_marking
   post 'student/courses/:course_id/assignments/:assignment_id/submit',   to: 'student_peer_marks#submit', as: :submit_student_peer_marking
   get  'student/courses/:course_id/assignments/:assignment_id/summary',  to: 'student_peer_marks#summary', as: :student_peer_mark_summary
+  get  'student/assignments/:assignment_id/view_my_marks', to: 'students#view_my_marks', as: :student_view_my_marks
 
   # Assignment creation wizard routes
   get 'assignments/new_wizard', to: 'assignments#new_wizard', as: :new_assignment_wizard
   get 'assignments/select_course', to: 'assignments#select_course', as: :select_assignment_course
   get 'assignments/select_type', to: 'assignments#select_type', as: :select_assignment_type
   get "assignments/:assignment_id/groups/:id/view_marks", to: "assignments#view_marks", as: :assignment_view_marks
+  post "assignments/:assignment_id/groups/:id/save_group_marks", to: "assignments#save_group_marks", as: :save_group_marks
+  post "assignments/:assignment_id/groups/:id/save_final_marks", to: "assignments#save_final_marks", as: :save_final_marks
 
 end

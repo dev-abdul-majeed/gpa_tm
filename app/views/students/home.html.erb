@@ -122,8 +122,18 @@
               </div>
               <p class="text-slate-600 text-sm mb-3">Course: <span class="font-medium"><%= assignment.course.name %></span></p>
               <p class="text-slate-600 text-sm mb-3">Due: <%= assignment.end_date_time&.strftime('%b %d, %Y %H:%M') || '—' %></p>
-              <div class="flex items-center justify-between">
+              <div class="flex items-center justify-between gap-2">
                 <% submission = PeerMarkSubmission.find_by(assignment: assignment, giver: current_user) %>
+                <% final_mark = @final_marks_by_assignment[assignment.id] %>
+                
+                <% if final_mark %>
+                  <%= link_to student_view_my_marks_path(assignment), 
+                      data: { turbo_frame: "modal" },
+                      class: "inline-flex items-center px-3 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded hover:from-blue-600 hover:to-indigo-600 text-sm" do %>
+                    <i class="fa-solid fa-star mr-2"></i> View My Marks
+                  <% end %>
+                <% end %>
+                
                 <% if submission&.submitted? %>
                   <%= link_to student_peer_mark_summary_path(assignment.course, assignment), class: "inline-flex items-center px-3 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded hover:from-orange-600 hover:to-amber-600 text-sm" do %>
                     <i class="fa-solid fa-check mr-2"></i> View Marks

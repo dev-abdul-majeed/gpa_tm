@@ -1,6 +1,6 @@
 class AssignmentsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_course, only: [:new, :create, :show, :edit, :update, :destroy, :success, :view_marks, :generate_sample_peer_marks]
+  before_action :set_course, only: [:new, :create, :show, :edit, :update, :destroy, :success, :view_marks, :generate_sample_peer_marks, :save_group_marks, :save_final_marks]
   before_action :set_assignment, only: [:show, :edit, :update, :destroy, :success]
   before_action :ensure_teacher_or_admin
 
@@ -75,9 +75,9 @@ class AssignmentsController < ApplicationController
   end
 
   def view_marks
-
     @assignment = Assignment.find_by(id: params[:assignment_id])
     @group = Group.find(params[:id])
+    @course = @assignment.course
 
     # Only consider students who submitted
     submitted_givers = PeerMarkSubmission
@@ -93,6 +93,93 @@ class AssignmentsController < ApplicationController
 
     # Build lookup hash for fast access
     @marks_by_pair = @peer_marks.index_by { |m| [m.giver_id, m.receiver_id] }
+
+    # Load existing group score if available
+    @assignment_group_score = AssignmentGroupScore.find_or_initialize_for(@assignment, @group)
+    @current_group_score = @assignment_group_score.group_score || 18
+  end
+
+  def save_group_marks
+    @assignment = Assignment.find_by(id: params[:assignment_id])
+    @group = Group.find(params[:id])
+    @course = @assignment.course
+    group_score = params[:group_score].to_f
+
+    unless @assignment.webavalia?
+      redirect_to assignment_view_marks_path(@assignment, @group, course_id: @course.id), alert: 'This action is only available for Webavalia assignments.'
+      return
+    end
+
+    assignment_group_score = AssignmentGroupScore.find_or_initialize_by(
+      assignment: @assignment,
+      group: @group
+    )
+    assignment_group_score.group_score = group_score
+    assignment_group_score.set_at = Time.current
+
+    if assignment_group_score.save
+      redirect_to assignment_view_marks_path(@assignment, @group, course_id: @course.id), notice: 'Group marks saved successfully.'
+    else
+      redirect_to assignment_view_marks_path(@assignment, @group, course_id: @course.id), alert: "Error saving group marks: #{assignment_group_score.errors.full_messages.join(', ')}"
+    end
+  end
+
+  def save_final_marks
+    @assignment = Assignment.find_by(id: params[:assignment_id])
+    @group = Group.find(params[:id])
+    @course = @assignment.course
+    group_score = params[:group_score].to_f
+
+    unless @assignment.webavalia?
+      redirect_to assignment_view_marks_path(@assignment, @group, course_id: @course.id), alert: 'This action is only available for Webavalia assignments.'
+      return
+    end
+
+    # Get or create assignment_group_score
+    assignment_group_score = AssignmentGroupScore.find_or_initialize_by(
+      assignment: @assignment,
+      group: @group
+    )
+    assignment_group_score.group_score = group_score
+    assignment_group_score.set_at = Time.current
+    assignment_group_score.save!
+
+    # Calculate final marks using WebavaliaService
+    webavalia_service = WebavaliaService.new(@assignment.id, @group.id)
+    student_calculations = webavalia_service.student_calculations(group_score)
+
+    saved_count = 0
+    errors = []
+
+    ActiveRecord::Base.transaction do
+      @group.students.each do |student|
+        calculation = student_calculations[student.id]
+        next unless calculation
+
+        final_mark = FinalMark.find_or_initialize_by(
+          student: student,
+          assignment: @assignment
+        )
+        final_mark.group = @group
+        final_mark.assignment_group_score = assignment_group_score
+        final_mark.score = calculation[:final_grade]
+        final_mark.calculated_at = Time.current
+
+        if final_mark.save
+          saved_count += 1
+        else
+          errors << "#{student.full_name}: #{final_mark.errors.full_messages.join(', ')}"
+        end
+      end
+
+      raise ActiveRecord::Rollback if errors.any?
+    end
+
+    if errors.any?
+      redirect_to assignment_view_marks_path(@assignment, @group, course_id: @course.id), alert: "Error saving final marks: #{errors.join('; ')}"
+    else
+      redirect_to assignment_view_marks_path(@assignment, @group, course_id: @course.id), notice: "Final marks saved successfully for #{saved_count} student(s)."
+    end
   end
 
   def generate_sample_peer_marks

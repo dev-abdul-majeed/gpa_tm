@@ -107,8 +107,8 @@ class AssignmentsController < ApplicationController
     @course = @assignment.course
     group_score = params[:group_score].to_f
 
-    unless @assignment.webavalia?
-      redirect_to assignment_view_marks_path(@assignment, @group, course_id: @course.id), alert: 'This action is only available for Webavalia assignments.'
+    unless @assignment.webavalia? || @assignment.qass?
+      redirect_to assignment_view_marks_path(@assignment, @group, course_id: @course.id), alert: 'This action is only available for Webavalia or QASS assignments.'
       return
     end
 
@@ -132,8 +132,8 @@ class AssignmentsController < ApplicationController
     @course = @assignment.course
     group_score = params[:group_score].to_f
 
-    unless @assignment.webavalia?
-      redirect_to assignment_view_marks_path(@assignment, @group, course_id: @course.id), alert: 'This action is only available for Webavalia assignments.'
+    unless @assignment.webavalia? || @assignment.qass?
+      redirect_to assignment_view_marks_path(@assignment, @group, course_id: @course.id), alert: 'This action is only available for Webavalia or QASS assignments.'
       return
     end
 
@@ -146,31 +146,59 @@ class AssignmentsController < ApplicationController
     assignment_group_score.set_at = Time.current
     assignment_group_score.save!
 
-    # Calculate final marks using WebavaliaService
-    webavalia_service = WebavaliaService.new(@assignment.id, @group.id)
-    student_calculations = webavalia_service.student_calculations(group_score)
-
     saved_count = 0
     errors = []
 
     ActiveRecord::Base.transaction do
-      @group.students.each do |student|
-        calculation = student_calculations[student.id]
-        next unless calculation
+      if @assignment.webavalia?
+        # Calculate final marks using WebavaliaService
+        webavalia_service = WebavaliaService.new(@assignment.id, @group.id)
+        student_calculations = webavalia_service.student_calculations(group_score)
 
-        final_mark = FinalMark.find_or_initialize_by(
-          student: student,
-          assignment: @assignment
-        )
-        final_mark.group = @group
-        final_mark.assignment_group_score = assignment_group_score
-        final_mark.score = calculation[:final_grade]
-        final_mark.calculated_at = Time.current
+        @group.students.each do |student|
+          calculation = student_calculations[student.id]
+          next unless calculation
 
-        if final_mark.save
-          saved_count += 1
-        else
-          errors << "#{student.full_name}: #{final_mark.errors.full_messages.join(', ')}"
+          final_mark = FinalMark.find_or_initialize_by(
+            student: student,
+            assignment: @assignment
+          )
+          final_mark.group = @group
+          final_mark.assignment_group_score = assignment_group_score
+          final_mark.score = calculation[:final_grade]
+          final_mark.calculated_at = Time.current
+
+          if final_mark.save
+            saved_count += 1
+          else
+            errors << "#{student.full_name}: #{final_mark.errors.full_messages.join(', ')}"
+          end
+        end
+      elsif @assignment.qass?
+        # Calculate final marks using QassStandardizationService
+        qass_service = QassStandardizationService.new(@assignment.id, @group.id)
+        student_scores = qass_service.student_scores(group_score)
+
+        if student_scores.present?
+          @group.students.each do |student|
+            score = student_scores[student.id]
+            next unless score
+
+            final_mark = FinalMark.find_or_initialize_by(
+              student: student,
+              assignment: @assignment
+            )
+            final_mark.group = @group
+            final_mark.assignment_group_score = assignment_group_score
+            final_mark.score = score
+            final_mark.calculated_at = Time.current
+
+            if final_mark.save
+              saved_count += 1
+            else
+              errors << "#{student.full_name}: #{final_mark.errors.full_messages.join(', ')}"
+            end
+          end
         end
       end
 

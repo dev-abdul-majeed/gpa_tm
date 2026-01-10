@@ -1,7 +1,8 @@
 
 FactoryBot.define do
   factory :course do
-    name { Faker::Book.title  }
+    teacher
+    sequence(:name) { |n| "#{Faker::Book.title} #{n}" }
     description { Faker::Books::Dune.quote }
   end
 end

@@ -6,6 +6,8 @@ RSpec.describe Assignment, type: :model do
 
     it { is_expected.to have_many(:peer_marks).dependent(:destroy) }
     it { is_expected.to have_many(:peer_mark_submissions).dependent(:destroy) }
+    it { is_expected.to have_many(:assignment_group_scores).dependent(:destroy) }
+    it { is_expected.to have_many(:final_marks).dependent(:destroy) }
   end
 
   describe 'validations' do
@@ -108,6 +110,18 @@ RSpec.describe Assignment, type: :model do
     it 'returns false when assignment_type is not qass' do
       assignment = build(:assignment, assignment_type: 'webavalia')
       expect(assignment.qass?).to be false
+    end
+  end
+
+  describe '#webavalia?' do
+    it 'returns true when assignment_type is webavalia' do
+      assignment = build(:assignment, assignment_type: 'webavalia')
+      expect(assignment.webavalia?).to be true
+    end
+
+    it 'returns false when assignment_type is not webavalia' do
+      assignment = build(:assignment, assignment_type: 'qass')
+      expect(assignment.webavalia?).to be false
     end
   end
 end

@@ -1,6 +1,7 @@
 
 FactoryBot.define do
   factory :group do
+    course
     group_name { Faker::Book.title }
   end
 end

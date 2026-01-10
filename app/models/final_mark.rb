@@ -6,6 +6,7 @@ class FinalMark < ApplicationRecord
 
   validates :score, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :student, :assignment, :group, :assignment_group_score, presence: true
+  validates :student_id, uniqueness: { scope: :assignment_id, message: "can only have one final mark per assignment" }
   validate :student_in_group
   validate :group_belongs_to_assignment_course
 

@@ -15,8 +15,10 @@ class QassStandardizationService
 
     # Build lookup hash for fast access
     @marks_by_pair = @peer_marks.index_by { |m| [m.giver_id, m.receiver_id] }
+    puts "QAAAASSSS======================================"
+    puts group_score
 
-    @conversion_group_score = group_score
+    @conversion_group_score = group_score.present? ? (group_score / 20) : nil
 
     @weightj = 0.20
   end

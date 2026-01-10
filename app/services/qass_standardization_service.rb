@@ -26,7 +26,7 @@ class QassStandardizationService
       end
     end
 
-    @conversion_group_score = webavalia_to_qass_conversion? ? @params['current_group_score'] / 20 : nil
+    @conversion_group_score = webavalia_to_qass_conversion? ? @params['current_group_score'].to_f / 20.0 : nil
     puts "QAAAASSSS======================================"
     # puts group_score
 
@@ -74,7 +74,7 @@ class QassStandardizationService
 
     lower_bound, upper_bound = *[ @assignment.lower_bound.to_f, @assignment.upper_bound.to_f ]
     if webavalia_to_qass_conversion?
-      lower_bound, upper_bound = *[ 0, 100 ]
+      lower_bound, upper_bound = *[ 1, 7 ]
     end
 
     pair_marks_with_values =  @marks_by_pair.transform_values(&:score)

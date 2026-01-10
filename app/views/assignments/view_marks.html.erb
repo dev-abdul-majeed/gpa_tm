@@ -46,8 +46,15 @@
     <!-- Legend Section -->
 
     <% if @assignment.qass? || params['conversion'] == 'webavalia-to-qass' %>
+      <% qass_service = QassStandardizationService.new(@assignment.id, @group.id, conversion_params(params['conversion'])) %>
 
-      <% qass_service = QassStandardizationService.new(@assignment.id, @group.id, params['conversion'] == 'webavalia-to-qass' ? @current_group_score : nil) %>
+      <% if params['conversion'] == 'webavalia-to-qass' %>
+        <% converted_matrix =  qass_service.converted_evalutation_matrix %>
+        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <h3 class="mx-4 text-center text-emerald-700">Webavalia to qass converted values</h3>
+        </div>
+        <%= render partial: 'qass_rating_table', locals: { marks_by_pair: converted_matrix } %>
+      <% end %>
       <% standardized_ratings = qass_service.qass_standardization %>
       <% if standardized_ratings.present? %>
         <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">

@@ -164,6 +164,13 @@
           <div id="student_scores_table">
             <%= render partial: 'two_column_table', locals: { marks_by_students: student_scores, formula: 'Student Scores', student_contributions_ci: student_contributions_ci } %>
           </div>
+
+          <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+            <h3 class="mx-4 text-center text-emerald-700">Student Scores Normalized</h3>
+          </div>
+          <div id="student_scores_table">
+            <%= render partial: 'two_column_table', locals: { marks_by_students: normalized_student_scores(student_scores), formula: 'Student Scores', student_contributions_ci: student_contributions_ci } %>
+          </div>
         <% end %>
 
         <div class="mt-6 flex justify-center">

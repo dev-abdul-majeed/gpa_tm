@@ -9,4 +9,8 @@ module AssignmentHelper
       {}
     end
   end
+
+  def normalized_student_scores(student_scores)
+    student_scores.transform_values { |v| (v * 100).round(1) }
+  end
 end

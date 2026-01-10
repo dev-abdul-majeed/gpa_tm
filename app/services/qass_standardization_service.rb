@@ -1,5 +1,5 @@
 class QassStandardizationService
-  def initialize(assignment_id, group_id)
+  def initialize(assignment_id, group_id, group_score = nil)
     @assignment = Assignment.find_by(id: assignment_id)
     @group = Group.find(group_id)
 
@@ -16,16 +16,24 @@ class QassStandardizationService
     # Build lookup hash for fast access
     @marks_by_pair = @peer_marks.index_by { |m| [m.giver_id, m.receiver_id] }
 
+    @conversion_group_score = group_score
+
     @weightj = 0.20
+  end
+
+  def webavalia_to_qass_conversion?
+    @conversion_group_score.present?
   end
 
   def qass_standardization
     puts "Peer COUNT ---> #{@peer_marks.count} , student count --> #{@students.count}"
     return nil unless @peer_marks.count == (@students.count ** 2)
-    return nil unless @assignment.qass?
+    return nil unless (@assignment.qass? || webavalia_to_qass_conversion?)
 
-    lower_bound = @assignment.lower_bound.to_f
-    upper_bound = @assignment.upper_bound.to_f
+    lower_bound, upper_bound = *[ @assignment.lower_bound.to_f, @assignment.upper_bound.to_f ]
+    if @assignment.webavalia?
+      lower_bound, upper_bound = *[ 0, 100 ]
+    end
 
     pair_marks_with_values =  @marks_by_pair.transform_values(&:score)
 
@@ -49,7 +57,7 @@ class QassStandardizationService
         else
           [ pair, (1 - ((1-border_size)*(1-score))) ]
         end
-      elsif @assignment.rating_model == 'B'
+      elsif @assignment.rating_model == 'B' || webavalia_to_qass_conversion?
         [ pair, ((((1-border_size)*score)) + (border_size* (1-score))) ]
       elsif @assignment.rating_model == 'D'
         if giver == receiver
@@ -71,7 +79,7 @@ class QassStandardizationService
     bpratings.transform_values do |v|
       if rating_model == 'C'
         (v / (2- v))
-      elsif rating_model == 'B'
+      elsif rating_model == 'B' || webavalia_to_qass_conversion?
         (v / (1 - v))
       elsif rating_model == 'D'
         ((1 + v) / (1 - v))
@@ -82,7 +90,7 @@ class QassStandardizationService
   def calibrated_peer_ratings
     rs_peer_ratings = rescaled_peer_ratings
 
-    rating_model = @assignment.rating_model
+    rating_model = webavalia_to_qass_conversion? ? 'B' : @assignment.rating_model
 
     return rs_peer_ratings if %W[C D].include?(rating_model)
 
@@ -110,7 +118,7 @@ class QassStandardizationService
     c_peer_ratings.map do |pair, value|
       giver, receiver = *pair
 
-      if rating_model == "B"
+      if rating_model == "B" || webavalia_to_qass_conversion?
         [ pair, (value ** @weightj) ]
       elsif rating_model == "C"
         [ pair, (value ** @weightj) ]
@@ -161,7 +169,7 @@ class QassStandardizationService
     s_ratings = student_ratings
     m_s_rating = mean_student_rating
 
-    if rating_model == 'B'
+    if rating_model == 'B' ||  webavalia_to_qass_conversion?
       s_ratings.transform_values{ |v| (v ** polarity_factor)/(mean_student_rating ** polarity_factor) }
     elsif rating_model == 'C'
       s_ratings.transform_values{ |v| ((v /mean_student_rating)**(1/polarity_factor)) }
@@ -178,7 +186,7 @@ class QassStandardizationService
 
     rating_model = @assignment.rating_model
 
-    if rating_model == 'B'
+    if rating_model == 'B' || webavalia_to_qass_conversion?
       s_contributions.transform_values { |v| ((v - 1)/(v + 1)) }
     elsif rating_model == 'C'
       s_contributions.transform_values { |v| (((3 * v) - 1)/(v + 1))}
@@ -205,7 +213,7 @@ class QassStandardizationService
 
     rating_model = @assignment.rating_model
 
-    if rating_model == 'B'
+    if rating_model == 'B' || webavalia_to_qass_conversion?
      (m_s_contribution - 1)/(m_s_contribution + 1)
     elsif rating_model == 'C'
       (3 * m_s_contribution)/4
@@ -215,7 +223,7 @@ class QassStandardizationService
   end
 
   def mean_student_score(group_score = nil)
-    t = group_score || @assignment.group_score
+    t = webavalia_to_qass_conversion? ? @conversion_group_score : (group_score || @assignment.group_score)
     z = @assignment.group_spread
 
     c_bar_v = c_bar
@@ -230,7 +238,7 @@ class QassStandardizationService
 
     return nil if ci.blank?
 
-    t = group_score || @assignment.group_score
+    t = webavalia_to_qass_conversion? ? @conversion_group_score : (group_score || @assignment.group_score)
     z = @assignment.group_spread
 
     ci.transform_values {|v| (t ** (z ** v))}

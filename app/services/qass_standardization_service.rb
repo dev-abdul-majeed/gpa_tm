@@ -27,10 +27,7 @@ class QassStandardizationService
     end
 
     @conversion_group_score = webavalia_to_qass_conversion? ? @params['current_group_score'].to_f / 20.0 : nil
-    puts "QAAAASSSS======================================"
-    # puts group_score
 
-    # @conversion_group_score = group_score.present? ? (group_score / 20) : nil
     @required_params_hash = input_params
     @weightj = 0.20
   end

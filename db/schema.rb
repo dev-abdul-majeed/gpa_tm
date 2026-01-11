@@ -123,7 +123,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_08_203400) do
     t.bigint "group_id", null: false
     t.bigint "giver_id", null: false
     t.bigint "receiver_id", null: false
-    t.integer "score", null: false
+    t.float "score", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["assignment_id", "giver_id", "receiver_id"], name: "index_peer_marks_on_assignment_giver_receiver", unique: true
@@ -131,7 +131,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_08_203400) do
     t.index ["giver_id"], name: "index_peer_marks_on_giver_id"
     t.index ["group_id"], name: "index_peer_marks_on_group_id"
     t.index ["receiver_id"], name: "index_peer_marks_on_receiver_id"
-    t.check_constraint "score >= 0 AND score <= 100", name: "peer_marks_score_range"
+    t.check_constraint "score >= 0::double precision AND score <= 100::double precision", name: "peer_marks_score_range"
   end
 
   create_table "schools", force: :cascade do |t|

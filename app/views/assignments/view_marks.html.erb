@@ -45,9 +45,16 @@
 
     <!-- Legend Section -->
 
-    <% if @assignment.qass? %>
+    <% if @assignment.qass? || params['conversion'] == 'webavalia-to-qass' %>
+      <% qass_service = QassStandardizationService.new(@assignment.id, @group.id, conversion_params(params['conversion'])) %>
 
-      <% qass_service = QassStandardizationService.new(@assignment.id, @group.id) %>
+      <% if params['conversion'] == 'webavalia-to-qass' %>
+        <% converted_matrix =  qass_service.converted_evalutation_matrix %>
+        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <h3 class="mx-4 text-center text-emerald-700">Webavalia to qass converted values</h3>
+        </div>
+        <%= render partial: 'qass_rating_table', locals: { marks_by_pair: converted_matrix } %>
+      <% end %>
       <% standardized_ratings = qass_service.qass_standardization %>
       <% if standardized_ratings.present? %>
         <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
@@ -122,19 +129,21 @@
       <% qass_group_score = @assignment_group_score&.group_score || @assignment.group_score || 0.8 %>
       <% student_contributions_ci = qass_service.student_contributions_ci %>
       <% if student_contributions_ci.present? %>
-        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <%= form_with url: save_group_marks_path(@assignment, @group), method: :post, local: true, id: "qass_group_marks_form" do |f| %>
-            <%= hidden_field_tag :course_id, @course.id %>
-            <div class="flex items-center space-x-4 flex-wrap gap-4">
-              <div class="flex items-center space-x-2">
-                <label for="qass_group_score" class="text-lg font-semibold text-slate-700">Group Score (t):</label>
-                <%= f.number_field :group_score, id: "qass_group_score", value: qass_group_score, min: 0.00, max: 1.00, step: 0.01, class: "px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-lg font-medium", onchange: "updateQassScores()" %>
+        <% unless params['conversion'].present? && params['conversion'] == 'webavalia-to-qass' %>
+          <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <%= form_with url: save_group_marks_path(@assignment, @group), method: :post, local: true, id: "qass_group_marks_form" do |f| %>
+              <%= hidden_field_tag :course_id, @course.id %>
+              <div class="flex items-center space-x-4 flex-wrap gap-4">
+                <div class="flex items-center space-x-2">
+                  <label for="qass_group_score" class="text-lg font-semibold text-slate-700">Group Score (t):</label>
+                  <%= f.number_field :group_score, id: "qass_group_score", value: qass_group_score, min: 0.00, max: 1.00, step: 0.01, class: "px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-lg font-medium", onchange: "updateQassScores()" %>
+                </div>
+                <%= f.submit "Save Group Score", class: "px-6 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-teal-600 transition-all duration-200 shadow-md hover:shadow-lg" %>
+                <span class="text-sm text-slate-500">(Enter value between 0.00 and 1.00)</span>
               </div>
-              <%= f.submit "Save Group Score", class: "px-6 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-teal-600 transition-all duration-200 shadow-md hover:shadow-lg" %>
-              <span class="text-sm text-slate-500">(Enter value between 0.00 and 1.00)</span>
-            </div>
-          <% end %>
-        </div>
+            <% end %>
+          </div>
+        <% end %>
 
         <% mean_student_score = qass_service.mean_student_score(qass_group_score) %>
         <% c_bar = qass_service.c_bar %>
@@ -155,13 +164,22 @@
           <div id="student_scores_table">
             <%= render partial: 'two_column_table', locals: { marks_by_students: student_scores, formula: 'Student Scores', student_contributions_ci: student_contributions_ci } %>
           </div>
+
+          <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+            <h3 class="mx-4 text-center text-emerald-700">Student Scores Normalized</h3>
+          </div>
+          <div id="student_scores_table">
+            <%= render partial: 'two_column_table', locals: { marks_by_students: normalized_student_scores(student_scores), formula: 'Student Scores', student_contributions_ci: student_contributions_ci } %>
+          </div>
         <% end %>
 
         <div class="mt-6 flex justify-center">
-          <%= form_with url: save_final_marks_path(@assignment, @group), method: :post, local: true, id: "qass_final_marks_form" do |f| %>
-            <%= hidden_field_tag :course_id, @course.id %>
-            <%= f.hidden_field :group_score, id: "qass_final_marks_group_score", value: qass_group_score %>
-            <%= f.submit "Save Final Marks", class: "px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-indigo-600 transition-all duration-200 shadow-md hover:shadow-lg text-lg" %>
+          <% unless params['conversion'].present? && params['conversion'] == 'webavalia-to-qass' %>
+            <%= form_with url: save_final_marks_path(@assignment, @group), method: :post, local: true, id: "qass_final_marks_form" do |f| %>
+              <%= hidden_field_tag :course_id, @course.id %>
+              <%= f.hidden_field :group_score, id: "qass_final_marks_group_score", value: qass_group_score %>
+              <%= f.submit "Save Final Marks", class: "px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-indigo-600 transition-all duration-200 shadow-md hover:shadow-lg text-lg" %>
+            <% end %>
           <% end %>
         </div>
       <% end %>

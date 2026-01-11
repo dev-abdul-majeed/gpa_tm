@@ -62,7 +62,7 @@ end
 #  group_id      :integer          not null
 #  giver_id      :integer          not null
 #  receiver_id   :integer          not null
-#  score         :integer          not null
+#  score         :float            not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #

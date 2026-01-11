@@ -5,7 +5,7 @@ class CreatePeerMarks < ActiveRecord::Migration[8.0]
       t.references :group, null: false, foreign_key: true
       t.references :giver, null: false, foreign_key: { to_table: :users }
       t.references :receiver, null: false, foreign_key: { to_table: :users }
-      t.integer :score, null: false
+      t.float :score, null: false
 
       t.timestamps
     end

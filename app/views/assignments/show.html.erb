@@ -13,7 +13,7 @@
               <p class="text-slate-600">Peer evaluation assignment overview</p>
             </div>
           </div>
-          
+
           <div class="flex items-center space-x-6 text-sm text-slate-600">
             <div class="flex items-center space-x-2 bg-slate-100 rounded-lg px-3 py-2">
               <i class="fas fa-graduation-cap text-emerald-600"></i>
@@ -21,14 +21,14 @@
             </div>
           </div>
         </div>
-        
+
         <div class="flex space-x-3">
           <% if Rails.env.development? %>
-            <%= link_to generate_sample_peer_marks_course_assignment_path(@course, @assignment), 
+            <%= link_to generate_sample_peer_marks_course_assignment_path(@course, @assignment),
                         method: :post,
-                        data: { 
-                          turbo_method: :post, 
-                          turbo_confirm: 'Are you sure you want to generate sample peer marks for all unsubmitted students? This action cannot be undone.' 
+                        data: {
+                          turbo_method: :post,
+                          turbo_confirm: 'Are you sure you want to generate sample peer marks for all unsubmitted students? This action cannot be undone.'
                         },
                         class: "inline-flex items-center px-4 py-2 bg-red-500 hover:bg-orange-600 text-white font-medium rounded-lg transition duration-200" do %>
               <i class="fas fa-magic mr-2"></i>
@@ -56,7 +56,7 @@
           </div>
         </div>
       </div>
-      
+
       <% if @groups.any? %>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <% @groups.each do |group| %>
@@ -71,6 +71,13 @@
                     <div>
                       <h3 class="text-lg font-semibold text-slate-800"><%= group.group_name %></h3>
                       <p class="text-sm text-slate-600"><%= @group_stats[group.id][:student_count] %> students</p>
+                    </div>
+                    <div>
+                      <%= link_to assignment_view_marks_path(@assignment, group, params: { course_id: @course.id, conversion: @assignment.webavalia? ? 'webavalia-to-qass' : 'false' }),
+                            class: 'w-full bg-gradient-to-r bg-sky-900 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center space-x-2' do %>
+                        <i class="fas fa-arrow-rotate-right"></i>
+                        <span>View Evaluation Matrix</span>
+                      <% end %>
                     </div>
                   </div>
                 </div>
@@ -149,7 +156,7 @@
             This assignment doesn't have any groups yet. Create and assign groups to enable peer evaluation.
           </p>
 
-          <%= link_to course_groups_path(@course), 
+          <%= link_to course_groups_path(@course),
                 class: "inline-flex items-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-medium rounded-lg transition duration-200" do %>
               <i class="fas fa-plus mr-2"></i>
               <span>Manage Groups</span>

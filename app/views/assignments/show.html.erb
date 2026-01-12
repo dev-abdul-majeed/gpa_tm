@@ -72,11 +72,14 @@
                       <h3 class="text-lg font-semibold text-slate-800"><%= group.group_name %></h3>
                       <p class="text-sm text-slate-600"><%= @group_stats[group.id][:student_count] %> students</p>
                     </div>
-                    <div>
-                      <%= link_to assignment_view_marks_path(@assignment, group, params: { course_id: @course.id, conversion: @assignment.webavalia? ? 'webavalia-to-qass' : 'false' }),
-                            class: 'w-full bg-gradient-to-r bg-sky-900 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center space-x-2' do %>
-                        <i class="fas fa-arrow-rotate-right"></i>
-                        <span>View Evaluation Matrix</span>
+                  </div>
+                  <% switch_text = @assignment.webavalia? ? 'Compare with Qass' : 'Compare with Webavalia' %>
+                  <div class="mt-4">
+                    <div class="p-[2px] bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200">
+                      <%= link_to assignment_view_marks_path(@assignment, group, params: { course_id: @course.id, conversion: @assignment.webavalia? ? 'webavalia-to-qass' : 'qass-to-webavalia' }),
+                        class: 'group relative w-full bg-white font-medium py-2.5 px-4 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2' do %>
+                        <i class="fas fa-code-compare text-sm bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent"></i>
+                        <span class="bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent"><%= switch_text %></span>
                       <% end %>
                     </div>
                   </div>

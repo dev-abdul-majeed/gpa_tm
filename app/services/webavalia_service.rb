@@ -1,5 +1,5 @@
 class WebavaliaService
-  def initialize(assignment_id, group_id)
+  def initialize(assignment_id, group_id, converted = false)
     @assignment = Assignment.find_by(id: assignment_id)
     @group = Group.find(group_id)
 
@@ -8,6 +8,8 @@ class WebavaliaService
       .pluck(:giver_id)
 
     @students = @group.students
+
+    @converted = converted
 
     @peer_marks = PeerMark
       .where(assignment: @assignment, group: @group, giver_id: @submitted_givers)
@@ -18,27 +20,36 @@ class WebavaliaService
 
     @self_rating_weight = @assignment.self_rating_weight / 100.0
     @student_count = @students.count
+
+    if @converted
+      @self_rating_weight = 0.15
+    end
   end
 
   # Calculate weighted peer marks (self-rating vs peer-rating)
   # Returns a hash: { [giver_id, receiver_id] => weighted_score }
   def weighted_peer_marks
-    return {} unless @assignment.webavalia?
+    return {} unless @assignment.webavalia? || @converted
+
+    marks_source = @converted ? normalize_peer_marks : @marks_by_pair
 
     result = {}
     @students.each do |giver|
       @students.each do |receiver|
-        mark = @marks_by_pair[[giver.id, receiver.id]]
-        next unless mark.present?
+        if @converted
+          score = marks_source[[giver.id, receiver.id]]
+          next unless score.present?
+        else
+          mark = marks_source[[giver.id, receiver.id]]
+          next unless mark.present?
+          score = mark.score
+        end
 
         if giver == receiver
-          # Self-rating: score * self_rating_weight
-          result[[giver.id, receiver.id]] = mark.score * @self_rating_weight
+          result[[giver.id, receiver.id]] = score * @self_rating_weight
         else
-          # Peer-rating: score * ((1 - self_rating_weight) / (n - 1))
-          # Handle edge case when there's only one student
           peer_weight = @student_count > 1 ? ((1 - @self_rating_weight) / (@student_count - 1)) : 0
-          result[[giver.id, receiver.id]] = mark.score * peer_weight
+          result[[giver.id, receiver.id]] = score * peer_weight
         end
       end
     end
@@ -146,5 +157,67 @@ class WebavaliaService
     
     result
   end
+
+  def normalize_peer_marks()
+    # Group marks by giver
+    lower_bound = @assignment.lower_bound
+    upper_bound = @assignment.upper_bound
+    marks_by_giver = @peer_marks.group_by(&:giver_id)
+    
+    normalized_marks = {}
+    
+    marks_by_giver.each do |giver_id, marks|
+      # Calculate total points given by this giver on original scale
+      total_original = marks.sum(&:score)
+      
+      # Convert each score to percentage of total, then to base-100 scale
+      base_scores = marks.map do |mark|
+        percentage = mark.score / total_original.to_f
+        base_score = (percentage * 100).round
+        { mark: mark, base_score: base_score }
+      end
+      
+      # Round to nearest multiple of 5
+      rounded_scores = base_scores.map do |item|
+        rounded = (item[:base_score] / 5.0).round * 5
+        { mark: item[:mark], score: rounded }
+      end
+      
+      # Adjust to ensure sum equals exactly 100
+      current_sum = rounded_scores.sum { |item| item[:score] }
+      difference = 100 - current_sum
+      
+      if difference != 0
+        # Sort by how much rounding affected each score (rounding error)
+        errors = rounded_scores.map.with_index do |item, idx|
+          original_base = base_scores[idx][:base_score]
+          error = original_base - item[:score]
+          { index: idx, error: error.abs, direction: error <=> 0 }
+        end
+        
+        # Adjust scores with largest rounding errors
+        errors.sort_by! { |e| [-e[:error], e[:index]] }
+        
+        adjustment_step = difference > 0 ? 5 : -5
+        adjustments_needed = difference.abs / 5
+        
+        adjustments_needed.times do |i|
+          idx = errors[i][:index]
+          rounded_scores[idx][:score] += adjustment_step
+          # Ensure we don't go below 0
+          rounded_scores[idx][:score] = [0, rounded_scores[idx][:score]].max
+        end
+      end
+      
+      # Store normalized scores
+      rounded_scores.each do |item|
+        normalized_marks[[item[:mark].giver_id, item[:mark].receiver_id]] = item[:score]
+      end
+    end
+    
+    normalized_marks
+  end
+  
+    
 end
 

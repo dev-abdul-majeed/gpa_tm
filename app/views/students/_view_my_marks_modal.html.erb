@@ -25,7 +25,16 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium text-slate-600 mb-1">Final Score</p>
-              <p class="text-4xl font-bold text-blue-700"><%= sprintf('%.2f', @final_mark.score) %></p>
+              <% if @assignment.qass? %>
+                <% display_score = @final_mark.score * 100 %>
+                <p class="text-4xl font-bold text-blue-700"><%= sprintf('%.2f', display_score) %> / 100</p>
+              <% elsif @assignment.webavalia? %>
+                <p class="text-4xl font-bold text-blue-700"><%= sprintf('%.2f', @final_mark.score) %> / 20</p>
+                <% percentage = (@final_mark.score / 20.0) * 100.0 %>
+                <p class="text-lg font-semibold text-blue-600 mt-1"><%= sprintf('%.1f', percentage) %>%</p>
+              <% else %>
+                <p class="text-4xl font-bold text-blue-700"><%= sprintf('%.2f', @final_mark.score) %></p>
+              <% end %>
             </div>
             <div class="bg-gradient-to-r from-blue-500 to-indigo-500 p-4 rounded-full">
               <i class="fa-solid fa-star text-white text-3xl"></i>

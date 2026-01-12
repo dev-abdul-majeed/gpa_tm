@@ -39,10 +39,12 @@
                     <span class="text-slate-400 font-medium">–</span>
                     </div>
                 <% else %>
-                    <% mark = @marks_by_pair[[giver.id, receiver.id]] %>
-                    <% if mark.present? %>
+                    <% marks_by_pair = local_assigns[:marks_by_pair] || @marks_by_pair %>
+                    <% mark_value = marks_by_pair[[giver.id, receiver.id]] %>
+                    <% if mark_value.present? %>
+                        <% score = mark_value.is_a?(Numeric) ? mark_value : mark_value.score %>
                     <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-emerald-100 to-teal-100 border-2 border-emerald-200">
-                        <span class="font-bold text-emerald-700 text-lg"><%= mark.score %></span>
+                        <span class="font-bold text-emerald-700 text-lg"><%= score %></span>
                     </div>
                     <% else %>
                     <div class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 border border-slate-200">

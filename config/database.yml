@@ -36,6 +36,7 @@ test:
   database: gpa_tm_test
 
 production: &production
+  adapter: postgresql
   url: <%= ENV['DATABASE_URL'] %>
   pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
 

@@ -78,3 +78,5 @@ gem "devise", "~> 4.9"
 
 
 gem "csv", "~> 3.3"
+
+gem "dockerfile-rails", ">= 1.7", :group => :development

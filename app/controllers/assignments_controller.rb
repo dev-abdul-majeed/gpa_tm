@@ -215,12 +215,6 @@ class AssignmentsController < ApplicationController
   def generate_sample_peer_marks
     @assignment = Assignment.find(params[:id])
 
-    # Only allow in development mode
-    unless Rails.env.development?
-      redirect_to course_assignment_path(@course, @assignment), alert: 'This feature is only available in development mode.'
-      return
-    end
-
     generated_count = 0
 
     PeerMark.where(assignment: @assignment).destroy_all

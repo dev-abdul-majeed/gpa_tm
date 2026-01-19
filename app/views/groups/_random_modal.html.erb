@@ -10,7 +10,7 @@
         Choose how many students should be in each group
       </p>
 
-      <%= form_with url: generate_random_course_groups_path(course), method: :post do |f| %>
+      <%= form_with url: generate_random_course_groups_path(course), method: :post, data: { turbo_frame: "_top" } do |f| %>
         <!-- Input -->
         <div class="mb-6">
           <%= f.label :group_size,

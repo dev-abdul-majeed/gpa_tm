@@ -287,8 +287,8 @@ class AssignmentsController < ApplicationController
   def select_type
     @course = Course.find(params[:course_id])
     @assignment_types = [
-      { id: 'qass', name: 'Qass', description: 'Question and Answer Assignment System', icon: 'fas fa-question-circle' },
-      { id: 'webavalia', name: 'Webavalia', description: 'Web-based Evaluation System', icon: 'fas fa-globe' }
+      { id: 'qass', name: 'QASS (Quasi-Arithmetic Scoring System)', description: 'Based on System Q, a mathematical model that uses quasi-arithmetic means to adjust individual marks within a group.', icon: 'fas fa-book' },
+      { id: 'webavalia', name: 'WebAVALIA', description: 'Uses weighted averaging formulas rather than quasi-arithmetic means to redistribute marks.', icon: 'fas fa-globe' }
     ]
   end
 

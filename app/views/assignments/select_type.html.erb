@@ -25,9 +25,7 @@
                 <div class="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
                   <i class="<%= type[:icon] %> text-white text-xl"></i>
                 </div>
-                <div class="text-sm bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-medium">
-                  <%= type[:name].upcase %>
-                </div>
+                
               </div>
               <h3 class="text-lg font-semibold text-slate-800 mb-3"><%= type[:name] %></h3>
               <p class="text-slate-600 mb-4"><%= type[:description] %></p>
@@ -35,30 +33,38 @@
               <!-- Type-specific features -->
               <div class="space-y-2">
                 <% if type[:id] == 'qass' %>
-                  <div class="flex items-center text-sm text-slate-600">
-                    <i class="fas fa-check text-emerald-500 mr-2"></i>
-                    Question and answer format
+                  <div class="flex items-start text-sm text-slate-600">
+                    <i class="fas fa-check text-emerald-500 mr-2 mt-1"></i>
+                    <span>Each student's final mark is calculated by combining the group mark with peer-rating weights, using mathematical functions that ensure fairness and prevent bias.</span>
                   </div>
-                  <div class="flex items-center text-sm text-slate-600">
-                    <i class="fas fa-check text-emerald-500 mr-2"></i>
-                    Multiple choice questions
+                  <div class="flex items-start text-sm text-slate-600">
+                    <i class="fas fa-check text-emerald-500 mr-2 mt-1"></i>
+                    <span>The method guarantees split-join invariance, meaning the total group average always remains equal to the teacher's original group mark.</span>
                   </div>
-                  <div class="flex items-center text-sm text-slate-600">
-                    <i class="fas fa-check text-emerald-500 mr-2"></i>
-                    Auto-grading system
+                  <div class="flex items-start text-sm text-slate-600">
+                    <i class="fas fa-check text-emerald-500 mr-2 mt-1"></i>
+                    <span>QASS operates on bounded scales (e.g., 0–100 %) and uses exponential or rational functions to limit how far an individual's mark can move from the group score.</span>
+                  </div>
+                  <div class="flex items-start text-sm text-slate-600">
+                    <i class="fas fa-check text-emerald-500 mr-2 mt-1"></i>
+                    <span>It is highly mathematically precise, focusing on preserving balance and fairness through controlled adjustment formulas.</span>
                   </div>
                 <% else %>
-                  <div class="flex items-center text-sm text-slate-600">
-                    <i class="fas fa-check text-emerald-500 mr-2"></i>
-                    Web-based evaluation
+                  <div class="flex items-start text-sm text-slate-600">
+                    <i class="fas fa-check text-emerald-500 mr-2 mt-1"></i>
+                    <span>Peer and self-evaluation scores are combined through configurable weights and parameters, such as self-evaluation weight and peer-evaluation rounds.</span>
                   </div>
-                  <div class="flex items-center text-sm text-slate-600">
-                    <i class="fas fa-check text-emerald-500 mr-2"></i>
-                    Interactive assessments
+                  <div class="flex items-start text-sm text-slate-600">
+                    <i class="fas fa-check text-emerald-500 mr-2 mt-1"></i>
+                    <span>Earlier versions used several formulas (A, C, D etc.) refined over time to improve score distribution and fairness.</span>
                   </div>
-                  <div class="flex items-center text-sm text-slate-600">
-                    <i class="fas fa-check text-emerald-500 mr-2"></i>
-                    Real-time feedback
+                  <div class="flex items-start text-sm text-slate-600">
+                    <i class="fas fa-check text-emerald-500 mr-2 mt-1"></i>
+                    <span>Emphasizes practical flexibility — instructors can adjust parameters to change how much influence peer ratings have.</span>
+                  </div>
+                  <div class="flex items-start text-sm text-slate-600">
+                    <i class="fas fa-check text-emerald-500 mr-2 mt-1"></i>
+                    <span>While also mathematically fair, its approach is more linear and parametric, focusing on transparency and ease of interpretation rather than advanced bounded-scale operations.</span>
                   </div>
                 <% end %>
               </div>

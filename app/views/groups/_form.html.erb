@@ -111,12 +111,31 @@
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+(function() {
   function initializeGroupForm() {
     const checkboxes = document.querySelectorAll('.student-checkbox');
     const selectAllBtn = document.getElementById('select-all');
     const deselectAllBtn = document.getElementById('deselect-all');
     const selectedCount = document.getElementById('selected-count');
+    
+    function updateVisualState(checkbox) {
+      const label = checkbox.nextElementSibling;
+      if (checkbox.checked) {
+        label.classList.add('border-emerald-500', 'bg-emerald-50');
+        label.classList.remove('border-slate-200');
+        const checkmark = label.querySelector('.checkmark');
+        if (checkmark) {
+          checkmark.classList.remove('hidden');
+        }
+      } else {
+        label.classList.remove('border-emerald-500', 'bg-emerald-50');
+        label.classList.add('border-slate-200');
+        const checkmark = label.querySelector('.checkmark');
+        if (checkmark) {
+          checkmark.classList.add('hidden');
+        }
+      }
+    }
     
     function updateSelectedCount() {
       const checkedCount = document.querySelectorAll('.student-checkbox:checked').length;
@@ -125,55 +144,64 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
     
-    // Remove existing event listeners to prevent duplicates
-    checkboxes.forEach(checkbox => {
-      checkbox.removeEventListener('change', updateSelectedCount);
-    });
+    function updateAllVisualStates() {
+      checkboxes.forEach(checkbox => {
+        updateVisualState(checkbox);
+      });
+    }
     
     // Add event listeners to all checkboxes
     checkboxes.forEach(checkbox => {
-      checkbox.addEventListener('change', updateSelectedCount);
+      checkbox.addEventListener('change', function() {
+        updateVisualState(checkbox);
+        updateSelectedCount();
+      });
+      
+      // Initialize visual state for each checkbox
+      updateVisualState(checkbox);
     });
     
     // Select all functionality
     if (selectAllBtn) {
-      selectAllBtn.removeEventListener('click', selectAllHandler);
-      selectAllBtn.addEventListener('click', selectAllHandler);
+      selectAllBtn.onclick = function(e) {
+        e.preventDefault();
+        checkboxes.forEach(checkbox => {
+          checkbox.checked = true;
+          updateVisualState(checkbox);
+        });
+        updateSelectedCount();
+      };
     }
     
     // Deselect all functionality
     if (deselectAllBtn) {
-      deselectAllBtn.removeEventListener('click', deselectAllHandler);
-      deselectAllBtn.addEventListener('click', deselectAllHandler);
+      deselectAllBtn.onclick = function(e) {
+        e.preventDefault();
+        checkboxes.forEach(checkbox => {
+          checkbox.checked = false;
+          updateVisualState(checkbox);
+        });
+        updateSelectedCount();
+      };
     }
     
-    function selectAllHandler() {
-      const currentCheckboxes = document.querySelectorAll('.student-checkbox');
-      currentCheckboxes.forEach(checkbox => {
-        checkbox.checked = true;
-      });
-      updateSelectedCount();
-    }
-    
-    function deselectAllHandler() {
-      const currentCheckboxes = document.querySelectorAll('.student-checkbox');
-      currentCheckboxes.forEach(checkbox => {
-        checkbox.checked = false;
-      });
-      updateSelectedCount();
-    }
-    
-    // Initialize count
+    // Initialize count and visual states
     updateSelectedCount();
+    updateAllVisualStates();
   }
   
   // Initialize on page load
-  initializeGroupForm();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeGroupForm);
+  } else {
+    initializeGroupForm();
+  }
   
   // Re-initialize on Turbo navigation (for Rails 7+)
   document.addEventListener('turbo:load', initializeGroupForm);
+  document.addEventListener('turbo:frame-load', initializeGroupForm);
   
   // Re-initialize on Turbolinks navigation (for Rails 6)
   document.addEventListener('turbolinks:load', initializeGroupForm);
-});
+})();
 </script>

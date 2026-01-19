@@ -114,7 +114,7 @@ class GroupsController < ApplicationController
       end
     end
 
-    redirect_to course_path(@course), notice: "Random groups generated successfully"
+    redirect_to course_groups_path(@course), notice: "Random groups generated successfully"
   end
 
   private

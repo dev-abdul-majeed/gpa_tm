@@ -1,54 +1,190 @@
-<div class='flex-row align-center justify-center ml-10'>
-  <h1> Show School </h1>
-  <%= render 'form', school: @school %>
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+  <div class="container mx-auto px-4 py-8">
+    <!-- School Header -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 mb-8">
+      <div class="flex justify-between items-start">
+        <div class="flex-1">
+          <div class="flex items-center space-x-4 mb-4">
+            <div class="w-12 h-12 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center">
+              <i class="fas fa-school text-white text-xl"></i>
+            </div>
+            <div>
+              <h1 class="text-3xl font-bold text-slate-800 mb-1"><%= @school.name %></h1>
+              <p class="text-slate-600">School details and administration</p>
+            </div>
+          </div>
 
-  <h3> School's Admin </h3>
-  <h2 class="text-xl font-bold mt-6 mb-4">Admin for <%= @school.name %></h2>
+          <div class="flex items-center space-x-6 text-sm text-slate-600">
+            <div class="flex items-center space-x-2 bg-slate-100 rounded-lg px-3 py-2">
+              <i class="fas fa-map-marker-alt text-emerald-600"></i>
+              <span class="font-medium"><%= @school.location %></span>
+            </div>
+            <div class="flex items-center space-x-2 bg-slate-100 rounded-lg px-3 py-2">
+              <i class="fas fa-globe text-emerald-600"></i>
+              <span class="font-medium"><%= @school.domain %></span>
+            </div>
+          </div>
+        </div>
 
-  
-    <h3 class="text-lg font-semibold mt-6 mb-2">Create an Admin for this School</h3>
+        <div class="flex space-x-3">
+          <%= link_to super_admin_home_path, class: 'inline-flex items-center px-4 py-2 bg-slate-500 hover:bg-slate-600 text-white font-medium rounded-lg transition duration-200' do %>
+            <i class="fas fa-arrow-left mr-2"></i>
+            Back
+          <% end %>
+        </div>
+      </div>
+    </div>
 
-    <%= form_for(@admin , url: admin_registration_path, html: { method: :post }) do |f| %>
-      <%= f.hidden_field :type, value: "Admin" %>
-      <%= f.hidden_field :school_id, value: @school.id %>
-
-      <div class="mb-4">
-        <%= f.label :first_name %>
-        <%= f.text_field :first_name, class: "border p-2 w-full", required: true %>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Edit School Form -->
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="bg-gradient-to-r from-emerald-500 to-teal-500 px-6 py-4">
+          <div class="flex items-center text-white">
+            <i class="fas fa-edit mr-3 text-lg"></i>
+            <h2 class="text-xl font-semibold">Edit School Details</h2>
+          </div>
+        </div>
+        
+        <div class="p-6">
+          <%= render 'form', school: @school %>
+        </div>
       </div>
 
-      <div class="mb-4">
-        <%= f.label :last_name %>
-        <%= f.text_field :last_name, class: "border p-2 w-full", required: true %>
-      </div>
+      <!-- Admin Section -->
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="bg-gradient-to-r from-emerald-500 to-teal-500 px-6 py-4">
+          <div class="flex items-center text-white">
+            <i class="fas fa-user-shield mr-3 text-lg"></i>
+            <h2 class="text-xl font-semibold">School Administrator</h2>
+          </div>
+        </div>
+        
+        <div class="p-6">
+          <% if @admin.persisted? %>
+            <!-- Display Existing Admin -->
+            <div class="mb-6">
+              <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mb-4">
+                <div class="flex items-center mb-3">
+                  <div class="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center mr-3">
+                    <i class="fas fa-user text-white"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-semibold text-slate-800"><%= @admin.full_name %></h3>
+                    <p class="text-sm text-slate-600"><%= @admin.email %></p>
+                  </div>
+                </div>
+                <div class="flex items-center space-x-4 text-sm text-slate-600">
+                  <span><i class="fas fa-venus-mars mr-1"></i><%= @admin.gender %></span>
+                  <span><i class="fas fa-birthday-cake mr-1"></i><%= @admin.date_of_birth.strftime('%B %d, %Y') %></span>
+                </div>
+              </div>
+              <p class="text-sm text-slate-500 mb-4">
+                <i class="fas fa-info-circle mr-1"></i>
+                An admin already exists for this school. To create a new admin, please delete the existing one first.
+              </p>
+            </div>
+          <% else %>
+            <!-- Create Admin Form -->
+            <div class="space-y-6">
+              <p class="text-slate-600 mb-4">
+                <i class="fas fa-info-circle text-emerald-500 mr-2"></i>
+                Create an administrator account for this school
+              </p>
 
-      <div class="mb-4">
-        <%= f.label :email %>
-        <%= f.email_field :email, class: "border p-2 w-full", required: true %>
-      </div>
+              <%= form_for(@admin, url: admin_registration_path, html: { method: :post, class: "space-y-4" }) do |f| %>
+                <%= f.hidden_field :type, value: "Admin" %>
+                <%= f.hidden_field :school_id, value: @school.id %>
 
-      <div class="mb-4">
-        <%= f.label :gender %>
-        <%= f.select :gender, ["Male", "Female", "Other"], {}, class: "border p-2 w-full" %>
-      </div>
+                <div class="form-group">
+                  <%= f.label :first_name, class: "block text-sm font-semibold text-slate-700 mb-2" do %>
+                    <i class="fas fa-user mr-2 text-emerald-500"></i>
+                    First Name
+                  <% end %>
+                  <%= f.text_field :first_name, 
+                      placeholder: "Enter first name",
+                      class: "w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-200 text-slate-800 placeholder-slate-400",
+                      required: true %>
+                </div>
 
-      <div class="mb-4">
-        <%= f.label :date_of_birth %>
-        <%= f.date_field :date_of_birth, class: "border p-2 w-full", required: true %>
-      </div>
+                <div class="form-group">
+                  <%= f.label :last_name, class: "block text-sm font-semibold text-slate-700 mb-2" do %>
+                    <i class="fas fa-user mr-2 text-emerald-500"></i>
+                    Last Name
+                  <% end %>
+                  <%= f.text_field :last_name, 
+                      placeholder: "Enter last name",
+                      class: "w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-200 text-slate-800 placeholder-slate-400",
+                      required: true %>
+                </div>
 
-      <div class="mb-4">
-        <%= f.label :password %>
-        <%= f.password_field :password, class: "border p-2 w-full", required: true %>
-      </div>
+                <div class="form-group">
+                  <%= f.label :email, class: "block text-sm font-semibold text-slate-700 mb-2" do %>
+                    <i class="fas fa-envelope mr-2 text-emerald-500"></i>
+                    Email
+                  <% end %>
+                  <%= f.email_field :email, 
+                      placeholder: "admin@example.com",
+                      class: "w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-200 text-slate-800 placeholder-slate-400",
+                      required: true %>
+                </div>
 
-      <div class="mb-4">
-        <%= f.label :password_confirmation %>
-        <%= f.password_field :password_confirmation, class: "border p-2 w-full", required: true %>
-      </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="form-group">
+                    <%= f.label :gender, class: "block text-sm font-semibold text-slate-700 mb-2" do %>
+                      <i class="fas fa-venus-mars mr-2 text-emerald-500"></i>
+                      Gender
+                    <% end %>
+                    <%= f.select :gender, 
+                        [["Male", "Male"], ["Female", "Female"], ["Other", "Other"]], 
+                        {}, 
+                        { class: "w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-200 text-slate-800" } %>
+                  </div>
 
-      <div>
-        <%= f.submit @admin.new_record? ? "Create" : "Update", class: "bg-blue-600 text-white px-4 py-2 rounded" %>
+                  <div class="form-group">
+                    <%= f.label :date_of_birth, class: "block text-sm font-semibold text-slate-700 mb-2" do %>
+                      <i class="fas fa-calendar mr-2 text-emerald-500"></i>
+                      Date of Birth
+                    <% end %>
+                    <%= f.date_field :date_of_birth, 
+                        class: "w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-200 text-slate-800",
+                        required: true %>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <%= f.label :password, class: "block text-sm font-semibold text-slate-700 mb-2" do %>
+                    <i class="fas fa-lock mr-2 text-emerald-500"></i>
+                    Password
+                  <% end %>
+                  <%= f.password_field :password, 
+                      placeholder: "Enter password",
+                      class: "w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-200 text-slate-800 placeholder-slate-400",
+                      required: true %>
+                </div>
+
+                <div class="form-group">
+                  <%= f.label :password_confirmation, class: "block text-sm font-semibold text-slate-700 mb-2" do %>
+                    <i class="fas fa-lock mr-2 text-emerald-500"></i>
+                    Confirm Password
+                  <% end %>
+                  <%= f.password_field :password_confirmation, 
+                      placeholder: "Confirm password",
+                      class: "w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors duration-200 text-slate-800 placeholder-slate-400",
+                      required: true %>
+                </div>
+
+                <div class="pt-4 border-t border-slate-200">
+                  <%= f.submit "Create Admin", 
+                      class: "w-full inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5",
+                      data: { 
+                        disable_with: "<i class='fas fa-spinner fa-spin mr-2'></i>Creating Admin..."
+                      } %>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
       </div>
-    <% end %>
+    </div>
+  </div>
 </div>

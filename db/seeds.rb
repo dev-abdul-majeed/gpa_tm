@@ -9,9 +9,9 @@ Assignment.destroy_all
 Course.destroy_all
 Teacher.destroy_all
 Student.destroy_all
-School.destroy_all
 Admin.destroy_all
 SuperAdmin.destroy_all
+School.destroy_all
 
 puts "✅ Finished dropping records"
 

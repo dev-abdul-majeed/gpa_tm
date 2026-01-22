@@ -19,7 +19,7 @@
     <%= render 'table' %>
 
     <!-- Legend Section -->
-    <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+    <div class="mt-0 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
       <div class="flex items-center justify-center space-x-8 text-sm text-slate-600">
         <div class="flex items-center space-x-2">
           <div class="w-6 h-6 rounded-full bg-gradient-to-r from-emerald-100 to-teal-100 border-2 border-emerald-200 flex items-center justify-center">
@@ -137,7 +137,9 @@
                   <label for="qass_group_score" class="text-lg font-semibold text-slate-700">Group Score (t):</label>
                   <%= f.number_field :group_score, id: "qass_group_score", value: qass_group_score, min: 0.00, max: 1.00, step: 0.01, class: "px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-lg font-medium", onchange: "updateQassScores()" %>
                 </div>
-                <%= f.submit "Save Group Score", class: "px-6 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-teal-600 transition-all duration-200 shadow-md hover:shadow-lg" %>
+                <% if params['conversion'] != 'webavalia-to-qass' %>
+                <%= f.submit "Save Group Score", class: "px-6 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-teal-600 transition-all duration-200 shadow-md hover:shadow-lg"%>
+                <% end %>
                 <span class="text-sm text-slate-500">(Enter value between 0.00 and 1.00)</span>
               </div>
             <% end %>
@@ -166,7 +168,7 @@
           <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
             <h3 class="mx-4 text-center text-emerald-700">Student Scores Normalized</h3>
           </div>
-          <div id="student_scores_table">
+          <div id="student_scores_normalized_table">
             <%= render partial: 'two_column_table', locals: { marks_by_students: normalized_student_scores(student_scores), formula: 'Student Scores', student_contributions_ci: student_contributions_ci } %>
           </div>
         <% end %>
@@ -188,7 +190,7 @@
   </div>
 </div>
 
-<% if @assignment.qass? %>
+<% if @assignment.qass? || params['conversion'] == 'webavalia-to-qass' %>
 <script>
 function updateQassScores() {
   const groupScore = parseFloat(document.getElementById('qass_group_score').value) || 0;
@@ -216,6 +218,19 @@ function updateQassScores() {
     const newScore = Math.pow(groupScore, Math.pow(groupSpread, ci));
     element.textContent = newScore.toFixed(6);
   });
+
+  // Update normalized student scores (multiply by 100 and round to 1 decimal)
+  const normalizedTable = document.getElementById('student_scores_normalized_table');
+  if (normalizedTable) {
+    const normalizedScoreElements = normalizedTable.querySelectorAll('[data-student-id][data-ci-value]');
+    normalizedScoreElements.forEach(element => {
+      const studentId = element.getAttribute('data-student-id');
+      const ci = parseFloat(element.getAttribute('data-ci-value'));
+      const newScore = Math.pow(groupScore, Math.pow(groupSpread, ci));
+      const normalizedScore = (newScore * 100).toFixed(1);
+      element.textContent = normalizedScore;
+    });
+  }
 }
 </script>
 <% end %>

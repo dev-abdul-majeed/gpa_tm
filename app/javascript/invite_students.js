@@ -1,5 +1,7 @@
 function toggleStudent(studentId) {
   const checkbox = document.getElementById(`student_${studentId}`);
+  if (!checkbox) return;
+  
   checkbox.checked = !checkbox.checked;
   updateCardStyle(studentId);
   updateSelectedCount();
@@ -7,10 +9,10 @@ function toggleStudent(studentId) {
 
 function updateCardStyle(studentId) {
   const checkbox = document.getElementById(`student_${studentId}`);
-  if (!checkbox) return; // <-- Prevent error if checkbox not found
+  if (!checkbox) return;
 
-  const card = checkbox.closest(".student-card");
-  if (!card) return; // extra safety check
+  const card = document.getElementById(`student-card-${studentId}`);
+  if (!card) return;
 
   if (checkbox.checked) {
     card.classList.add("bg-emerald-50", "border-emerald-300");

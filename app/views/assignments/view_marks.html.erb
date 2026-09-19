@@ -2,6 +2,12 @@
   <div class="max-w-7xl mx-auto">
     <!-- Header Section -->
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <%= link_to assignments_path, class: "inline-flex items-center text-slate-600 hover:text-emerald-600 transition-colors duration-200" do %>
+          <i class="fas fa-arrow-left mr-2"></i>
+          <span>Back to Assignments</span>
+        <% end %>
+      </div>
       <div class="flex items-center space-x-3 mb-2">
         <div class="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
           <i class="fas fa-clipboard-list text-white text-lg"></i>
@@ -47,83 +53,92 @@
 
     <% if (@assignment.qass? || params['conversion'] == 'webavalia-to-qass') && params['conversion'] != 'qass-to-webavalia' %>
       <% qass_service = QassStandardizationService.new(@assignment.id, @group.id, conversion_params(params['conversion'])) %>
-
+      <%= render partial: 'qass_formulas', locals: { rating_model: @assignment.rating_model, formula_type: 'top_info' } %>
       <% if params['conversion'] == 'webavalia-to-qass' %>
         <% converted_matrix =  qass_service.converted_evalutation_matrix %>
-        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-          <h3 class="mx-4 text-center text-emerald-700">Webavalia to qass converted values</h3>
+        <div class="mt-6 mb-2 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <h3 class="mx-4 text-center text-emerald-700 text-xl font-bold">Webavalia to qass converted values</h3>
         </div>
         <%= render partial: 'qass_rating_table', locals: { marks_by_pair: converted_matrix } %>
       <% end %>
       <% standardized_ratings = qass_service.qass_standardization %>
       <% if standardized_ratings.present? %>
-        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-          <h3 class="mx-4 text-center text-emerald-700">Standardized Ratings</h3>
+        <div class="mt-6 mb-2 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <h3 class="mx-4 text-center text-emerald-700 text-xl font-bold">Standardized Ratings</h3>
+          <%= render partial: 'qass_formulas', locals: { rating_model: @assignment.rating_model, formula_type: 'standardized_peer_rating' } %>
         </div>
         <%= render partial: 'qass_rating_table', locals: { marks_by_pair: standardized_ratings } %>
       <% end %>
       <% bordered_peer_ratings = qass_service.bordered_peer_ratings %>
       <% if bordered_peer_ratings.present? %>
-        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-          <h3 class="mx-4 text-center text-emerald-700">Bordered Peer Ratings</h3>
+        <div class="mt-6 mb-2 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <h3 class="mx-4 text-center text-emerald-700 text-xl font-bold">Bordered Peer Ratings</h3>
+          <%= render partial: 'qass_formulas', locals: { rating_model: @assignment.rating_model, formula_type: 'bordered_peer_rating' } %>
         </div>
         <%= render partial: 'qass_rating_table', locals: { marks_by_pair: bordered_peer_ratings } %>
       <% end %>
 
       <% rescaled_peer_ratings = qass_service.rescaled_peer_ratings %>
       <% if rescaled_peer_ratings.present? %>
-        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-          <h3 class="mx-4 text-center text-emerald-700">Rescaled Peer Ratings</h3>
+        <div class="mt-6 mb-2 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <h3 class="mx-4 text-center text-emerald-700 text-xl font-bold">Rescaled Peer Ratings</h3>
+          <%= render partial: 'qass_formulas', locals: { rating_model: @assignment.rating_model, formula_type: 'rescaled_peer_rating' } %>
         </div>
         <%= render partial: 'qass_rating_table', locals: { marks_by_pair: rescaled_peer_ratings } %>
       <% end %>
 
       <% calibrated_peer_ratings = qass_service.calibrated_peer_ratings %>
       <% if calibrated_peer_ratings.present? %>
-        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-          <h3 class="mx-4 text-center text-emerald-700">Calibrated Peer Ratings</h3>
+        <div class="mt-6 mb-2 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <h3 class="mx-4 text-center text-emerald-700 text-xl font-bold">Calibrated Peer Ratings</h3>
+          <%= render partial: 'qass_formulas', locals: { rating_model: @assignment.rating_model, formula_type: 'calibrated_peer_rating' } %>
         </div>
         <%= render partial: 'qass_rating_table', locals: { marks_by_pair: calibrated_peer_ratings } %>
       <% end %>
 
       <% weighted_peer_ratings = qass_service.weighted_peer_ratings %>
       <% if weighted_peer_ratings.present? %>
-        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-          <h3 class="mx-4 text-center text-emerald-700">Weighted Peer Ratings</h3>
+        <div class="mt-6 mb-2 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <h3 class="mx-4 text-center text-emerald-700 text-xl font-bold">Weighted Peer Ratings</h3>
+          <%= render partial: 'qass_formulas', locals: { rating_model: @assignment.rating_model, formula_type: 'weighted_peer_rating' } %>
         </div>
         <%= render partial: 'qass_rating_table', locals: { marks_by_pair: weighted_peer_ratings } %>
       <% end %>
 
       <% student_ratings = qass_service.student_ratings %>
       <% if student_ratings.present? %>
-        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-          <h3 class="mx-4 text-center text-emerald-700">Student Ratings</h3>
+        <div class="mt-6 mb-2 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <h3 class="mx-4 text-center text-emerald-700 text-xl font-bold">Student Ratings</h3>
+          <%= render partial: 'qass_formulas', locals: { rating_model: @assignment.rating_model, formula_type: 'student_rating_aggregation' } %>
         </div>
-        <%= render partial: 'two_column_table', locals: { marks_by_students: student_ratings, formula: 'ri/(1-r1)' } %>
+        <%= render partial: 'two_column_table', locals: { marks_by_students: student_ratings, formula: 'Student Ratings' } %>
       <% end %>
 
       <% mean_student_rating = qass_service.mean_student_rating %>
       <% if mean_student_rating.present? %>
-        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-          <h3 class="mx-4 text-center text-emerald-700">Mean Student Ratings</h3>
+        <div class="mt-6 mb-2 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <h3 class="mx-4 text-center text-emerald-700 text-xl font-bold">Mean Student Ratings</h3>
+          <%= render partial: 'qass_formulas', locals: { rating_model: @assignment.rating_model, formula_type: 'mean_student_rating' } %>
         </div>
-        <%= render partial: 'one_row_table', locals: { value: mean_student_rating, formula: 'ri_bar/(1-r1_bar)' } %>
+        <%= render partial: 'one_row_table', locals: { value: mean_student_rating, formula: 'Mean Student Rating' } %>
       <% end %>
 
       <% student_contributions = qass_service.student_contributions %>
       <% if student_contributions.present? %>
-        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-          <h3 class="mx-4 text-center text-emerald-700">Student Contributions</h3>
+        <div class="mt-6 mb-2 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <h3 class="mx-4 text-center text-emerald-700 text-xl font-bold">Student Contributions</h3>
+          <%= render partial: 'qass_formulas', locals: { rating_model: @assignment.rating_model, formula_type: 'student_contributions' } %>
         </div>
-        <%= render partial: 'two_column_table', locals: { marks_by_students: student_contributions, formula: '(1 + c1 )/(1 - r1)' } %>
+        <%= render partial: 'two_column_table', locals: { marks_by_students: student_contributions, formula: 'Student Contributions' } %>
       <% end %>
 
       <% mean_student_contribution = qass_service.mean_student_contribution %>
       <% if mean_student_contribution.present? %>
-        <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-          <h3 class="mx-4 text-center text-emerald-700">Mean Student Ratings</h3>
+        <div class="mt-6 mb-2 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <h3 class="mx-4 text-center text-emerald-700 text-xl font-bold">Mean Student Contribution</h3>
+          <%= render partial: 'qass_formulas', locals: { rating_model: @assignment.rating_model, formula_type: 'mean_student_contribution' } %>
         </div>
-        <%= render partial: 'one_row_table', locals: { value: mean_student_contribution, formula: 'Multiplied Result' } %>
+        <%= render partial: 'one_row_table', locals: { value: mean_student_contribution, formula: 'Mean Student Contribution' } %>
       <% end %>
 
       <% qass_group_score = @assignment_group_score&.group_score || @assignment.group_score || 0.8 %>
@@ -145,31 +160,30 @@
             <% end %>
           </div>
 
-        <% mean_student_score = qass_service.mean_student_score(qass_group_score) %>
-        <% c_bar = qass_service.c_bar %>
-        <% if mean_student_score.present? %>
-          <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-            <h3 class="mx-4 text-center text-emerald-700">Mean Student Score</h3>
+        <div class="mt-6 mb-2 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <h3 class="mx-4 text-center text-emerald-700 text-xl font-bold">Mean Student Score</h3>
+          <%= render partial: 'qass_formulas', locals: { rating_model: @assignment.rating_model, formula_type: 'mean_student_score' } %>
+          <div class="mt-2 text-center">
+            <span class="text-muted">Lower score bound: <span id="lower_score_bound" class="font-semibold">-</span>, Upper score bound: <span id="upper_score_bound" class="font-semibold">-</span></span>
           </div>
-          <div id="mean_student_score_container" data-c-bar="<%= c_bar %>">
-            <%= render partial: 'one_row_table', locals: { value: mean_student_score, formula: 'ś = t ^ (z ^ ć)', id: 'mean_student_score' } %>
-          </div>
-        <% end %>
+        </div>
+        <div id="mean_student_score_container" style="display: none;"></div>
 
         <% student_scores = qass_service.student_scores(qass_group_score) %>
         <% if student_scores.present? %>
-          <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-            <h3 class="mx-4 text-center text-emerald-700">Student Scores</h3>
+          <div class="mt-6 mb-2 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+            <h3 class="mx-4 text-center text-emerald-700 text-xl font-bold">Student Marks</h3>
+            <%= render partial: 'qass_formulas', locals: { rating_model: @assignment.rating_model, formula_type: 'final_score_rule' } %>
           </div>
           <div id="student_scores_table">
-            <%= render partial: 'two_column_table', locals: { marks_by_students: student_scores, formula: 'Student Scores', student_contributions_ci: student_contributions_ci } %>
+            <%= render partial: 'two_column_table', locals: { marks_by_students: student_scores, formula: 'Student Marks', student_contributions_ci: student_contributions_ci } %>
           </div>
 
-          <div class="mt-6 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-            <h3 class="mx-4 text-center text-emerald-700">Student Scores Normalized</h3>
+          <div class="mt-6 mb-2 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+            <h3 class="mx-4 text-center text-emerald-700 text-xl font-bold">Final Student Marks</h3>
           </div>
           <div id="student_scores_normalized_table">
-            <%= render partial: 'two_column_table', locals: { marks_by_students: normalized_student_scores(student_scores), formula: 'Student Scores', student_contributions_ci: student_contributions_ci } %>
+            <%= render partial: 'two_column_table', locals: { marks_by_students: normalized_student_scores(student_scores), formula: 'Student Marks (x 100)', student_contributions_ci: student_contributions_ci } %>
           </div>
         <% end %>
 
@@ -201,14 +215,20 @@ function updateQassScores() {
   if (finalMarksGroupScore) finalMarksGroupScore.value = groupScore;
   console.log(groupScore);
   console.log(groupSpread);
-  // Update mean student score
+  
+  // Update mean student score bounds
   const meanStudentScoreContainer = document.getElementById('mean_student_score_container');
-  const meanStudentScoreElement = document.getElementById('mean_student_score');
-  if (meanStudentScoreContainer && meanStudentScoreElement) {
-    const cBar = parseFloat(meanStudentScoreContainer.getAttribute('data-c-bar')) || 0;
-    const newMeanScore = Math.pow(groupScore, Math.pow(groupSpread, cBar));
-    meanStudentScoreElement.textContent = newMeanScore.toFixed(6);
-    console.log(newMeanScore);
+  const lowerBoundElement = document.getElementById('lower_score_bound');
+  const upperBoundElement = document.getElementById('upper_score_bound');
+  
+  if (meanStudentScoreContainer && lowerBoundElement && upperBoundElement) {
+    // Calculate lower bound using c_bar = -1
+    const lowerBound = Math.pow(groupScore, Math.pow(groupSpread, -1));
+    lowerBoundElement.textContent = lowerBound.toFixed(6);
+    
+    // Calculate upper bound using c_bar = 1
+    const upperBound = Math.pow(groupScore, Math.pow(groupSpread, 1));
+    upperBoundElement.textContent = upperBound.toFixed(6);
   }
 
   // Update student scores
@@ -232,5 +252,10 @@ function updateQassScores() {
     });
   }
 }
+
+// Initialize bounds on page load
+document.addEventListener('DOMContentLoaded', function() {
+  updateQassScores();
+});
 </script>
 <% end %>

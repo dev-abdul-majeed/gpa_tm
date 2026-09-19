@@ -1,0 +1,202 @@
+<% if formula_type.blank? %>
+  <div class="text-danger p-2">Error: formula_type parameter is missing or empty. Received: <%= formula_type.inspect %></div>
+<% else %>
+<% if formula_type == 'top_info' %>
+  <div class="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden mb-6">
+    <div class="bg-gradient-to-r from-emerald-500 to-teal-500 px-6 py-4">
+      <h3 class="text-xl font-bold text-white flex items-center">
+        <i class="fas fa-calculator mr-3"></i>
+        QASS Model Parameters
+      </h3>
+      <small class="text-white text-sm"> Default Values </small>
+    </div>
+    <div class="p-6">
+      <div class="flex flex-wrap items-center justify-between gap-6">
+        <div class="flex items-center space-x-3">
+          <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center">
+            <span class="text-white font-bold text-lg">$$ t $$</span>
+          </div>
+          <div>
+            <div class="text-sm text-slate-500 font-medium">Assignment Group Score</div>
+            <div class="text-xl font-bold text-slate-800"><%= @assignment.group_score || 'N/A' %></div>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+            <span class="text-white font-bold text-lg">$$ z $$</span>
+          </div>
+          <div>
+            <div class="text-sm text-slate-500 font-medium">Group Spread</div>
+            <div class="text-xl font-bold text-slate-800"><%= @assignment.group_spread || 'N/A' %></div>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <div class="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
+            <span class="text-white font-bold text-lg">$$ p $$</span>
+          </div>
+          <div>
+            <div class="text-sm text-slate-500 font-medium">Polarity Factor</div>
+            <div class="text-xl font-bold text-slate-800">1.0</div>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
+            <span class="text-white font-bold text-sm">$$ LB $$</span>
+          </div>
+          <div>
+            <div class="text-sm text-slate-500 font-medium">Lower Bound</div>
+            <div class="text-xl font-bold text-slate-800"><%= @assignment.lower_bound || 0 %></div>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <div class="w-12 h-12 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center">
+            <span class="text-white font-bold text-sm">$$ UB $$</span>
+          </div>
+          <div>
+            <div class="text-sm text-slate-500 font-medium">Upper Bound</div>
+            <div class="text-xl font-bold text-slate-800"><%= @assignment.upper_bound || 100 %></div>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <div class="w-12 h-12 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-lg flex items-center justify-center">
+            <span class="text-white font-bold text-lg">$$ \delta $$</span>
+          </div>
+          <div>
+            <div class="text-sm text-slate-500 font-medium">Border Size</div>
+            <div class="text-xl font-bold text-slate-800"><%= @assignment.border_size || 0 %></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+<div class="qass-formula-renderer" id="formula-<%= rating_model.to_s %>-<%= formula_type.to_s %>">
+  
+  <% if formula_type == 'standardized_peer_rating' %>
+    <p>$$ r_{ij} = \frac{x_{ij} - LB}{UB - LB} $$</p>
+    <span class="text-muted">Converts raw score $$x_{ij}$$ to range [0, 1].</span>
+  <% end %>
+
+  <% if formula_type == 'bordered_peer_rating' %>
+    <% if rating_model == 'B' %>
+      <p>$$ \hat{r}_{ij} = (1-\delta) \cdot r_{ij} + \delta \cdot (1 - r_{ij}) $$</p>
+      <span class="text-muted">Weighted mixture of score and inverse.</span>
+    <% elsif rating_model == 'C' %>
+      <p>$$ \hat{r}_{ij} = \begin{cases} 1 - (1-\delta)(1-r_{ij}) & \text{if } i \neq j \\ 1 & \text{if } i = j \end{cases} $$</p>
+      <span class="text-muted">Self-rating is forced to 1 in model C.</span>
+    <% elsif rating_model == 'D' %>
+      <p>$$ \hat{r}_{ij} = \begin{cases} (1-\delta) \cdot r_{ij} & \text{if } i \neq j \\ 0 & \text{if } i = j \end{cases} $$</p>
+      <span class="text-muted">Self-rating is zeroed out (Veto) in model D.</span>
+    <% end %>
+  <% end %>
+
+  <% if formula_type == 'rescaled_peer_rating' || formula_type == 'transformed_peer_rating' %>
+    <% if rating_model == 'B' %>
+      <p>$$ \text{Rescaled}_{ij} = \frac{\hat{r}_{ij}}{1 - \hat{r}_{ij}} $$</p>
+      <span class="text-muted"</span>
+    <% elsif rating_model == 'C' %>
+      <p>$$ \text{Rescaled}_{ij} = \frac{\hat{r}_{ij}}{2 - \hat{r}_{ij}} $$</p>
+      <span class="text-muted"</span>
+    <% elsif rating_model == 'D' %>
+      <p>$$ \text{Rescaled}_{ij} = \frac{1 + \hat{r}_{ij}}{1 - \hat{r}_{ij}} $$</p>
+      <span class="text-muted"</span>
+    <% end %>
+  <% end %>
+
+  <% if formula_type == 'calibrated_peer_rating' %>
+    <% if rating_model == 'B' %>
+      <p>$$ \text{Calibrated}_{ij} = \frac{\hat{r}_{ij}}{1-\hat{r}_{ij}} \div \frac{\hat{r}_{jj}}{1-\hat{r}_{jj}} $$</p>
+      <span class="text-muted">Normalizes rating by the <strong>giver's ($j$)</strong> self-rating.</span>
+    <% elsif rating_model == 'C' %>
+      <div class="alert alert-info">Calibration is only applicable to the Bijunctive (B) model.</div>
+    <% elsif rating_model == 'D' %>
+      <div class="alert alert-info">Calibration is only applicable to the Bijunctive (B) model.</div>
+    <% end %>
+  <% end %>
+
+  <% if formula_type == 'weighted_peer_rating' %>
+    <% if rating_model == 'B' %>
+      <p>$$ \text{Weighted}_{ij} = \left( \frac{\hat{r}_{ij}}{1-\hat{r}_{ij}} \div \frac{\hat{r}_{jj}}{1-\hat{r}_{jj}} \right)^{w_j} $$</p>
+      <span class="text-muted"</span>
+    <% elsif rating_model == 'C' %>
+      <p>$$ \text{Weighted}_{ij} = \left( \frac{\hat{r}_{ij}}{2 - \hat{r}_{ij}} \right)^{w_j} $$</p>
+      <span class="text-muted"</span>
+    <% elsif rating_model == 'D' %>
+      <p>$$ \text{Weighted}_{ij} = \left( \frac{1 + \hat{r}_{ij}}{1 - \hat{r}_{ij}} \right)^{w_j} $$</p>
+      <span class="text-muted"</span>
+    <% end %>
+  <% end %>
+
+  <% if formula_type == 'mean_student_rating' %>
+    <% if rating_model == 'B' %>
+      <p>$$\frac{\bar{r}}{1-\bar{r}} = \prod_{i=1}^n \left(\frac{r_i}{1-r_i}\right)^{w_i}$$</p>
+      <span class="text-muted">Geometric mean of odds (Bijunctive Model).</span>
+    <% elsif rating_model == 'C' %>
+      <p>$$\frac{1+\bar{r}}{1-\bar{r}} = \prod_{i=1}^n \left(\frac{1+r_i}{1-r_i}\right)^{w_i}$$</p>
+      <span class="text-muted">Geometric mean of shifted odds (Conjunctive Model).</span>
+    <% elsif rating_model == 'D' %>
+      <p>$$\frac{\bar{r}}{2-\bar{r}} = \prod_{i=1}^n \left(\frac{r_i}{2-r_i}\right)^{w_i}$$</p>
+      <span class="text-muted">Geometric mean of inverse shifted odds (Disjunctive Model).</span>
+    <% end %>
+  <% end %>
+
+  <% if formula_type == 'student_contributions' %>
+    <% if rating_model == 'B' %>
+      <p>$$\frac{1+c_i}{1-c_i} = \left(\frac{r_i}{1-r_i}\right)^p \div \left(\frac{\bar{r}}{1-\bar{r}}\right)^p$$</p>
+      <span class="text-muted">Contribution calculation for Model B.</span>
+    <% elsif rating_model == 'C' %>
+      <p>$$\frac{3+c_i}{1-c_i} = \left(\frac{1+r_i}{1-r_i} \div \frac{1+\bar{r}}{1-\bar{r}}\right)^p$$</p>
+      <span class="text-muted">Contribution calculation for Model C.</span>
+    <% elsif rating_model == 'D' %>
+      <p>$$\frac{1+c_i}{3-c_i} = \sqrt[p]{ \frac{r_i}{2-r_i} \div \frac{\bar{r}}{2-\bar{r}} }$$</p>
+      <span class="text-muted">Contribution calculation for Model D.</span>
+    <% end %>
+  <% end %>
+
+  <% if formula_type == 'mean_student_contribution' %>
+    <% if rating_model == 'B' %>
+      <p>$$\frac{1+\bar{c}}{1-\bar{c}} = \prod_{i=1}^n \left(\frac{1+c_i}{1-c_i}\right)^{w_i}$$</p>
+      <span class="text-muted">Mean contribution aggregation for Model B.</span>
+    <% elsif rating_model == 'C' %>
+      <p>$$\frac{3+\bar{c}}{1-\bar{c}} = \prod_{i=1}^n \left(\frac{3+c_i}{1-c_i}\right)^{w_i}$$</p>
+      <span class="text-muted">Mean contribution aggregation for Model C.</span>
+    <% elsif rating_model == 'D' %>
+      <p>$$\frac{1+\bar{c}}{3-\bar{c}} = \prod_{i=1}^n \left(\frac{1+c_i}{3-c_i}\right)^{w_i}$$</p>
+      <span class="text-muted">Mean contribution aggregation for Model D.</span>
+    <% end %>
+  <% end %>
+
+  <% if formula_type == 'mean_student_score' %>
+    <p>$$ \bar{s} = t^{z^{\bar{c}}}$$</p>
+    <span class="text-muted">Calculation of the mean student score relative to the group target and constraints.</span>
+  <% end %>
+
+  <% if formula_type == 'student_rating_aggregation' %>
+    <% if rating_model == 'B' %>
+      <p>$$ \frac{r_{i}}{1 - r_{i}} = \prod_{j=1}^{n} \left( \frac{\hat{r}_{ij}}{1-\hat{r}_{ij}} \div \frac{\hat{r}_{jj}}{1-\hat{r}_{jj}} \right)^{w_j} $$</p>
+      <span class="text-muted"</span>
+    <% elsif rating_model == 'C' %>
+      <p>$$ \frac{r_{i}}{2 - r_{i}} = \prod_{j=1}^{n} \left( \frac{\hat{r}_{ij}}{2 - \hat{r}_{ij}} \right)^{w_j} $$</p>
+      <span class="text-muted"</span>
+    <% elsif rating_model == 'D' %>
+      <p>$$ \frac{1 + r_{i}}{1 - r_{i}} = \prod_{j=1}^{n} \left( \frac{1 + \hat{r}_{ij}}{1 - \hat{r}_{ij}} \right)^{w_j} $$</p>
+      <span class="text-muted"</span>
+    <% end %>
+  <% end %>
+
+  <% if formula_type == 'final_score_rule' %>
+    <p>$$ s_{i} = t^{z^{\overline{c}_{i}}} $$</p>
+    <span class="text-muted">Final score based on group location $t$ and student contribution $\overline{c}_i$.span>
+  <% end %>
+
+  <% unless ['standardized_peer_rating', 'bordered_peer_rating', 'rescaled_peer_rating', 'transformed_peer_rating', 'calibrated_peer_rating', 'weighted_peer_rating', 'mean_student_rating', 'student_contributions', 'mean_student_contribution', 'mean_student_score', 'student_rating_aggregation', 'final_score_rule', 'top_info'].include?(formula_type.to_s) %>
+    <span class="text-danger">Formula type '<%= formula_type.to_s %>' not found.</span>
+  <% end %>
+
+</div>
+<% end %>

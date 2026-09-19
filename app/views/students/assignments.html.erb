@@ -1,4 +1,10 @@
 <div class="container mx-auto px-4 py-8">
+  <div class="mb-6">
+    <%= link_to student_home_path, class: "inline-flex items-center text-slate-600 hover:text-emerald-600 transition-colors duration-200" do %>
+      <i class="fas fa-arrow-left mr-2"></i>
+      <span>Back to Dashboard</span>
+    <% end %>
+  </div>
   <h1 class="text-2xl font-bold text-slate-800 mb-6">Your Assignments</h1>
 
   <% @assignments_by_course.each do |course, assignments| %>
@@ -16,14 +22,24 @@
                 <p class="text-slate-500 text-sm">Due: <%= assignment.end_date_time&.strftime('%b %d, %Y %H:%M') || '—' %></p>
               </div>
             </div>
-            <div class="mt-4 flex items-center justify-between">
+            <div class="mt-4 flex items-center justify-between gap-2 flex-wrap">
               <% submission = PeerMarkSubmission.find_by(assignment: assignment, giver: current_user) %>
+              <% final_mark = @final_marks_by_assignment[assignment.id] %>
+              
+              <% if final_mark %>
+                <%= link_to student_view_my_marks_path(assignment), 
+                    data: { turbo_frame: "modal" },
+                    class: "inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg hover:from-blue-600 hover:to-indigo-600 text-sm" do %>
+                  <i class="fa-solid fa-star mr-2"></i> View My Marks
+                <% end %>
+              <% end %>
+              
               <% if submission&.submitted? %>
-                <%= link_to student_peer_mark_summary_path(course, assignment), class: "inline-flex items-center px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600" do %>
+                <%= link_to student_peer_mark_summary_path(course, assignment), class: "inline-flex items-center px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 text-sm" do %>
                   <i class="fa-solid fa-check mr-2"></i> View Submitted Marks
                 <% end %>
               <% else %>
-                <%= link_to student_peer_marking_path(course, assignment), class: "inline-flex items-center px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600" do %>
+                <%= link_to student_peer_marking_path(course, assignment), class: "inline-flex items-center px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-lg hover:from-orange-600 hover:to-amber-600 text-sm" do %>
                   <i class="fa-solid fa-pen mr-2"></i> Start Group Marking
                 <% end %>
               <% end %>

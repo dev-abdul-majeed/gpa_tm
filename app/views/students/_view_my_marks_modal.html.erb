@@ -26,14 +26,14 @@
             <div>
               <p class="text-sm font-medium text-slate-600 mb-1">Final Score</p>
               <% if @assignment.qass? %>
-                <% display_score = @final_mark.score * 100 %>
-                <p class="text-4xl font-bold text-blue-700"><%= sprintf('%.2f', display_score) %> / 100</p>
+                <% display_score = @final_mark.score %>
+                <p class="text-4xl font-bold text-blue-700"><%= sprintf('%.1f', display_score) %> / 100</p>
               <% elsif @assignment.webavalia? %>
-                <p class="text-4xl font-bold text-blue-700"><%= sprintf('%.2f', @final_mark.score) %> / 20</p>
+                <p class="text-4xl font-bold text-blue-700"><%= sprintf('%.0f', @final_mark.score) %> / 20</p>
                 <% percentage = (@final_mark.score / 20.0) * 100.0 %>
-                <p class="text-lg font-semibold text-blue-600 mt-1"><%= sprintf('%.1f', percentage) %>%</p>
+                <p class="text-lg font-semibold text-blue-600 mt-1"><%= sprintf('%.0f', percentage) %>%</p>
               <% else %>
-                <p class="text-4xl font-bold text-blue-700"><%= sprintf('%.2f', @final_mark.score) %></p>
+                <p class="text-4xl font-bold text-blue-700"><%= sprintf('%.0f', @final_mark.score) %></p>
               <% end %>
             </div>
             <div class="bg-gradient-to-r from-blue-500 to-indigo-500 p-4 rounded-full">
@@ -68,16 +68,14 @@
             </div>
           </div>
         </div>
-
-        <!-- Additional Info for Webavalia -->
-        <% if @assignment.webavalia? %>
-          <div class="bg-emerald-50 rounded-lg p-4 border border-emerald-200">
-            <p class="text-sm text-slate-600">
-              <i class="fa-solid fa-info-circle text-emerald-600 mr-2"></i>
-              This score is calculated based on peer evaluations and the group project score set by your teacher.
-            </p>
-          </div>
-        <% end %>
+        
+        <div class="bg-emerald-50 rounded-lg p-4 border border-emerald-200">
+          <p class="text-sm text-slate-600">
+            <i class="fa-solid fa-info-circle text-emerald-600 mr-2"></i>
+            This score is calculated based on peer evaluations and the group project score set by your teacher.
+          </p>
+        </div>
+        
       </div>
 
       <!-- Close Button -->

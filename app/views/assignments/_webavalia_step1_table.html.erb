@@ -85,7 +85,7 @@
                 <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
                     <i class="fas fa-check-circle text-white text-xs"></i>
                 </div>
-                <span class="font-medium text-slate-700 text-sm">Final Grades (Out of 20)</span>
+                <span class="font-medium text-slate-700 text-sm">Final Marks (Out of 20)</span>
                 </div>
             </th>
             <th class="px-4 py-4 text-center border-l border-slate-200 bg-gradient-to-r from-cyan-50 to-blue-50">
@@ -157,7 +157,7 @@
             <% percentage_mark = (calc[:final_grade].to_f / 20.0) * 100.0 %>
             <td class="px-4 py-4 text-center border-l border-slate-200 bg-gradient-to-r from-cyan-50 to-blue-50">
                 <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-cyan-100 to-blue-100 border-2 border-cyan-200">
-                    <span class="font-bold text-cyan-700 text-lg percentage-value" data-student-id="<%= receiver.id %>" data-divide-max="<%= calc[:divide_max] %>"><%= sprintf('%.1f', percentage_mark) %></span>
+                    <span class="font-bold text-cyan-700 text-lg percentage-value" data-student-id="<%= receiver.id %>" data-divide-max="<%= calc[:divide_max] %>"><%= sprintf('%.0f', percentage_mark) %></span>
                 </div>
             </td>
             </tr>

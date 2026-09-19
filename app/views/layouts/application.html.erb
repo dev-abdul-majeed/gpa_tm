@@ -17,7 +17,34 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
-
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js" defer></script>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        }
+      };
+      
+      function typesetMath() {
+        if (window.MathJax && window.MathJax.typesetPromise) {
+          window.MathJax.typesetPromise().catch(function(err) {
+            console.error('MathJax typesetting error:', err);
+          });
+        } else if (window.MathJax && window.MathJax.startup) {
+          window.MathJax.startup.promise.then(function() {
+            if (window.MathJax.typesetPromise) {
+              window.MathJax.typesetPromise();
+            }
+          });
+        }
+      }
+      
+      document.addEventListener('DOMContentLoaded', typesetMath);
+      document.addEventListener('turbo:load', typesetMath);
+      document.addEventListener('turbo:render', typesetMath);
+      document.addEventListener('turbo:frame-load', typesetMath);
+    </script>
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>

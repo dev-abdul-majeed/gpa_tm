@@ -44,6 +44,11 @@ class StudentsController < ApplicationController
     @assignments_by_course = @courses.each_with_object({}) do |course, hash|
       hash[course] = course.assignments.order(start_date_time: :desc)
     end
+    
+    # Preload final marks for efficient checking
+    all_assignment_ids = @assignments_by_course.values.flatten.map(&:id)
+    @final_marks_by_assignment = FinalMark.where(student: @student, assignment_id: all_assignment_ids)
+                                          .index_by(&:assignment_id)
   end
 
   private

@@ -190,7 +190,8 @@ class AssignmentsController < ApplicationController
             )
             final_mark.group = @group
             final_mark.assignment_group_score = assignment_group_score
-            final_mark.score = score
+            # For QASS, save score multiplied by 100 to preserve decimal precision (0.805 -> 80.5)
+            final_mark.score = (score * 100).round(2)
             final_mark.calculated_at = Time.current
 
             if final_mark.save

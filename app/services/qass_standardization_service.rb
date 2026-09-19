@@ -269,7 +269,7 @@ class QassStandardizationService
 
     return nil unless c_bar_v
 
-    (t ** (z ** c_bar_v))
+    [(t ** (z ** -1)),(t ** (z ** 1))]
   end
 
   def student_scores(group_score = nil)

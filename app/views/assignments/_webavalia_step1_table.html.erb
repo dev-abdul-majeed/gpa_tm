@@ -113,52 +113,59 @@
                 <% weighted_mark = weighted_marks[[giver.id, receiver.id]] %>
                 <td class="px-4 py-4 text-center border-l border-slate-200">
                 <% if weighted_mark.present? %>
-                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-emerald-100 to-teal-100 border-2 border-emerald-200" data-mark-id="<%= weighted_mark[:mark_id] %>" data-student-id="<%= receiver.id %>">
-                    <span class="font-bold text-emerald-700 text-lg"><%= sprintf('%.2f', weighted_mark[:score]) %></span>
-                    </div>
+                    <%= render "assignments/mark_badge",
+                      value: weighted_mark[:score],
+                      variant: :score,
+                      precision: 2,
+                      html: { data: { mark_id: weighted_mark[:mark_id], student_id: receiver.id } } %>
                 <% else %>
-                    <div class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 border border-slate-200">
-                        <span class="text-slate-400 text-sm">N/A</span>
-                    </div>
+                    <%= render "assignments/mark_badge", variant: :missing %>
                 <% end %>
                 </td>
             <% end %>
 
             <%# Row_Sum column %>
             <% calc = student_calculations[receiver.id] %>
-            <td class="px-4 py-4 text-center border-l border-slate-200 bg-gradient-to-r from-blue-50 to-indigo-50">
-                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 border-2 border-blue-200">
-                    <span class="font-bold text-blue-700 text-lg"><%= sprintf('%.2f', calc[:row_sum]) %></span>
-                </div>
+            <td class="px-2 sm:px-4 py-3 text-center border-l border-slate-200 bg-gradient-to-r from-blue-50 to-indigo-50 align-middle">
+                <%= render "assignments/mark_badge", value: calc[:row_sum], variant: :score, theme: :blue, precision: 2 %>
             </td>
 
             <%# DivideMax column %>
-            <td class="px-4 py-4 text-center border-l border-slate-200 bg-gradient-to-r from-purple-50 to-pink-50">
-                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-purple-100 to-pink-100 border-2 border-purple-200">
-                    <span class="font-bold text-purple-700 text-lg"><%= sprintf('%.2f', calc[:divide_max]) %></span>
-                </div>
+            <td class="px-2 sm:px-4 py-3 text-center border-l border-slate-200 bg-gradient-to-r from-purple-50 to-pink-50 align-middle">
+                <%= render "assignments/mark_badge", value: calc[:divide_max], variant: :score, theme: :purple, precision: 2 %>
             </td>
 
             <%# Grade column %>
-            <td class="px-4 py-4 text-center border-l border-slate-200 bg-gradient-to-r from-orange-50 to-red-50">
-                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-orange-100 to-red-100 border-2 border-orange-200">
-                    <span class="font-bold text-orange-700 text-lg grade-value" data-student-id="<%= receiver.id %>" data-divide-max="<%= calc[:divide_max] %>"><%= sprintf('%.2f', calc[:grade]) %></span>
-                </div>
+            <td class="px-2 sm:px-4 py-3 text-center border-l border-slate-200 bg-gradient-to-r from-orange-50 to-red-50 align-middle">
+                <%= render "assignments/mark_badge",
+                  value: calc[:grade],
+                  variant: :score,
+                  theme: :orange,
+                  precision: 2,
+                  class: "grade-value",
+                  html: { data: { student_id: receiver.id, divide_max: calc[:divide_max] } } %>
             </td>
 
             <%# Final Grade column %>
-            <td class="px-4 py-4 text-center border-l border-slate-200 bg-gradient-to-r from-green-50 to-emerald-50">
-                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-green-100 to-emerald-100 border-2 border-green-200">
-                    <span class="font-bold text-green-700 text-lg final-grade-value" data-student-id="<%= receiver.id %>" data-divide-max="<%= calc[:divide_max] %>"><%= calc[:final_grade] %></span>
-                </div>
+            <td class="px-2 sm:px-4 py-3 text-center border-l border-slate-200 bg-gradient-to-r from-green-50 to-emerald-50 align-middle">
+                <%= render "assignments/mark_badge",
+                  value: calc[:final_grade],
+                  variant: :score,
+                  theme: :green,
+                  class: "final-grade-value",
+                  html: { data: { student_id: receiver.id, divide_max: calc[:divide_max] } } %>
             </td>
 
             <%# % Marks column %>
             <% percentage_mark = (calc[:final_grade].to_f / 20.0) * 100.0 %>
-            <td class="px-4 py-4 text-center border-l border-slate-200 bg-gradient-to-r from-cyan-50 to-blue-50">
-                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-cyan-100 to-blue-100 border-2 border-cyan-200">
-                    <span class="font-bold text-cyan-700 text-lg percentage-value" data-student-id="<%= receiver.id %>" data-divide-max="<%= calc[:divide_max] %>"><%= sprintf('%.0f', percentage_mark) %></span>
-                </div>
+            <td class="px-2 sm:px-4 py-3 text-center border-l border-slate-200 bg-gradient-to-r from-cyan-50 to-blue-50 align-middle">
+                <%= render "assignments/mark_badge",
+                  value: percentage_mark,
+                  variant: :score,
+                  theme: :cyan,
+                  precision: 0,
+                  class: "percentage-value",
+                  html: { data: { student_id: receiver.id, divide_max: calc[:divide_max] } } %>
             </td>
             </tr>
         <% end %>

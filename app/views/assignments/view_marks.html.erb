@@ -15,7 +15,7 @@
         <h1 class="text-2xl font-bold text-slate-800"><%= @assignment.title %></h1>
 
       </div>
-      <h4 class="text-xl font-bold text-slate-800"><%= @assignment.assignment_type.titleize %></h1>
+      <p class="text-lg font-semibold text-emerald-700"><%= @assignment.assignment_type.titleize %></p>
 
       <p class="text-slate-600">Peer evaluation matrix showing scores between students</p>
     </div>
@@ -26,23 +26,17 @@
 
     <!-- Legend Section -->
     <div class="mt-0 mb-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-      <div class="flex items-center justify-center space-x-8 text-sm text-slate-600">
-        <div class="flex items-center space-x-2">
-          <div class="w-6 h-6 rounded-full bg-gradient-to-r from-emerald-100 to-teal-100 border-2 border-emerald-200 flex items-center justify-center">
-            <span class="text-emerald-700 font-bold text-xs">5</span>
-          </div>
+      <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-sm text-slate-600">
+        <div class="flex items-center gap-2">
+          <%= render "assignments/mark_badge", value: (@assignment.qass? ? @assignment.upper_bound : 5), variant: :score %>
           <span>Score Given</span>
         </div>
-        <div class="flex items-center space-x-2">
-          <div class="w-6 h-6 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center">
-            <span class="text-slate-400 text-xs">N/A</span>
-          </div>
+        <div class="flex items-center gap-2">
+          <%= render "assignments/mark_badge", variant: :missing %>
           <span>No Score</span>
         </div>
-        <div class="flex items-center space-x-2">
-          <div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center">
-            <span class="text-slate-400 font-medium text-xs">–</span>
-          </div>
+        <div class="flex items-center gap-2">
+          <%= render "assignments/mark_badge", variant: :self_eval %>
           <span>Self Evaluation</span>
         </div>
       </div>

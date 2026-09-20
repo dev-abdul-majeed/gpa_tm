@@ -1,0 +1,31 @@
+<%
+  variant = (local_assigns[:variant] || :score).to_sym
+  theme = (local_assigns[:theme] || :emerald).to_sym
+  theme_classes = AssignmentHelper::MARK_BADGE_THEMES[theme] || AssignmentHelper::MARK_BADGE_THEMES[:emerald]
+  html_options = (local_assigns[:html] || {}).deep_dup
+  badge_class = local_assigns[:class].to_s
+%>
+
+<% if variant == :missing %>
+  <%= content_tag :span, "N/A",
+    html_options.merge(
+      class: "inline-flex items-center justify-center min-h-8 px-2.5 py-1 rounded-md border border-slate-200 bg-slate-100 text-slate-500 text-[11px] font-medium leading-none whitespace-nowrap #{badge_class}",
+      aria: { label: "No score" }
+    ) %>
+<% elsif variant == :self_eval %>
+  <%= content_tag :span, "–",
+    html_options.merge(
+      class: "inline-flex items-center justify-center w-8 h-8 rounded-md bg-slate-200 text-slate-500 text-sm font-medium leading-none #{badge_class}",
+      aria: { label: "Self evaluation not applicable" },
+      title: "Self evaluation not applicable"
+    ) %>
+<% else %>
+  <%
+    display_value = format_mark_for_display(value, precision: local_assigns[:precision])
+    text_size = mark_badge_text_size(display_value)
+  %>
+  <%= content_tag :span, display_value,
+    html_options.merge(
+      class: "inline-flex items-center justify-center min-h-8 min-w-[2.25rem] max-w-[5.5rem] px-2 py-1 rounded-md border font-semibold tabular-nums leading-none whitespace-nowrap #{theme_classes} #{text_size} #{badge_class}"
+    ) %>
+<% end %>
